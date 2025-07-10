@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShop Billing - Invoice</title>
+            <title>Online Billing System Pahana Edu - Invoice</title>
     <style>
         * {
             margin: 0;
@@ -192,7 +192,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">📚 BookShop Billing</div>
+        <div class="logo">📚 Online Billing System Pahana Edu</div>
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
             <a href="${pageContext.request.contextPath}/controller/books">Books</a>

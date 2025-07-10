@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShop Billing - Login</title>
+            <title>Online Billing System Pahana Edu - Login</title>
     <style>
         * {
             margin: 0;
@@ -101,8 +101,8 @@
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">📚 BookShop</div>
-        <div class="subtitle">Billing Management System</div>
+        <div class="logo">📚 Online Billing System</div>
+        <div class="subtitle">Pahana Edu</div>
         
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message">

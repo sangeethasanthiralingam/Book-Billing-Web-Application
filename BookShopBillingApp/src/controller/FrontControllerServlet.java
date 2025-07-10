@@ -10,10 +10,14 @@ import jakarta.servlet.http.HttpSession;
 import dao.BookDAO;
 import dao.BillDAO;
 import dao.UserDAO;
+import dao.CustomerDAO;
 import model.Book;
 import model.Bill;
 import model.User;
+import model.Customer;
 import java.util.List;
+import service.ConfigurationService;
+import java.util.Map;
 
 @WebServlet("/controller/*")
 public class FrontControllerServlet extends HttpServlet {
@@ -64,6 +68,27 @@ public class FrontControllerServlet extends HttpServlet {
                 case "reports":
                     handleReports(request, response);
                     break;
+                case "customers":
+                    handleCustomers(request, response);
+                    break;
+                case "customer-form":
+                    handleCustomerForm(request, response);
+                    break;
+                case "customer-details":
+                    handleCustomerDetails(request, response);
+                    break;
+                case "delete-customer":
+                    handleDeleteCustomer(request, response);
+                    break;
+                case "help":
+                    handleHelp(request, response);
+                    break;
+                case "system-config":
+                    handleSystemConfig(request, response);
+                    break;
+                case "update-configs":
+                    handleUpdateConfigs(request, response);
+                    break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/jsp/dashboard.jsp");
                     break;
@@ -90,7 +115,7 @@ public class FrontControllerServlet extends HttpServlet {
             User user = userDAO.authenticateUser(username, password);
             
             if (user != null) {
-                HttpSession session = request.getSession();
+            HttpSession session = request.getSession();
                 session.setAttribute("user", user.getFullName());
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole());
@@ -134,6 +159,7 @@ public class FrontControllerServlet extends HttpServlet {
             request.setAttribute("todaySales", todaySales);
             request.setAttribute("todayCustomers", todayCustomers);
             request.setAttribute("recentBills", recentBills);
+            request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,6 +175,7 @@ public class FrontControllerServlet extends HttpServlet {
             BookDAO bookDAO = new BookDAO();
             List<Book> books = bookDAO.getAllBooks();
             request.setAttribute("books", books);
+            request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error loading books: " + e.getMessage());
@@ -160,11 +187,15 @@ public class FrontControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             BookDAO bookDAO = new BookDAO();
+            CustomerDAO customerDAO = new CustomerDAO();
             List<Book> books = bookDAO.getAllBooks();
+            List<Customer> customers = customerDAO.getAllCustomers();
             request.setAttribute("books", books);
+            request.setAttribute("customers", customers);
+            request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error loading books for billing: " + e.getMessage());
+            request.setAttribute("error", "Error loading data for billing: " + e.getMessage());
         }
         request.getRequestDispatcher("/jsp/billing.jsp").forward(request, response);
     }
@@ -189,11 +220,139 @@ public class FrontControllerServlet extends HttpServlet {
             request.setAttribute("totalBills", allBills.size());
             request.setAttribute("totalBooks", allBooks.size());
             request.setAttribute("lowStockBooks", bookDAO.getLowStockBooksCount());
+            request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
             
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error loading reports: " + e.getMessage());
         }
         request.getRequestDispatcher("/jsp/reports.jsp").forward(request, response);
+    }
+    
+    private void handleCustomers(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            CustomerDAO customerDAO = new CustomerDAO();
+            List<Customer> customers = customerDAO.getAllCustomers();
+            request.setAttribute("customers", customers);
+            request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error loading customers: " + e.getMessage());
+        }
+        request.getRequestDispatcher("/jsp/customers.jsp").forward(request, response);
+    }
+    
+    private void handleCustomerForm(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String customerId = request.getParameter("id");
+        if (customerId != null && !customerId.isEmpty()) {
+            try {
+                CustomerDAO customerDAO = new CustomerDAO();
+                Customer customer = customerDAO.getCustomerById(Integer.parseInt(customerId));
+                request.setAttribute("customer", customer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Error loading customer: " + e.getMessage());
+            }
+        }
+        request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+    }
+    
+    private void handleCustomerDetails(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String customerId = request.getParameter("id");
+        if (customerId != null && !customerId.isEmpty()) {
+            try {
+                CustomerDAO customerDAO = new CustomerDAO();
+                Customer customer = customerDAO.getCustomerById(Integer.parseInt(customerId));
+                if (customer != null) {
+                    request.setAttribute("customer", customer);
+                } else {
+                    request.setAttribute("error", "Customer not found");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Error loading customer details: " + e.getMessage());
+            }
+        }
+        request.getRequestDispatcher("/jsp/customer-details.jsp").forward(request, response);
+    }
+    
+    private void handleDeleteCustomer(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String customerId = request.getParameter("id");
+        if (customerId != null && !customerId.isEmpty()) {
+            try {
+                CustomerDAO customerDAO = new CustomerDAO();
+                boolean deleted = customerDAO.deleteCustomer(Integer.parseInt(customerId));
+                if (deleted) {
+                    response.sendRedirect(request.getContextPath() + "/controller/customers?message=Customer deleted successfully");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/controller/customers?error=Failed to delete customer");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect(request.getContextPath() + "/controller/customers?error=Error deleting customer: " + e.getMessage());
+            }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/controller/customers?error=Invalid customer ID");
+        }
+    }
+    
+    private void handleHelp(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
+        request.getRequestDispatcher("/jsp/help.jsp").forward(request, response);
+    }
+    
+    private void handleSystemConfig(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            service.ConfigurationService configService = service.ConfigurationService.getInstance();
+            Map<String, String> configs = configService.getConfigMap();
+            request.setAttribute("configs", configs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error loading system configuration: " + e.getMessage());
+        }
+        request.getRequestDispatcher("/jsp/system-config.jsp").forward(request, response);
+    }
+    
+    private void handleUpdateConfigs(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            service.ConfigurationService configService = service.ConfigurationService.getInstance();
+            Map<String, String> configs = configService.getConfigMap();
+            
+            // Update each configuration value
+            for (String key : configs.keySet()) {
+                String value = request.getParameter(key);
+                if (value != null && !value.trim().isEmpty()) {
+                    model.SystemConfig config = new model.SystemConfig();
+                    config.setConfigKey(key);
+                    config.setConfigValue(value.trim());
+                    config.setActive(true);
+                    
+                    // Get existing config for description and category
+                    dao.SystemConfigDAO configDAO = new dao.SystemConfigDAO();
+                    model.SystemConfig existingConfig = configDAO.getConfigByKey(key);
+                    if (existingConfig != null) {
+                        config.setDescription(existingConfig.getDescription());
+                        config.setCategory(existingConfig.getCategory());
+                    }
+                    
+                    configService.updateConfig(config);
+                }
+            }
+            
+            request.setAttribute("success", "System configuration updated successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error updating system configuration: " + e.getMessage());
+        }
+        
+        // Redirect back to system config page
+        response.sendRedirect(request.getContextPath() + "/controller/system-config");
     }
 } 

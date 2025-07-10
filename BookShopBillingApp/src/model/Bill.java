@@ -9,7 +9,7 @@ public class Bill implements Serializable {
     private int id;
     private String billNumber;
     private Date billDate;
-    private User customer;
+    private Customer customer;
     private User cashier;
     private List<BillItem> items;
     private double subtotal;
@@ -22,6 +22,7 @@ public class Bill implements Serializable {
     private String deliveryAddress;
     private double deliveryCharge;
     private boolean isDelivery;
+    private int unitsConsumed;
     
     public Bill() {
         this.items = new ArrayList<>();
@@ -30,7 +31,7 @@ public class Bill implements Serializable {
         this.deliveryCharge = 0.0;
     }
     
-    public Bill(int id, String billNumber, User customer, User cashier) {
+    public Bill(int id, String billNumber, Customer customer, User cashier) {
         this();
         this.id = id;
         this.billNumber = billNumber;
@@ -48,8 +49,8 @@ public class Bill implements Serializable {
     public Date getBillDate() { return billDate; }
     public void setBillDate(Date billDate) { this.billDate = billDate; }
     
-    public User getCustomer() { return customer; }
-    public void setCustomer(User customer) { this.customer = customer; }
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
     
     public User getCashier() { return cashier; }
     public void setCashier(User cashier) { this.cashier = cashier; }
@@ -86,6 +87,9 @@ public class Bill implements Serializable {
     
     public boolean isDelivery() { return isDelivery; }
     public void setDelivery(boolean delivery) { this.isDelivery = delivery; }
+    
+    public int getUnitsConsumed() { return unitsConsumed; }
+    public void setUnitsConsumed(int unitsConsumed) { this.unitsConsumed = unitsConsumed; }
     
     // Helper methods
     public void addItem(BillItem item) {

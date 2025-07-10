@@ -2,6 +2,7 @@ package dao;
 
 import model.Book;
 import util.DBConnection;
+import service.ConfigurationService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,11 +157,16 @@ public class BookDAO {
     }
     
     public int getLowStockBooksCount() {
-        String query = "SELECT COUNT(*) FROM books WHERE quantity <= 5";
+        ConfigurationService configService = ConfigurationService.getInstance();
+        int threshold = configService.getLowStockThreshold();
+        
+        String query = "SELECT COUNT(*) FROM books WHERE quantity <= ?";
         
         try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, threshold);
+            ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
                 return rs.getInt(1);

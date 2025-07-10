@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShop Billing - Create Bill</title>
+            <title>Online Billing System Pahana Edu - Create Bill</title>
     <style>
         * {
             margin: 0;
@@ -289,7 +289,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">📚 BookShop Billing</div>
+        <div class="logo">📚 Online Billing System Pahana Edu</div>
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
             <a href="${pageContext.request.contextPath}/controller/books">Books</a>
@@ -332,12 +332,12 @@
                         <div class="book-item" onclick="addToCart(${book.id}, '${book.title}', ${book.price}, ${book.quantity})">
                             <div class="book-title">${book.title}</div>
                             <div class="book-details">By ${book.author} | ISBN: ${book.isbn} | Price: $${String.format("%.2f", book.price)} | Stock: ${book.quantity}</div>
-                        </div>
+                    </div>
                         <% } %>
                     <% } else { %>
                         <div class="no-books">
                             <p>No books available. Please add some books first.</p>
-                        </div>
+                    </div>
                     <% } %>
                 </div>
                 

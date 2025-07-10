@@ -51,7 +51,8 @@ public class StandaloneDemo {
             
             // Test Builder Pattern
             System.out.println("5. Testing Builder Pattern:");
-            Bill bill = BillBuilder.createNewBill("BILL-2024-001", user, user)
+            Customer customer = new Customer("ACC-001", user.getFullName(), "N/A", user.getPhone());
+            Bill bill = BillBuilder.createNewBill("BILL-2024-001", customer, user)
                     .addItem(new BillItem(1, book, 2, book.getPrice()))
                     .calculateTotals()
                     .build();

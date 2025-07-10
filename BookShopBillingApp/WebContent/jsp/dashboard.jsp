@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShop Billing - Dashboard</title>
+            <title>${systemName != null ? systemName : 'Set System Name in Settings'} - Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -188,12 +188,15 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">📚 BookShop Billing</div>
+        <div class="logo">📚 ${systemName != null ? systemName : 'Set System Name in Settings'}</div>
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/controller/customers">Customers</a>
             <a href="${pageContext.request.contextPath}/controller/books">Books</a>
             <a href="${pageContext.request.contextPath}/controller/billing">Billing</a>
             <a href="${pageContext.request.contextPath}/controller/reports">Reports</a>
+            <a href="${pageContext.request.contextPath}/controller/help">Help</a>
+            <a href="${pageContext.request.contextPath}/controller/system-config">Settings</a>
         </div>
         <div class="user-info">
             <span>Welcome, <%= session.getAttribute("user") != null ? session.getAttribute("user") : "User" %></span>

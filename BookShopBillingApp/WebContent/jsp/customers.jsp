@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Billing System Pahana Edu - Books Management</title>
+            <title>Online Billing System Pahana Edu - Customer Management</title>
     <style>
         * {
             margin: 0;
@@ -62,7 +62,7 @@
             margin-bottom: 2rem;
         }
         
-        .add-book-btn {
+        .add-customer-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -72,7 +72,7 @@
             font-weight: 500;
         }
         
-        .books-table {
+        .customers-table {
             background: white;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -87,7 +87,7 @@
         
         .table-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
             gap: 1rem;
             padding: 1rem;
             border-bottom: 1px solid #e1e5e9;
@@ -107,7 +107,7 @@
             gap: 0.5rem;
         }
         
-        .edit-btn, .delete-btn {
+        .edit-btn, .delete-btn, .view-btn {
             padding: 0.5rem 1rem;
             border: none;
             border-radius: 5px;
@@ -125,13 +125,9 @@
             color: white;
         }
         
-        .stock-low {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        
-        .stock-ok {
-            color: #28a745;
+        .view-btn {
+            background: #17a2b8;
+            color: white;
         }
         
         .error-message {
@@ -143,10 +139,15 @@
             border: 1px solid #fcc;
         }
         
-        .no-books {
+        .no-customers {
             text-align: center;
             padding: 2rem;
             color: #666;
+        }
+        
+        .units-consumed {
+            font-weight: bold;
+            color: #667eea;
         }
     </style>
 </head>
@@ -155,6 +156,7 @@
         <div class="logo">📚 Online Billing System Pahana Edu</div>
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/controller/customers">Customers</a>
             <a href="${pageContext.request.contextPath}/controller/books">Books</a>
             <a href="${pageContext.request.contextPath}/controller/billing">Billing</a>
             <a href="${pageContext.request.contextPath}/controller/reports">Reports</a>
@@ -169,56 +171,61 @@
         <% } %>
         
         <div class="header">
-            <h1>Books Management</h1>
-            <button class="add-book-btn">+ Add New Book</button>
+            <h1>Customer Management</h1>
+            <button class="add-customer-btn" onclick="showAddCustomerForm()">+ Add New Customer</button>
         </div>
         
-        <div class="books-table">
+        <div class="customers-table">
             <div class="table-header">
                 <div class="table-row">
-                    <div>Title</div>
-                    <div>Author</div>
-                    <div>ISBN</div>
-                    <div>Price</div>
-                    <div>Stock</div>
-                    <div>Category</div>
+                    <div>Account Number</div>
+                    <div>Name</div>
+                    <div>Address</div>
+                    <div>Telephone</div>
+                    <div>Units Consumed</div>
                     <div>Actions</div>
                 </div>
             </div>
             
-            <% if (request.getAttribute("books") != null && !((java.util.List)request.getAttribute("books")).isEmpty()) { %>
-                <% for (model.Book book : (java.util.List<model.Book>)request.getAttribute("books")) { %>
-            <div class="table-row">
-                    <div>${book.title}</div>
-                    <div>${book.author}</div>
-                    <div>${book.isbn}</div>
-                    <div>$${String.format("%.2f", book.price)}</div>
-                    <div class="${book.quantity <= 5 ? 'stock-low' : 'stock-ok'}">${book.quantity}</div>
-                    <div>${book.category}</div>
-                <div class="action-buttons">
-                        <button class="edit-btn" onclick="editBook(${book.id})">Edit</button>
-                        <button class="delete-btn" onclick="deleteBook(${book.id})">Delete</button>
-            </div>
+            <% if (request.getAttribute("customers") != null && !((java.util.List)request.getAttribute("customers")).isEmpty()) { %>
+                <% for (model.Customer customer : (java.util.List<model.Customer>)request.getAttribute("customers")) { %>
+                <div class="table-row">
+                    <div>${customer.accountNumber}</div>
+                    <div>${customer.name}</div>
+                    <div>${customer.address}</div>
+                    <div>${customer.telephone}</div>
+                    <div class="units-consumed">${customer.unitsConsumed}</div>
+                    <div class="action-buttons">
+                        <button class="view-btn" onclick="viewCustomer(${customer.id})">View</button>
+                        <button class="edit-btn" onclick="editCustomer(${customer.id})">Edit</button>
+                        <button class="delete-btn" onclick="deleteCustomer(${customer.id})">Delete</button>
+                    </div>
                 </div>
                 <% } %>
             <% } else { %>
-                <div class="no-books">
-                    <p>No books found. Add some books to get started!</p>
+                <div class="no-customers">
+                    <p>No customers found. Add some customers to get started!</p>
                 </div>
             <% } %>
         </div>
     </div>
     
     <script>
-        function editBook(bookId) {
-            // TODO: Implement edit functionality
-            alert('Edit book with ID: ' + bookId);
+        function showAddCustomerForm() {
+            window.location.href = '${pageContext.request.contextPath}/controller/customer-form';
         }
         
-        function deleteBook(bookId) {
-            if (confirm('Are you sure you want to delete this book?')) {
-                // TODO: Implement delete functionality
-                alert('Delete book with ID: ' + bookId);
+        function viewCustomer(customerId) {
+            window.location.href = '${pageContext.request.contextPath}/controller/customer-details?id=' + customerId;
+        }
+        
+        function editCustomer(customerId) {
+            window.location.href = '${pageContext.request.contextPath}/controller/customer-form?id=' + customerId;
+        }
+        
+        function deleteCustomer(customerId) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                window.location.href = '${pageContext.request.contextPath}/controller/delete-customer?id=' + customerId;
             }
         }
     </script>

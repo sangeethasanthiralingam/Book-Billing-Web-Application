@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShop Billing - Reports</title>
+            <title>Online Billing System Pahana Edu - Reports</title>
     <style>
         * {
             margin: 0;
@@ -244,7 +244,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">📚 BookShop Billing</div>
+        <div class="logo">📚 Online Billing System Pahana Edu</div>
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
             <a href="${pageContext.request.contextPath}/controller/books">Books</a>
@@ -327,10 +327,10 @@
                         for (model.Book book : books) {
                             if (count >= 4) break;
                         %>
-                        <div class="metric">
+                    <div class="metric">
                             <span class="metric-label">${book.title}</span>
                             <span class="metric-value">${book.quantity} copies</span>
-                        </div>
+                    </div>
                         <% 
                             count++;
                         } 
@@ -338,7 +338,7 @@
                     <% } else { %>
                         <div class="no-data">
                             <p>No books data available</p>
-                        </div>
+                    </div>
                     <% } %>
                 </div>
             </div>

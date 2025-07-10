@@ -1,6 +1,6 @@
-# 📚 BookShop Billing Application
+# 📚 Online Billing System Pahana Edu
 
-A comprehensive Java web application for managing bookstore billing operations, built using JSP, Servlets, and various design patterns.
+A comprehensive Java web application for managing billing operations for Pahana Edu, built using JSP, Servlets, and various design patterns.
 
 ## 🏗️ Architecture Overview
 

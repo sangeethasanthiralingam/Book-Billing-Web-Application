@@ -3,6 +3,7 @@ package builder;
 import model.Bill;
 import model.User;
 import model.BillItem;
+import model.Customer;
 import java.util.Date;
 
 public class BillBuilder {
@@ -27,7 +28,7 @@ public class BillBuilder {
         return this;
     }
     
-    public BillBuilder withCustomer(User customer) {
+    public BillBuilder withCustomer(Customer customer) {
         bill.setCustomer(customer);
         return this;
     }
@@ -88,7 +89,7 @@ public class BillBuilder {
                 .withStatus("PENDING");
     }
     
-    public static BillBuilder createNewBill(String billNumber, User customer, User cashier) {
+    public static BillBuilder createNewBill(String billNumber, Customer customer, User cashier) {
         return createNewBill()
                 .withBillNumber(billNumber)
                 .withCustomer(customer)
