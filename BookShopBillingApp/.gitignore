@@ -3,10 +3,16 @@
 bin/
 build/
 target/
+dist/
 
 # Log files
 *.log
 logs/
+catalina.out
+catalina.*.log
+localhost.*.log
+manager.*.log
+host-manager.*.log
 
 # BlueJ files
 *.ctxt
@@ -60,6 +66,7 @@ out/
 .vscode/launch.json
 .vscode/tasks.json
 .vscode/extensions.json
+.vscode/
 
 # Maven
 .mvn/
@@ -76,6 +83,8 @@ gradle-app.setting
 *.db
 *.sqlite
 *.sqlite3
+*.mdb
+*.accdb
 
 # OS generated files
 .DS_Store
@@ -88,6 +97,7 @@ Thumbs.db
 
 # Windows
 *.lnk
+desktop.ini
 
 # Temporary files
 *.tmp
@@ -101,20 +111,57 @@ Thumbs.db
 config.properties
 database.properties
 *.env
+.env.local
+.env.development
+.env.test
+.env.production
+application.properties
+application.yml
+application.yaml
+bootstrap.properties
+bootstrap.yml
+bootstrap.yaml
+
+# Database configuration and credentials
+db-config.properties
+database-config.properties
+connection.properties
+jdbc.properties
+
+# API Keys and Secrets
+api-keys.properties
+secrets.properties
+credentials.properties
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Personal configuration
+personal-config.properties
+user-config.properties
+local-config.properties
 
 # Backup files
 *.bak
 *.backup
+*.old
+*.orig
 
 # Test reports
 test-results/
 coverage/
+reports/
+*.test
+*.spec
 
 # Node.js (if using any frontend tools)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+yarn.lock
 
 # Python (if using any Python scripts)
 __pycache__/
@@ -127,17 +174,47 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.pytest_cache/
 
 # Application logs
 application.log
 error.log
 access.log
+debug.log
+trace.log
+*.log.*
 
 # Tomcat/Server specific
 webapps/
 work/
 temp/
 logs/
+conf/Catalina/
+conf/server.xml.bak
+conf/web.xml.bak
+
+# Deployment artifacts
+deployed/
+production/
+staging/
+*.deployed
+*.undeployed
+
+# Personal notes and TODOs
+TODO.md
+NOTES.md
+PERSONAL.md
+*.todo
+*.note
+
+# Documentation files (move to docs/ folder)
+*.md
+!README.md
+/docs/
+
+# Build and deployment scripts (keep only essential ones)
+!README.md
+!COMPLETE_SETUP_GUIDE.md
 
 # Keep important project files
 !pom.xml
@@ -148,4 +225,68 @@ logs/
 !setup-project.bat
 !setup-project.sh
 !project.properties
-!README.md 
+
+# Security and privacy
+# Hide any files that might contain personal information
+personal/
+private/
+secret/
+confidential/
+*.personal
+*.private
+*.secret
+
+# Hide database dumps and exports
+*.sql
+*.dump
+*.export
+database-backup/
+backups/
+
+# Hide session and cache files
+sessions/
+cache/
+*.session
+*.cache
+
+# Hide user-specific files
+user-data/
+user-settings/
+*.user
+*.local
+
+# Hide any files with sensitive patterns
+*password*
+*secret*
+*key*
+*token*
+*credential*
+*private*
+*confidential*
+
+# Hide IDE workspace files
+*.workspace
+workspace.xml
+tasks.xml
+
+# Hide any temporary build directories
+build-*/
+out-*/
+target-*/
+
+# Hide any files with personal information patterns
+*name*
+*email*
+*phone*
+*address*
+*social*
+
+# Hide any configuration that might contain paths to personal directories
+*path*
+*home*
+*user*
+
+# Hide any files that might contain system-specific information
+system-info/
+machine-info/
+host-info/ 
