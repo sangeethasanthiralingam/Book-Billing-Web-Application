@@ -23,7 +23,7 @@ This guide will help you set up the complete BookShop Billing Application with M
 #### Option A: Automated Setup (Recommended)
 ```powershell
 # Navigate to your project directory
-cd "D:\BIT\java workspace\Book Billing Web Application\BookShopBillingApp"
+cd "D:\BIT\java workspace\Book Billing Web Application\bookshop-billing"
 
 # Run the database setup script
 .\setup-database.ps1
@@ -203,6 +203,43 @@ BookShopBillingApp/
 - Use prepared statements to prevent SQL injection
 - Implement proper session management
 - Use HTTPS in production
+
+## Additional Configuration: JSTL 3.x and Tomcat 11
+
+### JSTL 3.x Setup (Required for Tomcat 11/Jakarta EE 10)
+
+1. **Download JSTL 3.x JARs:**
+   - [`jakarta.servlet.jsp.jstl-3.0.0.jar`](https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl/3.0.0/jakarta.servlet.jsp.jstl-3.0.0.jar)
+   - [`jakarta.servlet.jsp.jstl-api-3.0.0.jar`](https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/jakarta.servlet.jsp.jstl-api-3.0.0.jar)
+2. **Copy both JARs to:** `WebContent/WEB-INF/lib/`
+3. **Remove any old JSTL 2.x JARs** (e.g., `jakarta.servlet.jsp.jstl-2.0.0.jar`).
+4. **Use the correct taglib URI in JSPs:**
+   ```jsp
+   <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+   ```
+5. **If you update or remove JARs:**
+   - Stop Tomcat
+   - Delete the exploded app directory and any old WAR from `TOMCAT_HOME/webapps/bookshop-billing`
+   - Redeploy the new WAR
+   - Start Tomcat
+
+### Troubleshooting JSTL and Deployment
+
+- **500 Internal Server Error:**
+  - Check Tomcat logs for stack traces.
+  - Ensure JSTL 3.x JARs are present and no old versions remain.
+  - Clean Tomcat's `webapps` directory if you change dependencies.
+- **JSTL taglib not found:**
+  - Use the correct URI: `jakarta.tags.core` for JSTL 3.x.
+  - Ensure JARs are in `WEB-INF/lib/`.
+- **JDBC driver/thread warnings:**
+  - Add a `ServletContextListener` to clean up JDBC drivers and MySQL threads on shutdown.
+
+### Prerequisites (Updated)
+- Java 17 or higher
+- Apache Tomcat 11.x (Jakarta EE 10)
+- MySQL 8.0 or higher
+- JSTL 3.x JARs (see above)
 
 ## Support
 

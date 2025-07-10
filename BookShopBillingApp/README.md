@@ -121,13 +121,51 @@ BookShopBillingApp/
 - **Backend**: Java, JSP, Servlets
 - **Database**: MySQL
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Server**: Apache Tomcat
+- **Server**: Apache Tomcat 11.x (Jakarta EE 10)
 - **Build Tool**: Maven (recommended)
+- **JSTL**: Jakarta Standard Tag Library 3.x (for Jakarta EE 9+)
 
 ## 📋 Prerequisites
 
-- Java JDK 8 or higher
-- Apache Tomcat 9.x
+- Java JDK 17 or higher
+- Apache Tomcat 11.x (Jakarta EE 10)
+- MySQL 8.0 or higher
+- Maven (optional)
+- JSTL 3.x JARs (see below)
+
+## ⚙️ JSTL Configuration (Tomcat 11/Jakarta EE 10)
+
+1. **Download JSTL 3.x JARs:**
+   - [`jakarta.servlet.jsp.jstl-3.0.0.jar`](https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl/3.0.0/jakarta.servlet.jsp.jstl-3.0.0.jar)
+   - [`jakarta.servlet.jsp.jstl-api-3.0.0.jar`](https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/jakarta.servlet.jsp.jstl-api-3.0.0.jar)
+2. **Place both JARs in:** `WebContent/WEB-INF/lib/`
+3. **Remove any old JSTL 2.x JARs** (e.g., `jakarta.servlet.jsp.jstl-2.0.0.jar`).
+4. **Taglib URI in JSPs:**
+   ```jsp
+   <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+   ```
+5. **If you update or remove JARs:**
+   - Stop Tomcat
+   - Delete the exploded app directory and any old WAR from `TOMCAT_HOME/webapps/bookshop-billing`
+   - Redeploy the new WAR
+   - Start Tomcat
+
+## 🛠️ Troubleshooting
+
+- **500 Internal Server Error:**
+  - Check Tomcat logs for stack traces.
+  - Ensure JSTL 3.x JARs are present and no old versions remain.
+  - Clean Tomcat's `webapps` directory if you change dependencies.
+- **JSTL taglib not found:**
+  - Use the correct URI: `jakarta.tags.core` for JSTL 3.x.
+  - Ensure JARs are in `WEB-INF/lib/`.
+- **JDBC driver/thread warnings:**
+  - Add a `ServletContextListener` to clean up JDBC drivers and MySQL threads on shutdown (see below for example).
+
+## 📋 Prerequisites
+
+- Java JDK 17 or higher
+- Apache Tomcat 11.x (Jakarta EE 10)
 - MySQL 8.0 or higher
 - Maven (optional)
 
@@ -232,7 +270,7 @@ mvn clean package
 
 ### 4. Access Application
 - Start Tomcat server
-- Navigate to: `http://localhost:8080/BookShopBillingApp`
+- Navigate to: `http://localhost:8080/bookshop-billing`
 - Login with demo credentials:
   - Username: `admin`
   - Password: `admin123`

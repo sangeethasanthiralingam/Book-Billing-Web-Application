@@ -98,8 +98,10 @@
             font-size: 0.9rem;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
+    <div class="container">
     <div class="login-container">
         <div class="logo">📚 Online Billing System</div>
         <div class="subtitle">Pahana Edu</div>
@@ -128,6 +130,7 @@
             <p>Demo Credentials:</p>
             <p>Username: admin | Password: admin123</p>
         </div>
+    </div>
     </div>
 </body>
 </html> 

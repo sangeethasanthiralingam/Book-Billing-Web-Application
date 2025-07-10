@@ -57,8 +57,10 @@
             display: inline-block;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
+    <div class="container">
     <div class="error-container">
         <div class="error-icon">⚠️</div>
         <h1 class="error-title">Oops! Something went wrong</h1>
@@ -70,6 +72,7 @@
             <% } %>
         </p>
         <a href="${pageContext.request.contextPath}/controller/dashboard" class="back-btn">Back to Dashboard</a>
+    </div>
     </div>
 </body>
 </html> 
