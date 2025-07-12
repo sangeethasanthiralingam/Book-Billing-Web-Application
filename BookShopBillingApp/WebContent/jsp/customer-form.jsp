@@ -23,7 +23,7 @@
             </div>
         <% } %>
         
-        <div class="form-card">
+        <div class="form-card form-card-wide">
             <div class="form-header">
                 <h1>${customer != null ? 'Edit Customer' : 'Add New Customer'}</h1>
                 <p>${customer != null ? 'Update customer information' : 'Create a new customer account'}</p>
@@ -39,6 +39,7 @@
                     <input type="text" id="accountNumber" name="accountNumber" 
                            value="${customer != null ? customer.accountNumber : ''}" 
                            class="account-number" readonly>
+                    <div class="form-text">Account number is automatically generated</div>
                 </div>
                 
                 <div class="form-group">
@@ -50,14 +51,17 @@
                 
                 <div class="form-group">
                     <label for="address">Address *</label>
-                    <textarea id="address" name="address" required>${customer != null ? customer.address : ''}</textarea>
+                    <textarea id="address" name="address" required rows="3">${customer != null ? customer.address : ''}</textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="telephone">Telephone *</label>
                     <input type="tel" id="telephone" name="telephone" 
                            value="${customer != null ? customer.telephone : ''}" 
+                           pattern="[0-9+\-\s()]{10,15}" 
+                           title="Please enter a valid phone number"
                            required>
+                    <div class="form-text">Please enter a valid phone number</div>
                 </div>
                 
                 <div class="form-actions">
@@ -74,18 +78,21 @@
     
     <script>
         // Auto-generate account number for new customers
-        <% if (request.getAttribute("customer") == null) { %>
-        window.onload = function() {
-            fetch('${pageContext.request.contextPath}/controller/generate-account-number')
-                .then(response => response.text())
-                .then(accountNumber => {
-                    document.getElementById('accountNumber').value = accountNumber;
-                })
-                .catch(error => {
-                    console.error('Error generating account number:', error);
-                });
-        };
-        <% } %>
+        var isNewCustomer = <%= request.getAttribute("customer") == null ? "true" : "false" %>;
+        if (isNewCustomer) {
+            window.onload = function() {
+                fetch('<%= request.getContextPath() %>/controller/generate-account-number')
+                    .then(function(response) {
+                        return response.text();
+                    })
+                    .then(function(accountNumber) {
+                        document.getElementById('accountNumber').value = accountNumber;
+                    })
+                    .catch(function(error) {
+                        console.error('Error generating account number:', error);
+                    });
+            };
+        }
     </script>
 </body>
 </html> 

@@ -32,6 +32,11 @@ public class BookDAO {
                 book.setPrice(rs.getDouble("price"));
                 book.setQuantity(rs.getInt("quantity"));
                 book.setCategory(rs.getString("category"));
+                book.setPublisher(rs.getString("publisher"));
+                book.setPublicationYear(rs.getObject("publication_year") != null ? rs.getInt("publication_year") : null);
+                book.setActive(rs.getBoolean("is_active"));
+                book.setCoverImage(rs.getString("cover_image"));
+                book.setLanguage(rs.getString("language"));
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -59,6 +64,13 @@ public class BookDAO {
                 book.setPrice(rs.getDouble("price"));
                 book.setQuantity(rs.getInt("quantity"));
                 book.setCategory(rs.getString("category"));
+                book.setPublisher(rs.getString("publisher"));
+                
+                book.setPublicationYear(rs.getObject("publication_year") != null ? rs.getInt("publication_year") : null);
+                book.setActive(rs.getBoolean("is_active"));
+                book.setCoverImage(rs.getString("cover_image"));
+                book.setLanguage(rs.getString("language"));
+                
                 return book;
             }
         } catch (SQLException e) {
@@ -68,7 +80,7 @@ public class BookDAO {
     }
     
     public boolean addBook(Book book) {
-        String query = "INSERT INTO books (title, author, isbn, price, quantity, category) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO books (title, author, isbn, price, quantity, category, publisher, publication_year, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -79,6 +91,9 @@ public class BookDAO {
             stmt.setDouble(4, book.getPrice());
             stmt.setInt(5, book.getQuantity());
             stmt.setString(6, book.getCategory());
+            stmt.setString(7, book.getPublisher());
+            stmt.setObject(8, book.getPublicationYear());
+            stmt.setString(9, book.getLanguage());
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -88,7 +103,7 @@ public class BookDAO {
     }
     
     public boolean updateBook(Book book) {
-        String query = "UPDATE books SET title=?, author=?, isbn=?, price=?, quantity=?, category=? WHERE id=?";
+        String query = "UPDATE books SET title=?, author=?, isbn=?, price=?, quantity=?, category=?, publisher=?, publication_year=?, language=? WHERE id=?";
         
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -99,7 +114,10 @@ public class BookDAO {
             stmt.setDouble(4, book.getPrice());
             stmt.setInt(5, book.getQuantity());
             stmt.setString(6, book.getCategory());
-            stmt.setInt(7, book.getId());
+            stmt.setString(7, book.getPublisher());
+            stmt.setObject(8, book.getPublicationYear());
+            stmt.setString(9, book.getLanguage());
+            stmt.setInt(10, book.getId());
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

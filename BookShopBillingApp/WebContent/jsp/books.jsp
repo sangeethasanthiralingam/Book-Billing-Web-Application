@@ -18,15 +18,24 @@
             <h1>Books Management</h1>
             <a href="${pageContext.request.contextPath}/controller/add-book" class="btn btn-primary">+ Add New Book</a>
         </div>
-        <form method="get" action="${pageContext.request.contextPath}/controller/books" style="margin-bottom:1.5rem;display:flex;gap:1rem;align-items:end;">
-            <div class="form-group">
-                <label for="search">Search</label>
-                <input type="text" id="search" name="search" value="${search}" placeholder="Title, Author, Category" />
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </div>
-        </form>
+        
+        <div class="filter-section">
+            <form method="get" action="${pageContext.request.contextPath}/controller/books">
+                <div class="filter-row">
+                    <div class="form-group">
+                        <label for="search">Search Books</label>
+                        <input type="text" id="search" name="search" value="${search}" 
+                               placeholder="Search by title, author, or category" />
+                        <div class="form-text">Enter keywords to filter books</div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="${pageContext.request.contextPath}/controller/books" class="btn btn-secondary">Clear</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
         <div class="report-card">
             <div class="report-header">
                 <div class="report-title">All Books</div>
@@ -64,13 +73,13 @@
                         </c:forEach>
                     </tbody>
                 </table>
-                <div style="margin-top:1.5rem;display:flex;justify-content:center;align-items:center;gap:0.5rem;">
+                <div class="pagination">
                     <c:if test="${totalPages > 1}">
                         <c:if test="${page > 1}">
                             <a href="${pageContext.request.contextPath}/controller/books?search=${search}&page=${page-1}" class="btn btn-secondary">Previous</a>
                         </c:if>
                         <c:forEach var="i" begin="1" end="${totalPages}">
-                            <a href="${pageContext.request.contextPath}/controller/books?search=${search}&page=${i}" class="btn ${i == page ? 'btn-primary' : 'btn-secondary'}" style="min-width:2.5rem;text-align:center;">${i}</a>
+                            <a href="${pageContext.request.contextPath}/controller/books?search=${search}&page=${i}" class="btn ${i == page ? 'btn-primary' : 'btn-secondary'} pagination-btn">${i}</a>
                         </c:forEach>
                         <c:if test="${page < totalPages}">
                             <a href="${pageContext.request.contextPath}/controller/books?search=${search}&page=${page+1}" class="btn btn-secondary">Next</a>

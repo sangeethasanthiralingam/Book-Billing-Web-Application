@@ -60,63 +60,66 @@ public class FrontControllerServlet extends HttpServlet {
             System.out.println("DEBUG: About to switch on action: " + action);
             System.out.println("DEBUG: Action length: " + action.length());
             System.out.println("DEBUG: Action bytes: " + java.util.Arrays.toString(action.getBytes()));
+            System.out.println("DEBUG: Starting action handling");
             // Use if-else instead of switch to avoid compilation issues
             if ("login".equals(action)) {
+                System.out.println("DEBUG: About to call handleLogin method");
                 handleLogin(request, response);
+                System.out.println("DEBUG: handleLogin method completed");
             } else if ("logout".equals(action)) {
-                handleLogout(request, response);
+                    handleLogout(request, response);
             } else if ("add-user".equals(action)) {
-                handleAddUser(request, response);
+                    handleAddUser(request, response);
             } else if ("dashboard".equals(action)) {
-                handleDashboard(request, response);
+                    handleDashboard(request, response);
             } else if ("books".equals(action)) {
-                handleBooks(request, response);
+                    handleBooks(request, response);
             } else if ("billing".equals(action)) {
-                handleBilling(request, response);
+                    handleBilling(request, response);
             } else if ("invoice".equals(action)) {
-                handleInvoice(request, response);
+                    handleInvoice(request, response);
             } else if ("reports".equals(action)) {
-                handleReports(request, response);
+                    handleReports(request, response);
             } else if ("customers".equals(action)) {
                 System.out.println("DEBUG: Matched customers case");
-                handleCustomers(request, response);
+                    handleCustomers(request, response);
             } else if ("customer-form".equals(action)) {
-                handleCustomerForm(request, response);
+                    handleCustomerForm(request, response);
             } else if ("customer-details".equals(action)) {
-                handleCustomerDetails(request, response);
+                    handleCustomerDetails(request, response);
             } else if ("delete-customer".equals(action)) {
-                handleDeleteCustomer(request, response);
+                    handleDeleteCustomer(request, response);
             } else if ("help".equals(action)) {
-                handleHelp(request, response);
+                    handleHelp(request, response);
             } else if ("system-config".equals(action)) {
-                handleSystemConfig(request, response);
+                    handleSystemConfig(request, response);
             } else if ("update-configs".equals(action)) {
-                handleUpdateConfigs(request, response);
+                    handleUpdateConfigs(request, response);
             } else if ("cashiers".equals(action)) {
-                handleCashiers(request, response);
+                    handleCashiers(request, response);
             } else if ("customer-dashboard".equals(action)) {
-                handleCustomerDashboard(request, response);
+                    handleCustomerDashboard(request, response);
             } else if ("leaderboard".equals(action)) {
-                handleCashierLeaderboard(request, response);
+                    handleCashierLeaderboard(request, response);
             } else if ("customer-profile".equals(action)) {
-                handleCustomerProfile(request, response);
+                    handleCustomerProfile(request, response);
             } else if ("users".equals(action)) {
-                handleUsers(request, response);
+                    handleUsers(request, response);
             } else if ("edit-user".equals(action)) {
-                handleEditUser(request, response);
+                    handleEditUser(request, response);
             } else if ("delete-user".equals(action)) {
-                handleDeleteUser(request, response);
+                    handleDeleteUser(request, response);
             } else if ("customer-reset-password".equals(action)) {
-                handleCustomerResetPassword(request, response);
+                    handleCustomerResetPassword(request, response);
             } else if ("add-book".equals(action)) {
-                handleAddBook(request, response);
+                    handleAddBook(request, response);
             } else if ("edit-book".equals(action)) {
-                handleEditBook(request, response);
+                    handleEditBook(request, response);
             } else if ("delete-book".equals(action)) {
-                handleDeleteBook(request, response);
+                    handleDeleteBook(request, response);
             } else if ("view-book".equals(action)) {
                 System.out.println("DEBUG: Matched view-book case");
-                handleViewBook(request, response);
+                    handleViewBook(request, response);
             } else if ("view-customer".equals(action)) {
                 System.out.println("DEBUG: Matched view-customer case");
                 handleViewCustomer(request, response);
@@ -126,9 +129,15 @@ public class FrontControllerServlet extends HttpServlet {
             } else if ("register".equals(action)) {
                 System.out.println("DEBUG: Executing register case");
                 handleRegister(request, response);
+            } else if ("search-books".equals(action)) {
+                System.out.println("DEBUG: Executing search-books case");
+                handleSearchBooks(request, response);
+            } else if ("save-customer".equals(action)) {
+                System.out.println("DEBUG: Executing save-customer case");
+                handleSaveCustomer(request, response);
             } else {
                 System.out.println("DEBUG: Executing default case, redirecting to dashboard");
-                response.sendRedirect(request.getContextPath() + "/jsp/dashboard.jsp");
+                    response.sendRedirect(request.getContextPath() + "/jsp/dashboard.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,28 +158,49 @@ public class FrontControllerServlet extends HttpServlet {
     
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        System.out.println("DEBUG: handleLogin method called");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
+        System.out.println("DEBUG: Username: " + username);
+        System.out.println("DEBUG: Password: " + (password != null ? "***" : "null"));
+        
         if (username != null && password != null) {
-            UserDAO userDAO = new UserDAO();
-            User user = userDAO.authenticateUser(username, password);
-            
-            if (user != null) {
-            HttpSession session = request.getSession();
-                session.setAttribute("user", user.getFullName());
-                session.setAttribute("userId", user.getId());
-                session.setAttribute("userRole", user.getRole());
-                if ("CUSTOMER".equals(user.getRole())) {
-                    response.sendRedirect(request.getContextPath() + "/controller/customer-dashboard");
+            try {
+                System.out.println("DEBUG: About to create UserDAO");
+                UserDAO userDAO = new UserDAO();
+                System.out.println("DEBUG: About to call authenticateUser");
+                User user = userDAO.authenticateUser(username, password);
+                System.out.println("DEBUG: authenticateUser returned: " + (user != null ? "User object" : "null"));
+                
+                if (user != null) {
+                    System.out.println("DEBUG: User authenticated successfully");
+                    System.out.println("DEBUG: User role: " + user.getRole());
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", user.getFullName());
+                    session.setAttribute("userId", user.getId());
+                    session.setAttribute("userRole", user.getRole());
+                    
+                    if ("CUSTOMER".equals(user.getRole())) {
+                        System.out.println("DEBUG: Redirecting customer to customer-dashboard");
+                        response.sendRedirect(request.getContextPath() + "/controller/customer-dashboard");
+                    } else {
+                        System.out.println("DEBUG: Redirecting to dashboard");
+                        response.sendRedirect(request.getContextPath() + "/controller/dashboard");
+                    }
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/controller/dashboard");
+                    System.out.println("DEBUG: Authentication failed");
+                    request.setAttribute("error", "Invalid username or password");
+                    request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
                 }
-            } else {
-                request.setAttribute("error", "Invalid username or password");
+            } catch (Exception e) {
+                System.out.println("DEBUG: Exception in handleLogin: " + e.getMessage());
+                e.printStackTrace();
+                request.setAttribute("error", "Login error: " + e.getMessage());
                 request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
             }
         } else {
+            System.out.println("DEBUG: Username or password is null");
             request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
         }
     }
@@ -334,10 +364,52 @@ public class FrontControllerServlet extends HttpServlet {
         try {
             dao.UserDAO userDAO = new dao.UserDAO();
             dao.BillDAO billDAO = new dao.BillDAO();
-            java.util.List<model.User> customers = userDAO.getUsersByRole("CUSTOMER");
-            System.out.println("DEBUG: Found " + customers.size() + " customers");
+            
+            // Get search and filter parameters
+            String searchTerm = request.getParameter("search");
+            String statusFilter = request.getParameter("status");
+            String sortBy = request.getParameter("sortBy");
+            
+            System.out.println("DEBUG: Search term: " + searchTerm);
+            System.out.println("DEBUG: Status filter: " + statusFilter);
+            System.out.println("DEBUG: Sort by: " + sortBy);
+            
+            // Get all customers
+            java.util.List<model.User> allCustomers = userDAO.getUsersByRole("CUSTOMER");
+            System.out.println("DEBUG: Found " + allCustomers.size() + " total customers");
+            
+            // Apply filters
+            java.util.List<model.User> filteredCustomers = new java.util.ArrayList<>();
+            for (model.User customer : allCustomers) {
+                boolean matches = true;
+                
+                // Search filter
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    String term = searchTerm.trim().toLowerCase();
+                    matches &= (customer.getFullName() != null && customer.getFullName().toLowerCase().contains(term)) ||
+                              (customer.getEmail() != null && customer.getEmail().toLowerCase().contains(term)) ||
+                              (customer.getPhone() != null && customer.getPhone().toLowerCase().contains(term));
+                }
+                
+                // Status filter
+                if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+                    if ("active".equals(statusFilter)) {
+                        matches &= customer.isActive();
+                    } else if ("inactive".equals(statusFilter)) {
+                        matches &= !customer.isActive();
+                    }
+                }
+                
+                if (matches) {
+                    filteredCustomers.add(customer);
+                }
+            }
+            
+            System.out.println("DEBUG: After filtering: " + filteredCustomers.size() + " customers");
+            
+            // Build customer stats
             java.util.List<java.util.Map<String, Object>> customerStats = new java.util.ArrayList<>();
-            for (model.User customer : customers) {
+            for (model.User customer : filteredCustomers) {
                 java.util.Map<String, Object> stats = new java.util.HashMap<>();
                 stats.put("customer", customer);
                 java.util.List<model.Bill> bills = billDAO.getBillsByCustomer(customer.getId());
@@ -347,6 +419,48 @@ public class FrontControllerServlet extends HttpServlet {
                 stats.put("totalSpent", totalSpent);
                 customerStats.add(stats);
             }
+            
+            // Apply sorting
+            if (sortBy != null && !sortBy.trim().isEmpty()) {
+                switch (sortBy) {
+                    case "name":
+                        customerStats.sort((a, b) -> {
+                            model.User userA = (model.User) a.get("customer");
+                            model.User userB = (model.User) b.get("customer");
+                            return userA.getFullName().compareToIgnoreCase(userB.getFullName());
+                        });
+                        break;
+                    case "email":
+                        customerStats.sort((a, b) -> {
+                            model.User userA = (model.User) a.get("customer");
+                            model.User userB = (model.User) b.get("customer");
+                            return userA.getEmail().compareToIgnoreCase(userB.getEmail());
+                        });
+                        break;
+                    case "bills":
+                        customerStats.sort((a, b) -> Integer.compare((Integer) b.get("billCount"), (Integer) a.get("billCount")));
+                        break;
+                    case "spent":
+                        customerStats.sort((a, b) -> Double.compare((Double) b.get("totalSpent"), (Double) a.get("totalSpent")));
+                        break;
+                    case "recent":
+                        // Sort by most recent bills (if any)
+                        customerStats.sort((a, b) -> {
+                            java.util.List<model.Bill> billsA = billDAO.getBillsByCustomer(((model.User) a.get("customer")).getId());
+                            java.util.List<model.Bill> billsB = billDAO.getBillsByCustomer(((model.User) b.get("customer")).getId());
+                            
+                            if (billsA.isEmpty() && billsB.isEmpty()) return 0;
+                            if (billsA.isEmpty()) return 1;
+                            if (billsB.isEmpty()) return -1;
+                            
+                            java.util.Date latestA = billsA.stream().map(model.Bill::getBillDate).max(java.util.Date::compareTo).orElse(new java.util.Date(0));
+                            java.util.Date latestB = billsB.stream().map(model.Bill::getBillDate).max(java.util.Date::compareTo).orElse(new java.util.Date(0));
+                            return latestB.compareTo(latestA);
+                        });
+                        break;
+                }
+            }
+            
             request.setAttribute("customerStats", customerStats);
             request.setAttribute("systemName", service.ConfigurationService.getInstance().getSystemName());
             System.out.println("DEBUG: About to forward to customers.jsp");
@@ -361,16 +475,24 @@ public class FrontControllerServlet extends HttpServlet {
     private void handleCustomerForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         String customerId = request.getParameter("id");
+        User customer = null;
+        
         if (customerId != null && !customerId.isEmpty()) {
             try {
                 UserDAO userDAO = new UserDAO();
-                User user = userDAO.getUserById(Integer.parseInt(customerId));
-                request.setAttribute("customer", user);
+                customer = userDAO.getUserById(Integer.parseInt(customerId));
+                if (customer == null) {
+                    request.setAttribute("error", "Customer not found");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("error", "Error loading customer: " + e.getMessage());
             }
         }
+        
+        // Always set the customer attribute, even if null
+        request.setAttribute("customer", customer);
+        request.setAttribute("systemName", ConfigurationService.getInstance().getSystemName());
         request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
     }
     
@@ -406,7 +528,7 @@ public class FrontControllerServlet extends HttpServlet {
                     boolean updated = userDAO.updateUser(customer);
                     if (updated) {
                         response.sendRedirect(request.getContextPath() + "/controller/customers?message=Customer deactivated successfully");
-                    } else {
+                } else {
                         response.sendRedirect(request.getContextPath() + "/controller/customers?error=Failed to deactivate customer");
                     }
                 } else {
@@ -801,11 +923,11 @@ public class FrontControllerServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/controller/customers");
             } else {
                 // Delete/deactivate the user
-                userDAO.deleteUser(userId);
+            userDAO.deleteUser(userId);
                 response.sendRedirect(request.getContextPath() + "/controller/users");
-            }
+        }
         } else {
-            response.sendRedirect(request.getContextPath() + "/controller/users");
+        response.sendRedirect(request.getContextPath() + "/controller/users");
         }
     }
 
@@ -851,10 +973,18 @@ public class FrontControllerServlet extends HttpServlet {
             String priceStr = request.getParameter("price");
             String quantityStr = request.getParameter("quantity");
             String category = request.getParameter("category");
+            String publisher = request.getParameter("publisher");
+            String publicationYearStr = request.getParameter("publicationYear");
+            String language = request.getParameter("language");
+            
             double price = 0.0;
             int quantity = 0;
+            Integer publicationYear = null;
+            
             try { price = Double.parseDouble(priceStr); } catch (Exception ignored) {}
             try { quantity = Integer.parseInt(quantityStr); } catch (Exception ignored) {}
+            try { publicationYear = Integer.parseInt(publicationYearStr); } catch (Exception ignored) {}
+            
             model.Book book = new model.Book();
             book.setTitle(title);
             book.setAuthor(author);
@@ -862,6 +992,9 @@ public class FrontControllerServlet extends HttpServlet {
             book.setPrice(price);
             book.setQuantity(quantity);
             book.setCategory(category);
+            book.setPublisher(publisher);
+            book.setPublicationYear(publicationYear);
+            book.setLanguage(language != null ? language : "English");
             dao.BookDAO bookDAO = new dao.BookDAO();
             boolean success = bookDAO.addBook(book);
             if (success) {
@@ -893,10 +1026,18 @@ public class FrontControllerServlet extends HttpServlet {
             String priceStr = request.getParameter("price");
             String quantityStr = request.getParameter("quantity");
             String category = request.getParameter("category");
+            String publisher = request.getParameter("publisher");
+            String publicationYearStr = request.getParameter("publicationYear");
+            String language = request.getParameter("language");
+            
             double price = 0.0;
             int quantity = 0;
+            Integer publicationYear = null;
+            
             try { price = Double.parseDouble(priceStr); } catch (Exception ignored) {}
             try { quantity = Integer.parseInt(quantityStr); } catch (Exception ignored) {}
+            try { publicationYear = Integer.parseInt(publicationYearStr); } catch (Exception ignored) {}
+            
             model.Book book = bookDAO.getBookById(bookId);
             if (book != null) {
                 book.setTitle(title);
@@ -905,6 +1046,9 @@ public class FrontControllerServlet extends HttpServlet {
                 book.setPrice(price);
                 book.setQuantity(quantity);
                 book.setCategory(category);
+                book.setPublisher(publisher);
+                book.setPublicationYear(publicationYear);
+                book.setLanguage(language != null ? language : "English");
                 boolean updated = bookDAO.updateBook(book);
                 if (updated) {
                     request.setAttribute("success", "Book updated successfully.");
@@ -1194,6 +1338,197 @@ public class FrontControllerServlet extends HttpServlet {
         } else {
             // GET request - show registration form
             request.getRequestDispatcher("/jsp/register.jsp").forward(request, response);
+        }
+    }
+
+    private void handleSearchBooks(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            dao.BookDAO bookDAO = new dao.BookDAO();
+            String searchTerm = request.getParameter("search");
+            String category = request.getParameter("category");
+            String language = request.getParameter("language");
+            String publisher = request.getParameter("publisher");
+            String minPriceStr = request.getParameter("minPrice");
+            String maxPriceStr = request.getParameter("maxPrice");
+            
+            double minPrice = 0.0;
+            double maxPrice = Double.MAX_VALUE;
+            
+            try { minPrice = Double.parseDouble(minPriceStr); } catch (Exception ignored) {}
+            try { maxPrice = Double.parseDouble(maxPriceStr); } catch (Exception ignored) {}
+            
+            // Get all books and filter based on criteria
+            java.util.List<Book> allBooks = bookDAO.getAllBooks();
+            java.util.List<Book> filteredBooks = new java.util.ArrayList<>();
+            
+            for (Book book : allBooks) {
+                boolean matches = true;
+                
+                // Search term filter
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    String term = searchTerm.trim().toLowerCase();
+                    matches &= (book.getTitle() != null && book.getTitle().toLowerCase().contains(term)) ||
+                              (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(term)) ||
+                              (book.getIsbn() != null && book.getIsbn().toLowerCase().contains(term));
+                }
+                
+                // Category filter
+                if (category != null && !category.trim().isEmpty() && !"ALL".equals(category)) {
+                    matches &= category.equals(book.getCategory());
+                }
+                
+                // Language filter
+                if (language != null && !language.trim().isEmpty() && !"ALL".equals(language)) {
+                    matches &= language.equals(book.getLanguage());
+                }
+                
+                // Publisher filter
+                if (publisher != null && !publisher.trim().isEmpty()) {
+                    matches &= (book.getPublisher() != null && book.getPublisher().toLowerCase().contains(publisher.toLowerCase()));
+                }
+                
+                // Price range filter
+                if (book.getPrice() < minPrice || book.getPrice() > maxPrice) {
+                    matches = false;
+                }
+                
+                if (matches) {
+                    filteredBooks.add(book);
+                }
+            }
+            
+            request.setAttribute("books", filteredBooks);
+            request.setAttribute("search", searchTerm);
+            request.setAttribute("category", category);
+            request.setAttribute("language", language);
+            request.setAttribute("publisher", publisher);
+            request.setAttribute("minPrice", minPriceStr);
+            request.setAttribute("maxPrice", maxPriceStr);
+            request.setAttribute("totalBooks", filteredBooks.size());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error performing search: " + e.getMessage());
+        }
+        
+        request.getRequestDispatcher("/jsp/books.jsp").forward(request, response);
+    }
+    
+    private void handleSaveCustomer(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String idParam = request.getParameter("id");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            String fullName = request.getParameter("fullName");
+            String phone = request.getParameter("phone");
+            String address = request.getParameter("address");
+            String password = request.getParameter("password");
+            
+            // Validation
+            if (username == null || email == null || fullName == null || phone == null || 
+                address == null || password == null) {
+                request.setAttribute("error", "All fields are required.");
+                request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                return;
+            }
+            
+            if (password.length() < 6) {
+                request.setAttribute("error", "Password must be at least 6 characters long.");
+                request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                return;
+            }
+            
+            dao.UserDAO userDAO = new dao.UserDAO();
+            model.User customer;
+            
+            if (idParam != null && !idParam.isEmpty()) {
+                // Update existing customer
+                int customerId = Integer.parseInt(idParam);
+                customer = userDAO.getUserById(customerId);
+                if (customer == null) {
+                    request.setAttribute("error", "Customer not found.");
+                    request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                    return;
+                }
+                
+                // Check if username is being changed and if it already exists
+                if (!username.equals(customer.getUsername())) {
+                    if (userDAO.getUserByUsername(username) != null) {
+                        request.setAttribute("error", "Username already exists. Please choose a different username.");
+                        request.setAttribute("customer", customer);
+                        request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                        return;
+                    }
+                }
+                
+                // Check if email is being changed and if it already exists
+                if (!email.equals(customer.getEmail())) {
+                    if (userDAO.getUserByEmail(email) != null) {
+                        request.setAttribute("error", "Email already registered. Please use a different email.");
+                        request.setAttribute("customer", customer);
+                        request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                        return;
+                    }
+                }
+                
+                customer.setUsername(username);
+                customer.setEmail(email);
+                customer.setFullName(fullName);
+                customer.setPhone(phone);
+                customer.setAddress(address);
+                customer.setPassword(password);
+                
+                boolean updated = userDAO.updateUser(customer);
+                if (updated) {
+                    response.sendRedirect(request.getContextPath() + "/controller/customers?message=Customer updated successfully");
+                } else {
+                    request.setAttribute("error", "Failed to update customer.");
+                    request.setAttribute("customer", customer);
+                    request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                }
+            } else {
+                // Create new customer
+                // Check if username already exists
+                if (userDAO.getUserByUsername(username) != null) {
+                    request.setAttribute("error", "Username already exists. Please choose a different username.");
+                    request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                    return;
+                }
+                
+                // Check if email already exists
+                if (userDAO.getUserByEmail(email) != null) {
+                    request.setAttribute("error", "Email already registered. Please use a different email.");
+                    request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                    return;
+                }
+                
+                customer = new model.User();
+                customer.setUsername(username);
+                customer.setPassword(password);
+                customer.setEmail(email);
+                customer.setFullName(fullName);
+                customer.setPhone(phone);
+                customer.setAddress(address);
+                customer.setRole("CUSTOMER");
+                customer.setAccountNumber("ACC-" + System.currentTimeMillis());
+                customer.setUnitsConsumed(0);
+                customer.setActive(true);
+                
+                boolean added = userDAO.addUser(customer);
+                if (added) {
+                    response.sendRedirect(request.getContextPath() + "/controller/customers?message=Customer created successfully");
+                } else {
+                    request.setAttribute("error", "Failed to create customer.");
+                    request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error saving customer: " + e.getMessage());
+            request.getRequestDispatcher("/jsp/customer-form.jsp").forward(request, response);
         }
     }
 } 

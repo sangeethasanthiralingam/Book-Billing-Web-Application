@@ -29,7 +29,7 @@
             <div class="form-header">
                 <h2>📋 Personal Information</h2>
             </div>
-            <div class="profile-grid">
+            <div class="profile-grid profile-grid-spaced">
                 <div class="profile-item">
                     <label><strong>👤 Full Name:</strong></label>
                     <span><%= customer.getFullName() %></span>
@@ -65,13 +65,16 @@
             </div>
         </div>
         
-        <div class="form-card" style="margin-top: 2rem;">
+        <div class="form-card">
             <div class="form-header">
                 <h2>🔧 Account Actions</h2>
             </div>
-            <div class="action-buttons" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div class="action-buttons action-buttons-flex">
                 <a href="${pageContext.request.contextPath}/controller/customer-purchases?id=${sessionScope.userId}" class="btn btn-primary">
                     📚 View Purchase History
+                </a>
+                <a href="${pageContext.request.contextPath}/controller/customer-form?id=${sessionScope.userId}" class="btn btn-secondary">
+                    ✏️ Edit Info
                 </a>
                 <a href="${pageContext.request.contextPath}/controller/customer-reset-password" class="btn btn-secondary">
                     🔐 Change Password
@@ -82,5 +85,34 @@
             </div>
         </div>
     </div>
+    <style>
+        /* Extra spacing for profile grid */
+        .profile-grid.profile-grid-spaced .profile-item {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .profile-grid.profile-grid-spaced .profile-item label {
+            min-width: 180px;
+            color: var(--color-teal);
+            font-weight: 600;
+        }
+        .profile-grid.profile-grid-spaced .profile-item span {
+            flex: 1;
+            color: var(--color-text-primary);
+            font-size: 1.08rem;
+        }
+        @media (max-width: 600px) {
+            .profile-grid.profile-grid-spaced .profile-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .profile-grid.profile-grid-spaced .profile-item label {
+                min-width: unset;
+            }
+        }
+    </style>
 </body>
 </html> 

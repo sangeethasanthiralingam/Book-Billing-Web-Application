@@ -1,0 +1,200 @@
+/* ========== SRI LANKAN COLOR PALETTE - CSS VARIABLES ========== */
+
+:root {
+    /* ========== PRIMARY COLORS ========== */
+    --color-teal: #1E5F5B;
+    --color-teal-dark: #174C48;
+    --color-teal-light: #2A7A76;
+    --color-saffron: #F5A623;
+    --color-saffron-dark: #E0941A;
+    --color-saffron-darker: #D08515;
+    --color-coral: #FF6B5E;
+    
+    /* ========== SEMANTIC COLORS ========== */
+    --color-success: #28A745;
+    --color-error: #DC3545;
+    --color-error-dark: #B52A37;
+    --color-warning: #F5A623;
+    
+    /* ========== BACKGROUND COLORS ========== */
+    --color-bg-main: #FAFAFA;
+    --color-bg-white: #FFFFFF;
+    --color-bg-light-gray: #F5F5F5;
+    
+    /* ========== TEXT COLORS ========== */
+    --color-text-primary: #333333;
+    --color-text-secondary: #888888;
+    --color-text-light: #FFFFFF;
+    --color-text-muted: #888888;
+    
+    /* ========== BORDER COLORS ========== */
+    --color-border-light: #F5F5F5;
+    --color-border-focus: #1E5F5B;
+    --color-border-input: #F5F5F5;
+    
+    /* ========== INTERACTIVE COLORS ========== */
+    --color-hover-tint: rgba(30, 95, 91, 0.05);
+    --color-focus-shadow: rgba(30, 95, 91, 0.1);
+    --color-button-shadow: rgba(30, 95, 91, 0.3);
+    --color-saffron-shadow: rgba(245, 166, 35, 0.3);
+    --color-error-shadow: rgba(220, 53, 69, 0.3);
+    
+    /* ========== NOTIFICATION BACKGROUNDS ========== */
+    --color-bg-success: #DFF5E1;
+    --color-bg-error: #FDE2E1;
+    --color-bg-info: #E6F2F1;
+    --color-bg-teal-tint: rgba(30, 95, 91, 0.05);
+    
+    /* ========== GRADIENT COLORS ========== */
+    --gradient-teal: linear-gradient(135deg, var(--color-teal) 0%, var(--color-teal-light) 100%);
+    --gradient-saffron: linear-gradient(135deg, var(--color-saffron) 0%, var(--color-saffron-dark) 100%);
+    --gradient-error: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-dark) 100%);
+    --gradient-success: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    
+    /* ========== ROLE COLORS ========== */
+    --color-role-admin: #DC3545;
+    --color-role-admin-dark: #C82333;
+    --color-role-cashier: var(--color-saffron);
+    --color-role-cashier-dark: var(--color-saffron-dark);
+    --color-role-customer: var(--color-teal);
+    --color-role-customer-dark: var(--color-teal-light);
+    
+    /* ========== STATUS COLORS ========== */
+    --color-status-active: var(--color-success);
+    --color-status-inactive: var(--color-error);
+    --color-status-pending: var(--color-saffron);
+    --color-status-overdue: var(--color-error);
+    --color-status-paid: var(--color-success);
+    
+    /* ========== SHADOW COLORS ========== */
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --shadow-teal: rgba(30, 95, 91, 0.2);
+}
+
+/* ========== COLOR UTILITY CLASSES ========== */
+
+/* Text Colors */
+.text-teal { color: var(--color-teal); }
+.text-saffron { color: var(--color-saffron); }
+.text-coral { color: var(--color-coral); }
+.text-success { color: var(--color-success); }
+.text-error { color: var(--color-error); }
+.text-warning { color: var(--color-warning); }
+.text-info { color: var(--color-teal); }
+.text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-text-primary); }
+
+/* Background Colors */
+.bg-teal { background-color: var(--color-teal); }
+.bg-saffron { background-color: var(--color-saffron); }
+.bg-coral { background-color: var(--color-coral); }
+.bg-soft-white { background-color: var(--color-bg-main); }
+.bg-light-gray { background-color: var(--color-bg-light-gray); }
+.bg-success-tint { background-color: var(--color-bg-success); }
+.bg-error-tint { background-color: var(--color-bg-error); }
+.bg-info-tint { background-color: var(--color-bg-info); }
+.bg-teal-tint { background-color: var(--color-bg-teal-tint); }
+
+/* Status Badges */
+.status-active {
+    background: var(--color-status-active);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-inactive {
+    background: var(--color-status-inactive);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: var(--color-status-pending);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-overdue {
+    background: var(--color-status-overdue);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-paid {
+    background: var(--color-status-paid);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Role Badges */
+.role-admin {
+    background: linear-gradient(135deg, var(--color-role-admin) 0%, var(--color-role-admin-dark) 100%);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.role-cashier {
+    background: linear-gradient(135deg, var(--color-role-cashier) 0%, var(--color-role-cashier-dark) 100%);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.role-customer {
+    background: linear-gradient(135deg, var(--color-role-customer) 0%, var(--color-role-customer-dark) 100%);
+    color: var(--color-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Notification Messages */
+.success-message {
+    background: var(--color-bg-success);
+    color: var(--color-success);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-success);
+}
+
+.error-message {
+    background: var(--color-bg-error);
+    color: var(--color-error);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-error);
+}
+
+.info-message {
+    background: var(--color-bg-info);
+    color: var(--color-teal);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-teal);
+} 
