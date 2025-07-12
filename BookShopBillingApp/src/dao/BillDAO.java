@@ -263,4 +263,128 @@ public class BillDAO {
         }
         return bills;
     }
+
+    public List<Bill> getBillsByCashier(int cashierId) {
+        List<Bill> bills = new ArrayList<>();
+        String query = "SELECT * FROM bills WHERE cashier_id = ? ORDER BY bill_date DESC";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cashierId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setBillNumber(rs.getString("bill_number"));
+                bill.setBillDate(rs.getTimestamp("bill_date"));
+                bill.setSubtotal(rs.getDouble("subtotal"));
+                bill.setDiscount(rs.getDouble("discount"));
+                bill.setTax(rs.getDouble("tax"));
+                bill.setTotal(rs.getDouble("total"));
+                bill.setPaymentMethod(rs.getString("payment_method"));
+                bill.setStatus(rs.getString("status"));
+                bills.add(bill);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bills;
+    }
+
+    public int getTodayBillsCountByCashier(int cashierId) {
+        String query = "SELECT COUNT(*) FROM bills WHERE cashier_id = ? AND DATE(bill_date) = CURDATE()";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cashierId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public double getTodaySalesTotalByCashier(int cashierId) {
+        String query = "SELECT SUM(total) FROM bills WHERE cashier_id = ? AND DATE(bill_date) = CURDATE()";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cashierId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public double getTotalSalesByCashier(int cashierId) {
+        String query = "SELECT SUM(total) FROM bills WHERE cashier_id = ?";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cashierId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public List<Bill> getRecentBillsByCashier(int cashierId, int limit) {
+        List<Bill> bills = new ArrayList<>();
+        String query = "SELECT * FROM bills WHERE cashier_id = ? ORDER BY bill_date DESC LIMIT ?";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, cashierId);
+            stmt.setInt(2, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setBillNumber(rs.getString("bill_number"));
+                bill.setBillDate(rs.getTimestamp("bill_date"));
+                bill.setSubtotal(rs.getDouble("subtotal"));
+                bill.setDiscount(rs.getDouble("discount"));
+                bill.setTax(rs.getDouble("tax"));
+                bill.setTotal(rs.getDouble("total"));
+                bill.setPaymentMethod(rs.getString("payment_method"));
+                bill.setStatus(rs.getString("status"));
+                bills.add(bill);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bills;
+    }
+
+    public List<Bill> getBillsByCustomer(int customerId) {
+        List<Bill> bills = new ArrayList<>();
+        String query = "SELECT * FROM bills WHERE customer_id = ? ORDER BY bill_date DESC";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setBillNumber(rs.getString("bill_number"));
+                bill.setBillDate(rs.getTimestamp("bill_date"));
+                bill.setSubtotal(rs.getDouble("subtotal"));
+                bill.setDiscount(rs.getDouble("discount"));
+                bill.setTax(rs.getDouble("tax"));
+                bill.setTotal(rs.getDouble("total"));
+                bill.setPaymentMethod(rs.getString("payment_method"));
+                bill.setStatus(rs.getString("status"));
+                bills.add(bill);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bills;
+    }
 } 

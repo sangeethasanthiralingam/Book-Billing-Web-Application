@@ -6,9 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Online Billing System Pahana Edu - Create Bill</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
+    
     <div class="container">
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message">

@@ -1,23 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="header.jspf" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Online Billing System Pahana Edu - Customer Form</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">📚 Online Billing System Pahana Edu</div>
-        <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
-            <a href="${pageContext.request.contextPath}/controller/customers">Customers</a>
-            <a href="${pageContext.request.contextPath}/controller/books">Books</a>
-            <a href="${pageContext.request.contextPath}/controller/billing">Billing</a>
-            <a href="${pageContext.request.contextPath}/controller/reports">Reports</a>
-        </div>
-    </nav>
     
     <div class="container">
         <% if (request.getAttribute("error") != null) { %>
