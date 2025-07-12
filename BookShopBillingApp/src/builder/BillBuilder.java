@@ -3,7 +3,6 @@ package builder;
 import model.Bill;
 import model.User;
 import model.BillItem;
-import model.Customer;
 import java.util.Date;
 
 public class BillBuilder {
@@ -28,7 +27,7 @@ public class BillBuilder {
         return this;
     }
     
-    public BillBuilder withCustomer(Customer customer) {
+    public BillBuilder withCustomer(User customer) {  // Changed from Customer to User
         bill.setCustomer(customer);
         return this;
     }
@@ -83,16 +82,24 @@ public class BillBuilder {
     }
     
     // Convenience methods
-    public static BillBuilder createNewBill() {
-        return new BillBuilder()
-                .withBillDate(new Date())
-                .withStatus("PENDING");
+    public BillBuilder withDefaultStatus() {
+        bill.setStatus("PENDING");
+        return this;
     }
     
-    public static BillBuilder createNewBill(String billNumber, Customer customer, User cashier) {
-        return createNewBill()
+    public BillBuilder withDefaultPaymentMethod() {
+        bill.setPaymentMethod("CASH");
+        return this;
+    }
+    
+    // Static convenience method for creating new bills
+    public static BillBuilder createNewBill(String billNumber, User customer, User cashier) {
+        return new BillBuilder()
                 .withBillNumber(billNumber)
                 .withCustomer(customer)
-                .withCashier(cashier);
+                .withCashier(cashier)
+                .withBillDate(new Date())
+                .withDefaultStatus()
+                .withDefaultPaymentMethod();
     }
 } 

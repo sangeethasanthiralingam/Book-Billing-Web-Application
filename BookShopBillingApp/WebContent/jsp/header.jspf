@@ -1,5 +1,4 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
 <nav class="navbar">
     <div class="logo"> Online Billing System Pahana Edu</div>
     <div class="nav-links">

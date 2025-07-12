@@ -114,7 +114,7 @@ public class BillDAO {
         return null;
     }
     
-    private List<BillItem> getBillItems(int billId) {
+    public List<BillItem> getBillItems(int billId) {
         List<BillItem> items = new ArrayList<>();
         String query = "SELECT bi.*, b.title, b.author, b.isbn " +
                       "FROM bill_items bi " +
@@ -386,5 +386,63 @@ public class BillDAO {
             e.printStackTrace();
         }
         return bills;
+    }
+    
+    public List<Bill> getBillsByCustomerWithDateRange(int customerId, java.sql.Date startDate, java.sql.Date endDate) {
+        List<Bill> bills = new ArrayList<>();
+        String query = "SELECT * FROM bills WHERE customer_id = ? AND DATE(bill_date) BETWEEN ? AND ? ORDER BY bill_date DESC";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            stmt.setDate(2, startDate);
+            stmt.setDate(3, endDate);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bill bill = new Bill();
+                bill.setId(rs.getInt("id"));
+                bill.setBillNumber(rs.getString("bill_number"));
+                bill.setBillDate(rs.getTimestamp("bill_date"));
+                bill.setSubtotal(rs.getDouble("subtotal"));
+                bill.setDiscount(rs.getDouble("discount"));
+                bill.setTax(rs.getDouble("tax"));
+                bill.setTotal(rs.getDouble("total"));
+                bill.setPaymentMethod(rs.getString("payment_method"));
+                bill.setStatus(rs.getString("status"));
+                bills.add(bill);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bills;
+    }
+    
+    public java.util.Map<String, Object> getCustomerPurchaseStats(int customerId) {
+        java.util.Map<String, Object> stats = new java.util.HashMap<>();
+        String query = "SELECT " +
+                      "COUNT(*) as total_bills, " +
+                      "SUM(total) as total_spent, " +
+                      "AVG(total) as avg_bill_amount, " +
+                      "MIN(bill_date) as first_purchase, " +
+                      "MAX(bill_date) as last_purchase, " +
+                      "COUNT(DISTINCT DATE(bill_date)) as unique_days " +
+                      "FROM bills WHERE customer_id = ?";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                stats.put("totalBills", rs.getInt("total_bills"));
+                stats.put("totalSpent", rs.getDouble("total_spent"));
+                stats.put("avgBillAmount", rs.getDouble("avg_bill_amount"));
+                stats.put("firstPurchase", rs.getTimestamp("first_purchase"));
+                stats.put("lastPurchase", rs.getTimestamp("last_purchase"));
+                stats.put("uniqueDays", rs.getInt("unique_days"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
     }
 } 

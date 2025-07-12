@@ -401,3 +401,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Note**: This is a demonstration application showcasing various design patterns and best practices in Java web development. For production use, additional security measures, error handling, and testing should be implemented. 
+
+powershell -ExecutionPolicy Bypass -File build-web.ps1
+.\deploy-tomcat.ps1 -Clean -StartTomcat

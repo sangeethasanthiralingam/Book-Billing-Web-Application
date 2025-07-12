@@ -9,7 +9,7 @@ public class Bill implements Serializable {
     private int id;
     private String billNumber;
     private Date billDate;
-    private Customer customer;
+    private User customer;  // Changed from Customer to User
     private User cashier;
     private List<BillItem> items;
     private double subtotal;
@@ -31,7 +31,7 @@ public class Bill implements Serializable {
         this.deliveryCharge = 0.0;
     }
     
-    public Bill(int id, String billNumber, Customer customer, User cashier) {
+    public Bill(int id, String billNumber, User customer, User cashier) {  // Changed parameter type
         this();
         this.id = id;
         this.billNumber = billNumber;
@@ -49,8 +49,8 @@ public class Bill implements Serializable {
     public Date getBillDate() { return billDate; }
     public void setBillDate(Date billDate) { this.billDate = billDate; }
     
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
+    public User getCustomer() { return customer; }  // Changed return type
+    public void setCustomer(User customer) { this.customer = customer; }  // Changed parameter type
     
     public User getCashier() { return cashier; }
     public void setCashier(User cashier) { this.cashier = cashier; }

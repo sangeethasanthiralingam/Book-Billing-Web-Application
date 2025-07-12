@@ -2,14 +2,14 @@ package service;
 
 import model.Bill;
 import model.BillItem;
-import model.Customer;
-import dao.CustomerDAO;
+import model.User;
+import dao.UserDAO;
 
 public class BillCalculationService {
     
     private static ConfigurationService configService = ConfigurationService.getInstance();
     
-    public static Bill calculateBill(Customer customer, java.util.List<BillItem> items, 
+    public static Bill calculateBill(User customer, java.util.List<BillItem> items, 
                                    String paymentMethod, boolean isDelivery, String deliveryAddress) {
         Bill bill = new Bill();
         bill.setCustomer(customer);
@@ -48,25 +48,18 @@ public class BillCalculationService {
         return bill;
     }
     
-    private static double calculateDiscount(double subtotal, Customer customer) {
-        // Apply discount based on customer's total units consumed
-        int totalUnitsConsumed = customer.getUnitsConsumed();
-        
-        if (totalUnitsConsumed >= configService.getDiscountLevel3Threshold()) {
-            return subtotal * configService.getDiscountLevel3Percent(); // Level 3 discount
-        } else if (totalUnitsConsumed >= configService.getDiscountLevel2Threshold()) {
-            return subtotal * configService.getDiscountLevel2Percent(); // Level 2 discount
-        } else if (totalUnitsConsumed >= configService.getDiscountLevel1Threshold()) {
-            return subtotal * configService.getDiscountLevel1Percent(); // Level 1 discount
+    private static double calculateDiscount(double subtotal, User customer) {
+        // Simple discount calculation - can be enhanced based on customer loyalty, etc.
+        if (subtotal > 100) {
+            return subtotal * 0.05; // 5% discount for orders over $100
         }
-        
-        return 0.0; // No discount for new customers
+        return 0.0;
     }
     
-    private static void updateCustomerUnits(int customerId, int newUnits) {
+    private static void updateCustomerUnits(int customerId, int units) {
         try {
-            CustomerDAO customerDAO = new CustomerDAO();
-            customerDAO.updateUnitsConsumed(customerId, newUnits);
+            dao.UserDAO userDAO = new dao.UserDAO();
+            userDAO.updateUnitsConsumed(customerId, units);
         } catch (Exception e) {
             e.printStackTrace();
             // Log error but don't fail the bill calculation
@@ -86,8 +79,8 @@ public class BillCalculationService {
     public static String getBillSummary(Bill bill) {
         StringBuilder summary = new StringBuilder();
         summary.append("Bill Summary:\n");
-        summary.append("Customer: ").append(bill.getCustomer().getName()).append("\n");
-        summary.append("Account: ").append(bill.getCustomer().getAccountNumber()).append("\n");
+        summary.append("Customer: ").append(bill.getCustomer().getFullName()).append("\n");
+        summary.append("Account Number: ").append(bill.getCustomer().getAccountNumber() != null ? bill.getCustomer().getAccountNumber() : "N/A").append("\n");
         summary.append("Units Consumed: ").append(bill.getUnitsConsumed()).append("\n");
         summary.append("Subtotal: $").append(String.format("%.2f", bill.getSubtotal())).append("\n");
         summary.append("Discount: $").append(String.format("%.2f", bill.getDiscount())).append("\n");

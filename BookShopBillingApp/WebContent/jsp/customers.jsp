@@ -42,17 +42,17 @@
                             <td>${stats.billCount}</td>
                             <td>$<c:out value="${stats.totalSpent}" /></td>
                             <td class="action-buttons">
-                                <a href="${pageContext.request.contextPath}/controller/edit-user?id=${customer.id}" class="edit-btn" title="Edit Customer">✏️ Edit</a>
+                                <a href="${pageContext.request.contextPath}/controller/edit-user?id=${customer.id}" class="edit-btn" title="Edit Customer">✏️</a>
                                 <c:choose>
                                     <c:when test="${customer.active}">
-                                        <a href="${pageContext.request.contextPath}/controller/delete-user?id=${customer.id}" class="delete-btn" title="Deactivate Customer" onclick="return confirm('Are you sure you want to deactivate this customer?');">🚫 Deactivate</a>
+                                        <a href="${pageContext.request.contextPath}/controller/delete-user?id=${customer.id}" class="delete-btn" title="Deactivate Customer" onclick="return confirm('Are you sure you want to deactivate this customer?');">🚫</a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a href="${pageContext.request.contextPath}/controller/activate-user?id=${customer.id}" class="activate-btn" title="Activate Customer">✅ Activate</a>
+                                        <a href="${pageContext.request.contextPath}/controller/delete-user?id=${customer.id}&action=activate" class="activate-btn" title="Activate Customer">✅</a>
                                     </c:otherwise>
                                 </c:choose>
-                                <a href="${pageContext.request.contextPath}/controller/view-user?id=${customer.id}" class="view-btn" title="View Details">👁️ View</a>
-                                <a href="${pageContext.request.contextPath}/controller/customer-purchases?id=${customer.id}" class="btn btn-secondary" title="Purchase History">🧾 Purchases</a>
+                                <a href="${pageContext.request.contextPath}/controller/view-customer?id=${customer.id}" class="view-btn" title="View Details">👁️</a>
+                                <a href="${pageContext.request.contextPath}/controller/customer-purchases?id=${customer.id}" class="btn btn-secondary" title="Purchase History">🧾</a>
                             </td>
                         </tr>
                     </c:forEach>

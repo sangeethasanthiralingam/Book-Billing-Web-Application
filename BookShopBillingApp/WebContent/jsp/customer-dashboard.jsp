@@ -1,9 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="header.jspf" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${systemName != null ? systemName : 'Set System Name in Settings'} - My Dashboard</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
@@ -11,7 +11,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>My Dashboard</h1>
+            <h1>Welcome, ${sessionScope.user}! 👋</h1>
+            <p>This is your personal dashboard where you can view your profile, purchase history, and account information.</p>
         </div>
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message">
@@ -20,20 +21,34 @@
         <% } %>
         <div class="form-card">
             <div class="form-header">
-                <h2>Profile</h2>
+                <h2>📋 My Profile Information</h2>
             </div>
             <% model.User customer = (model.User)request.getAttribute("customer"); %>
-            <div class="form-group">
-                <label>Full Name:</label>
-                <span><%= customer.getFullName() %></span>
-            </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <span><%= customer.getEmail() %></span>
-            </div>
-            <div class="form-group">
-                <label>Phone:</label>
-                <span><%= customer.getPhone() %></span>
+            <div class="profile-grid">
+                <div class="profile-item">
+                    <label><strong>Full Name:</strong></label>
+                    <span><%= customer.getFullName() %></span>
+                </div>
+                <div class="profile-item">
+                    <label><strong>Email:</strong></label>
+                    <span><%= customer.getEmail() %></span>
+                </div>
+                <div class="profile-item">
+                    <label><strong>Phone:</strong></label>
+                    <span><%= customer.getPhone() %></span>
+                </div>
+                <div class="profile-item">
+                    <label><strong>Account Number:</strong></label>
+                    <span><%= customer.getAccountNumber() != null ? customer.getAccountNumber() : "N/A" %></span>
+                </div>
+                <div class="profile-item">
+                    <label><strong>Address:</strong></label>
+                    <span><%= customer.getAddress() != null ? customer.getAddress() : "N/A" %></span>
+                </div>
+                <div class="profile-item">
+                    <label><strong>Member Since:</strong></label>
+                    <span><%= customer.getCreatedAt() != null ? customer.getCreatedAt().toString().substring(0, 10) : "N/A" %></span>
+                </div>
             </div>
         </div>
         <div class="stats-grid" style="margin-top:2rem;">
@@ -47,33 +62,41 @@
             </div>
         </div>
         <div class="recent-transactions" style="margin-top:2rem;">
-            <h2>My Purchases</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>📚 My Recent Purchases</h2>
+                <a href="${pageContext.request.contextPath}/controller/customer-purchases?id=${sessionScope.userId}" class="btn btn-primary" style="text-decoration: none; padding: 10px 20px; background: #007bff; color: white; border-radius: 5px;">
+                    View All Purchases
+                </a>
+            </div>
             <% java.util.List bills = (java.util.List)request.getAttribute("bills");
                if (bills != null && !bills.isEmpty()) { %>
             <table class="transaction-table">
                 <thead>
                     <tr>
-                        <th>Bill #</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Status</th>
+                        <th>📖 Book Name</th>
+                        <th>📅 Purchase Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for (Object obj : bills) {
-                        model.Bill bill = (model.Bill)obj; %>
+                        model.Bill bill = (model.Bill)obj;
+                        // Get bill items to show book names
+                        dao.BillDAO billDAO = new dao.BillDAO();
+                        java.util.List<model.BillItem> items = billDAO.getBillItems(bill.getId());
+                        if (items != null && !items.isEmpty()) {
+                            for (model.BillItem item : items) { %>
                     <tr>
-                        <td><%= bill.getBillNumber() %></td>
-                        <td><%= bill.getBillDate() %></td>
-                        <td>$<%= String.format("%.2f", bill.getTotal()) %></td>
-                        <td><%= bill.getStatus() %></td>
+                        <td><%= item.getBook().getTitle() %></td>
+                        <td><%= bill.getBillDate().toString().substring(0, 10) %></td>
                     </tr>
-                    <% } %>
+                    <%      }
+                        }
+                    } %>
                 </tbody>
             </table>
             <% } else { %>
             <div class="no-data">
-                <p>You have not made any purchases yet.</p>
+                <p>📚 You have not made any purchases yet. Start shopping to see your book history here!</p>
             </div>
             <% } %>
         </div>

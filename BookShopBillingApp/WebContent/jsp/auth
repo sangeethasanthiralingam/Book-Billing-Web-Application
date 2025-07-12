@@ -30,11 +30,6 @@
             </div>
             <button type="submit" class="login-btn">Login</button>
         </form>
-        
-        <div class="register-section">
-            <p>New customer? <a href="${pageContext.request.contextPath}/jsp/register.jsp" class="register-link">Register here</a></p>
-        </div>
-        
         <div class="footer">
             <p>Demo Credentials:</p>
             <p>Admin: admin / admin123<br>Cashier: cashier / cashier123<br>Customer: customer / customer123</p>
