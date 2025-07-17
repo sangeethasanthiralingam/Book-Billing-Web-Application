@@ -40,6 +40,11 @@
 
         <!-- Right Side - Registration Form -->
         <div class="login-form-section">
+            <div class="scroll-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
             <div class="login-form-container register-form-container">
                 <div class="form-header">
                     <h2>Create Your Account</h2>
@@ -161,11 +166,11 @@
                     </p>
                 </div>
 
-                <div class="registration-benefits">
+                <div class="registration-benefits sticky-benefits">
                     <h4>Why Register?</h4>
                     <div class="benefit-item">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Easy online shopping</span>
+                        <span>Easy account creation</span>
                     </div>
                     <div class="benefit-item">
                         <i class="fas fa-history"></i>
@@ -238,6 +243,24 @@
                 });
             });
         });
+
+        // Scroll dots logic
+        const dots = document.querySelectorAll('.scroll-dots .dot');
+        const sections = [
+            document.getElementById('username'), // 1st section
+            document.getElementById('address'),  // 2nd section
+            document.getElementById('password'), // 3rd section
+        ];
+        function updateDots() {
+            let idx = 0;
+            const scrollY = window.scrollY + window.innerHeight/3;
+            for (let i = 0; i < sections.length; i++) {
+                if (sections[i] && sections[i].offsetTop < scrollY) idx = i;
+            }
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+        }
+        window.addEventListener('scroll', updateDots);
+        updateDots();
     </script>
 </body>
 </html> 

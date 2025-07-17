@@ -12,25 +12,42 @@
     
     /* ========== SEMANTIC COLORS ========== */
     --color-success: #28A745;
+    --color-success-dark: #1e7e34;
     --color-error: #DC3545;
     --color-error-dark: #B52A37;
     --color-warning: #F5A623;
+    --color-info: #17a2b8;
     
     /* ========== BACKGROUND COLORS ========== */
     --color-bg-main: #FAFAFA;
     --color-bg-white: #FFFFFF;
     --color-bg-light-gray: #F5F5F5;
+    --color-bg-fa: #FAFAFA;
+    --color-bg-f8: #F8F9FA;
+    --color-bg-f5: #F5F5F5;
+    --color-bg-e6: #E6F2F1;
+    --color-bg-fd: #FDE2E1;
+    --color-bg-df: #DFF5E1;
     
     /* ========== TEXT COLORS ========== */
     --color-text-primary: #333333;
     --color-text-secondary: #888888;
     --color-text-light: #FFFFFF;
     --color-text-muted: #888888;
+    --color-text-666: #666666;
+    --color-text-555: #555555;
+    --color-text-333: #333333;
+    --color-text-888: #888888;
     
     /* ========== BORDER COLORS ========== */
     --color-border-light: #F5F5F5;
     --color-border-focus: #1E5F5B;
     --color-border-input: #F5F5F5;
+    --color-border-e1: #E1E5E9;
+    --color-border-e9: #E9ECEF;
+    --color-border-eee: #EEEEEE;
+    --color-border-f0: #F0F0F0;
+    --color-border-ddd: #DDDDDD;
     
     /* ========== INTERACTIVE COLORS ========== */
     --color-hover-tint: rgba(30, 95, 91, 0.05);
@@ -49,7 +66,9 @@
     --gradient-teal: linear-gradient(135deg, var(--color-teal) 0%, var(--color-teal-light) 100%);
     --gradient-saffron: linear-gradient(135deg, var(--color-saffron) 0%, var(--color-saffron-dark) 100%);
     --gradient-error: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-dark) 100%);
-    --gradient-success: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    --gradient-success: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
+    --gradient-blue: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    --gradient-gray: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
     
     /* ========== ROLE COLORS ========== */
     --color-role-admin: #DC3545;
@@ -71,6 +90,24 @@
     --shadow-medium: rgba(0, 0, 0, 0.15);
     --shadow-dark: rgba(0, 0, 0, 0.2);
     --shadow-teal: rgba(30, 95, 91, 0.2);
+    
+    /* ========== ADDITIONAL COLORS FROM STYLE.CSS ========== */
+    --color-blue: #007bff;
+    --color-blue-dark: #0056b3;
+    --color-gray: #6c757d;
+    --color-gray-dark: #545b62;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-transparent: transparent;
+    --color-rgba-white-01: rgba(255, 255, 255, 0.1);
+    --color-rgba-white-02: rgba(255, 255, 255, 0.2);
+    --color-rgba-white-03: rgba(255, 255, 255, 0.3);
+    --color-rgba-black-02: rgba(0, 0, 0, 0.2);
+    --color-rgba-black-03: rgba(0, 0, 0, 0.3);
+    --color-rgba-teal-01: rgba(30, 95, 91, 0.1);
+    --color-rgba-teal-02: rgba(30, 95, 91, 0.2);
+    --color-rgba-teal-03: rgba(30, 95, 91, 0.3);
+    --color-rgba-teal-05: rgba(30, 95, 91, 0.05);
 }
 
 /* ========== COLOR UTILITY CLASSES ========== */

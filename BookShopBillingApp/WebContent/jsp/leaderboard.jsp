@@ -10,20 +10,14 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🏆 Cashier Leaderboard</h1>
-            <p>Top performing cashiers based on sales and performance metrics</p>
-        </div>
-        
-        <% if (request.getAttribute("error") != null) { %>
-            <div class="error-message">
-                <%= request.getAttribute("error") %>
+        <div class="page-header">
+            <div>
+                <h1 class="page-header-title">🏆 Cashier Leaderboard</h1>
+                <p class="page-header-subtitle">Top performing cashiers based on sales and performance metrics</p>
             </div>
-        <% } %>
-        
-        <!-- Optional: Add filter section for future functionality -->
-        <div class="filter-section">
-            <div class="filter-row">
+        </div>
+        <form class="filter-bar">
+            <div class="filter-fields">
                 <div class="form-group">
                     <label for="period">Performance Period</label>
                     <select id="period" name="period">
@@ -32,58 +26,59 @@
                         <option value="quarter">This Quarter</option>
                         <option value="year">This Year</option>
                     </select>
-                    <div class="form-text">Select the time period for performance metrics</div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="refreshLeaderboard()">Refresh</button>
-                    <a href="${pageContext.request.contextPath}/controller/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
                 </div>
             </div>
-        </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary" onclick="refreshLeaderboard()" title="Refresh">🔄</button>
+                <a href="${pageContext.request.contextPath}/controller/dashboard" class="btn btn-secondary">← Back</a>
+            </div>
+        </form>
         
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">Top Performing Cashiers</div>
-                <div class="report-subtitle">Ranked by total sales and performance</div>
+        <% if (request.getAttribute("error") != null) { %>
+            <div class="error-message">
+                <%= request.getAttribute("error") %>
             </div>
-            <div class="report-body">
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th>🏆 Rank</th>
-                            <th>👤 Full Name</th>
-                            <th>🔑 Username</th>
-                            <th>📊 Bill Count</th>
-                            <th>💰 Total Sales</th>
-                            <th>⭐ Feedback Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% java.util.List leaderboard = (java.util.List)request.getAttribute("leaderboard");
-                           if (leaderboard != null && !leaderboard.isEmpty()) {
-                               int rank = 1;
-                               for (Object obj : leaderboard) {
-                                   java.util.Map stats = (java.util.Map)obj;
-                                   model.User cashier = (model.User)stats.get("cashier");
-                        %>
-                        <tr class="${rank <= 3 ? 'top-performer' : ''}">
-                            <td>
-                                <% if (rank == 1) { %>🥇<% } else if (rank == 2) { %>🥈<% } else if (rank == 3) { %>🥉<% } else { %>#<%= rank %><% } %>
-                            </td>
-                            <td><strong><%= cashier.getFullName() %></strong></td>
-                            <td><%= cashier.getUsername() %></td>
-                            <td><%= stats.get("billCount") %></td>
-                            <td><strong>$<%= String.format("%.2f", stats.get("totalSales")) %></strong></td>
-                            <td><%= stats.get("feedbackScore") %>/5</td>
-                        </tr>
-                        <%       }
-                           } else { %>
-                        <tr><td colspan="6" class="no-data">No cashiers found.</td></tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
+        <% } %>
+        
+        <div class="report-header">
+            <div class="report-title">Top Performing Cashiers</div>
+            <div class="report-subtitle">Ranked by total sales and performance</div>
         </div>
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>🏆 Rank</th>
+                    <th>👤 Full Name</th>
+                    <th>🔑 Username</th>
+                    <th>📊 Bill Count</th>
+                    <th>💰 Total Sales</th>
+                    <th>⭐ Feedback Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% java.util.List leaderboard = (java.util.List)request.getAttribute("leaderboard");
+                   if (leaderboard != null && !leaderboard.isEmpty()) {
+                       int rank = 1;
+                       for (Object obj : leaderboard) {
+                           java.util.Map stats = (java.util.Map)obj;
+                           model.User cashier = (model.User)stats.get("cashier");
+                %>
+                <tr class="${rank <= 3 ? 'top-performer' : ''}">
+                    <td>
+                        <% if (rank == 1) { %>🥇<% } else if (rank == 2) { %>🥈<% } else if (rank == 3) { %>🥉<% } else { %>#<%= rank %><% } %>
+                    </td>
+                    <td><strong><%= cashier.getFullName() %></strong></td>
+                    <td><%= cashier.getUsername() %></td>
+                    <td><%= stats.get("billCount") %></td>
+                    <td><strong>$<%= String.format("%.2f", stats.get("totalSales")) %></strong></td>
+                    <td><%= stats.get("feedbackScore") %>/5</td>
+                </tr>
+                <%       }
+                   } else { %>
+                <tr><td colspan="6" class="no-data">No cashiers found.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
     
     <script>

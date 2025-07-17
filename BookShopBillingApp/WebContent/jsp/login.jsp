@@ -88,7 +88,7 @@
                             <span class="checkmark"></span>
                             Remember me
                         </label>
-                        <a href="#" class="forgot-password">Forgot password?</a>
+                        <a href="${pageContext.request.contextPath}/controller/customer-reset-password" class="forgot-password">Forgot password?</a>
                     </div>
 
                     <button type="submit" class="login-btn">

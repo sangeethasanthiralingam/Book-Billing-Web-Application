@@ -78,7 +78,7 @@
             <div class="report-header">
                 <div class="report-title">📖 Purchase Details</div>
                 <div class="report-actions">
-                    <a href="${pageContext.request.contextPath}/controller/customer-dashboard" class="btn btn-secondary">
+                    <a href="${pageContext.request.contextPath}/controller/<c:choose><c:when test='${sessionScope.userRole == "CUSTOMER"}'>customer-dashboard</c:when><c:otherwise>dashboard</c:otherwise></c:choose>" class="btn btn-secondary">
                         ← Back to Dashboard
                     </a>
                 </div>
@@ -122,10 +122,12 @@
                 <h3>📚 No Purchases Yet</h3>
                 <p>You haven't made any purchases yet. Start shopping to see your book history here!</p>
                 <div class="action-buttons action-buttons-centered">
-                    <a href="${pageContext.request.contextPath}/controller/billing" class="btn btn-primary">
-                        🛒 Start Shopping
-                    </a>
-                    <a href="${pageContext.request.contextPath}/controller/customer-dashboard" class="btn btn-secondary">
+                    <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+                        <a href="${pageContext.request.contextPath}/controller/billing" class="btn btn-primary">
+                            🛒 Start Shopping
+                        </a>
+                    </c:if>
+                    <a href="${pageContext.request.contextPath}/controller/<c:choose><c:when test='${sessionScope.userRole == "CUSTOMER"}'>customer-dashboard</c:when><c:otherwise>dashboard</c:otherwise></c:choose>" class="btn btn-secondary">
                         ← Back to Dashboard
                     </a>
                 </div>

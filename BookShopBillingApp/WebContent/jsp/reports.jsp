@@ -128,13 +128,13 @@
         }
         </script>
         <% } else { %>
-        <div class="header">
-            <h1>Reports & Analytics</h1>
+        <div class="page-header">
+            <div>
+                <h1 class="page-header-title">Reports & Analytics</h1>
+            </div>
         </div>
-        
-        <div class="filter-section">
-            <h3 class="mb-1rem">Filter Reports</h3>
-            <div class="filter-row">
+        <form class="filter-bar">
+            <div class="filter-fields">
                 <div class="form-group">
                     <label>Date From</label>
                     <input type="date" value="2024-01-01">
@@ -152,9 +152,11 @@
                         <option>Revenue Report</option>
                     </select>
                 </div>
-                <button class="generate-btn">Generate Report</button>
             </div>
-        </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" title="Generate">📊</button>
+            </div>
+        </form>
         
         <div class="reports-grid">
             <div class="report-card">

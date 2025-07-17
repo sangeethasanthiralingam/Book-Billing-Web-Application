@@ -42,16 +42,20 @@ body {
     align-items: center;
 }
 
+/* --- NAVBAR HOVER EFFECTS --- */
 .nav-links a {
     color: var(--color-text-light);
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, color 0.3s, text-decoration 0.3s;
+    position: relative;
 }
 
 .nav-links a:hover {
-    background-color: var(--color-rgba-white-01);
+    background-color: var(--color-teal-light);
+    color: #fff;
+    text-decoration: underline;
 }
 
 .user-info {
@@ -60,19 +64,22 @@ body {
     gap: 1rem;
 }
 
+/* --- LOGOUT BUTTON DISTINCT STYLE --- */
 .logout-btn {
-    background: var(--color-rgba-white-02);
+    background: var(--color-bg-light-gray);
     border: none;
-    color: var(--color-text-light);
+    color: var(--color-error);
     padding: 0.5rem 1rem;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: 600;
 }
 
 .logout-btn:hover {
-    background: var(--color-rgba-white-03);
+    background: var(--color-error);
+    color: #fff;
 }
 
 /* ========== LAYOUT & CONTAINERS ========== */
@@ -1186,55 +1193,45 @@ body {
 /* ========== REPORTS & ANALYTICS ========== */
 .filter-section {
     background: var(--color-bg-white);
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px var(--shadow-light);
-    margin-bottom: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border: 1px solid var(--color-border-light);
-    max-width: 100%;
-}
-
-@media (min-width: 700px) {
-  .filter-section {
-    flex-direction: row;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-    justify-content: flex-start;
-  }
-  .filter-row {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.7rem;
-    margin-bottom: 0;
-  }
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px var(--shadow-light);
+    margin-bottom: 2rem;
 }
 
 .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    align-items: flex-end;
-    margin-bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
 }
 
 .form-group.reports-form-group {
-    margin-bottom: 0 !important;
-    min-width: 140px;
-    flex: 1 1 160px;
-    max-width: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.reports-form-group label {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.form-group.reports-form-group input, .form-group.reports-form-group select {
+    padding: 0.75rem;
+    border: 2px solid var(--color-border-e1);
+    border-radius: 8px;
+    font-size: 1rem;
 }
 
 .generate-btn {
-    padding: 0.5rem 1.1rem;
-    font-size: 0.97rem;
-    border-radius: 7px;
-    margin-left: 0.5rem;
-    margin-top: 0;
-    height: 38px;
-    align-self: flex-end;
+    background: var(--gradient-teal);
+    color: var(--color-text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
 }
 
 .metric {
@@ -2428,124 +2425,168 @@ body.error-page {
     }
 }
 
-/* --- FILTER SECTION IMPROVEMENTS --- */
-.filter-section {
-    background: var(--color-bg-white);
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px var(--shadow-light);
+/* ========== UNIFIED PAGE HEADER & FILTER BAR ========== */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border: 1px solid var(--color-border-light);
-    max-width: 100%;
-}
-
-@media (min-width: 700px) {
-  .filter-section {
-    flex-direction: row;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-    justify-content: flex-start;
-  }
-  .filter-row {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.7rem;
-    margin-bottom: 0;
-  }
-}
-
-.filter-row {
-    display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
-    align-items: flex-end;
-    margin-bottom: 0;
 }
-
-.form-group.reports-form-group {
-    margin-bottom: 0 !important;
-    min-width: 140px;
-    flex: 1 1 160px;
-    max-width: 220px;
-}
-
-.generate-btn {
-    padding: 0.5rem 1.1rem;
-    font-size: 0.97rem;
-    border-radius: 7px;
-    margin-left: 0.5rem;
-    margin-top: 0;
-    height: 38px;
-    align-self: flex-end;
-}
-
-/* --- TABLE VIEW IMPROVEMENTS --- */
-.transaction-table, .books-table, .customers-table, .items-table {
-    background: var(--color-bg-white);
-    border-radius: 8px;
-    box-shadow: 0 1px 6px var(--shadow-light);
-    overflow: hidden;
-    margin-top: 0.5rem;
-}
-
-.transaction-table th, .books-table th, .customers-table th, .items-table th {
-    background: var(--color-bg-fa);
-    font-weight: 600;
+.page-header-title {
+    font-size: 2rem;
+    font-weight: 700;
     color: var(--color-text-primary);
-    padding: 0.5rem 0.7rem;
-    font-size: 0.98rem;
-    border-bottom: 2px solid var(--color-border-e1);
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    margin: 0;
+}
+.page-header-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    margin-top: 0.2rem;
+}
+.page-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-.transaction-table td, .books-table td, .customers-table td, .items-table td {
-    padding: 0.45rem 0.7rem;
-    font-size: 0.97rem;
-    border-bottom: 1px solid var(--color-border-eee);
-    background: var(--color-bg-white);
-}
-
-.transaction-table tr, .books-table tr, .customers-table tr, .items-table tr {
-    transition: background 0.18s;
-    height: 38px;
-}
-
-.transaction-table tr:nth-child(even), .books-table tr:nth-child(even), .customers-table tr:nth-child(even), .items-table tr:nth-child(even) {
-    background: var(--color-bg-fa);
-}
-
-.transaction-table tr:hover, .books-table tr:hover, .customers-table tr:hover, .items-table tr:hover {
-    background: var(--color-hover-tint);
-}
-
-.table-header {
-    background: var(--color-bg-fa);
+.filter-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border-e1);
+    border-radius: 7px;
     padding: 0.7rem 1rem;
-    border-radius: 8px 8px 0 0;
-    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+.filter-fields {
+    display: flex;
+    gap: 1rem;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+}
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+.filter-bar .form-group {
+    margin-bottom: 0 !important;
 }
 
-.table-row {
-    background: var(--color-bg-white);
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid var(--color-border-eee);
-    transition: background-color 0.18s;
+@media (max-width: 700px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.7rem;
+    }
+    .filter-fields {
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+    .page-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
 }
 
-.table-row:nth-child(even) {
-    background: var(--color-bg-fa);
+/* Tighter button spacing in filter/actions */
+.filter-actions .btn,
+.page-header-actions .btn {
+    margin: 0;
+    min-width: 2.2rem;
+    padding: 0.5rem 1.1rem !important;
+    font-size: 1rem !important;
 }
 
-.table-row:last-child {
-    border-bottom: none;
+/* Responsive: Table horizontal scroll on small screens */
+@media (max-width: 900px) {
+    .transaction-table,
+    .books-table,
+    .customers-table,
+    .items-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        background: var(--color-bg-main);
+        border-radius: 7px;
+    }
+    .transaction-table thead,
+    .books-table thead,
+    .customers-table thead,
+    .items-table thead {
+        display: table;
+        width: 100%;
+    }
+    .transaction-table tbody,
+    .books-table tbody,
+    .customers-table tbody,
+    .items-table tbody {
+        display: table;
+        width: 100%;
+    }
+    .transaction-table tr,
+    .books-table tr,
+    .customers-table tr,
+    .items-table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
 }
 
-.table-row:hover {
-    background-color: var(--color-hover-tint);
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.2rem !important;
+    }
+    .page-header-title {
+        font-size: 1.05rem;
+    }
+    .filter-bar {
+        padding: 0.4rem 0.2rem;
+    }
+    .transaction-table th, .transaction-table td {
+        font-size: 0.95rem;
+        padding: 0.3rem 0.2rem !important;
+    }
+}
+
+/* ========== FLOATING BUBBLE PAGINATION STYLE ========== */
+.pagination-btn, .pagination span {
+  border: none;
+  background: var(--color-bg-white);
+  color: var(--color-teal);
+  border-radius: 50%;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  margin: 0 0.1rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.pagination-btn:hover {
+  background: var(--color-teal);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--shadow-teal);
+}
+.pagination .btn-primary, .pagination span.btn-primary {
+  background: var(--color-teal);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--shadow-teal);
+  pointer-events: none;
 }
 

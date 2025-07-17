@@ -18,43 +18,39 @@
                 <%= request.getAttribute("error") %>
             </div>
         <% } %>
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">Cashier Sales Summary</div>
-            </div>
-            <div class="report-body">
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th>Full Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Bill Count</th>
-                            <th>Total Sales</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% java.util.List cashierStats = (java.util.List)request.getAttribute("cashierStats");
-                           if (cashierStats != null && !cashierStats.isEmpty()) {
-                               for (Object obj : cashierStats) {
-                                   java.util.Map stats = (java.util.Map)obj;
-                                   model.User cashier = (model.User)stats.get("cashier");
-                        %>
-                        <tr>
-                            <td><%= cashier.getFullName() %></td>
-                            <td><%= cashier.getUsername() %></td>
-                            <td><%= cashier.getEmail() %></td>
-                            <td><%= stats.get("billCount") %></td>
-                            <td>$<%= String.format("%.2f", stats.get("totalSales")) %></td>
-                        </tr>
-                        <%       }
-                           } else { %>
-                        <tr><td colspan="5" class="no-data">No cashiers found.</td></tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
+        <div class="report-header">
+            <div class="report-title">Cashier Sales Summary</div>
         </div>
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Bill Count</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% java.util.List cashierStats = (java.util.List)request.getAttribute("cashierStats");
+                   if (cashierStats != null && !cashierStats.isEmpty()) {
+                       for (Object obj : cashierStats) {
+                           java.util.Map stats = (java.util.Map)obj;
+                           model.User cashier = (model.User)stats.get("cashier");
+                %>
+                <tr>
+                    <td><%= cashier.getFullName() %></td>
+                    <td><%= cashier.getUsername() %></td>
+                    <td><%= cashier.getEmail() %></td>
+                    <td><%= stats.get("billCount") %></td>
+                    <td>$<%= String.format("%.2f", stats.get("totalSales")) %></td>
+                </tr>
+                <%       }
+                   } else { %>
+                <tr><td colspan="5" class="no-data">No cashiers found.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
 </body>
 </html> 
