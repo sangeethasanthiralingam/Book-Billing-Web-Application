@@ -17,6 +17,15 @@ src/model/Bill.java
 src/model/BillItem.java
 src/model/Book.java
 src/model/User.java
+src/controller/BaseController.java
+src/controller/AuthController.java
+src/controller/BookController.java
+src/controller/CustomerController.java
+src/controller/UserController.java
+src/controller/BillingController.java
+src/controller/DashboardController.java
+src/controller/ReportController.java
+src/controller/ConfigController.java
 src/controller/FrontControllerServlet.java
 src/builder/BillBuilder.java
 src/factory/DiscountFactory.java

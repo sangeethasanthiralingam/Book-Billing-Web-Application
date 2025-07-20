@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="header.jspf" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,11 +85,71 @@
     @media (max-width:700px) { .collection-sidebar { width:90vw; } }
     </style>
     <script>
-    // TODO: Implement addToCart logic and update cart count
+    // Implemented addToCart logic with localStorage
     function addToCart(bookId) {
-        alert('Book added to cart! (Book ID: ' + bookId + ')');
-        // You would make an AJAX call or form submit here
+        // Get book data from the button
+        const bookButton = document.querySelector(`[data-book*="\"id\":\"${bookId}\""]`);
+        if (bookButton) {
+            const book = JSON.parse(bookButton.getAttribute('data-book'));
+            
+            // Add to collection (which serves as cart)
+            addToCollectionFromData(bookButton);
+            
+            // Show success message
+            showNotification('Book added to collection!', 'success');
+        }
     }
+    
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        if (type === 'success') {
+            notification.style.backgroundColor = '#28a745';
+        } else if (type === 'error') {
+            notification.style.backgroundColor = '#dc3545';
+        } else {
+            notification.style.backgroundColor = '#17a2b8';
+        }
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
 
     // --- Collection logic with localStorage ---
     let collection = JSON.parse(localStorage.getItem('collection') || '[]');

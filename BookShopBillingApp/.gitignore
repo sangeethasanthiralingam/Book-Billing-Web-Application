@@ -220,8 +220,7 @@ PERSONAL.md
 !pom.xml
 !build-core.bat
 !build-core.sh
-!run-demo.bat
-!run-demo.sh
+
 !setup-project.bat
 !setup-project.sh
 !project.properties
