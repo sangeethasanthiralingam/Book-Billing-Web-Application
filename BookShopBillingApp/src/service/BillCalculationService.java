@@ -3,7 +3,6 @@ package service;
 import model.Bill;
 import model.BillItem;
 import model.User;
-import dao.UserDAO;
 
 public class BillCalculationService {
     

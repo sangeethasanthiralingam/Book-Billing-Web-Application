@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -275,13 +273,12 @@ public class FrontControllerServlet extends HttpServlet {
             System.out.println("HTML Content: " + html.toString());
             System.out.println("================================");
             
-            // TODO: Uncomment when Jakarta Mail dependencies are properly configured
-            // try {
-            //     util.MailUtil.sendMailHtml(adminEmail, "Book Collection Request from " + customerName, html.toString());
-            //     System.out.println("Email sent successfully to admin: " + adminEmail);
-            // } catch (Exception emailException) {
-            //     System.err.println("Failed to send email: " + emailException.getMessage());
-            // }
+            try {
+                util.MailUtil.sendMailHtml(adminEmail, "Book Collection Request from " + customerName, html.toString());
+                System.out.println("Email sent successfully to admin: " + adminEmail);
+            } catch (Exception emailException) {
+                System.err.println("Failed to send email: " + emailException.getMessage());
+            }
             
             response.setContentType("application/json");
             response.getWriter().write("{\"success\":true,\"message\":\"Collection request logged successfully.\"}");

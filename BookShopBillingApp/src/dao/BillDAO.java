@@ -2,7 +2,6 @@ package dao;
 
 import model.Bill;
 import model.BillItem;
-import model.User;
 import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
