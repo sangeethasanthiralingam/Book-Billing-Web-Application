@@ -27,7 +27,7 @@
            Integer billCount = (Integer)request.getAttribute("billCount");
            
            if (customer != null) { %>
-        
+        <c:if test="${sessionScope.userRole != 'CUSTOMER'}">
         <!-- Customer Summary Section -->
         <div class="form-card">
             <div class="form-header">
@@ -52,6 +52,7 @@
                 </div>
             </div>
         </div>
+        </c:if>
         
         <!-- Purchase Statistics -->
         <div class="stats-grid stats-grid-spaced">
@@ -123,9 +124,9 @@
                 <p>You haven't made any purchases yet. Start shopping to see your book history here!</p>
                 <div class="action-buttons action-buttons-centered">
                     <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
-                        <a href="${pageContext.request.contextPath}/controller/billing" class="btn btn-primary">
-                            🛒 Start Shopping
-                        </a>
+                        <a href="${pageContext.request.contextPath}/controller/store" class="btn btn-primary">
+                        🛒 Start Shopping
+                    </a>
                     </c:if>
                     <a href="${pageContext.request.contextPath}/controller/<c:choose><c:when test='${sessionScope.userRole == "CUSTOMER"}'>customer-dashboard</c:when><c:otherwise>dashboard</c:otherwise></c:choose>" class="btn btn-secondary">
                         ← Back to Dashboard

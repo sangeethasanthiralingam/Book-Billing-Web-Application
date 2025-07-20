@@ -37,48 +37,48 @@
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message">
                 <%= request.getAttribute("error") %>
-            </div>
+        </div>
         <% } %>
         
-        <div class="report-header">
-            <div class="report-title">Top Performing Cashiers</div>
-            <div class="report-subtitle">Ranked by total sales and performance</div>
-        </div>
-        <table class="transaction-table">
-            <thead>
-                <tr>
-                    <th>🏆 Rank</th>
-                    <th>👤 Full Name</th>
-                    <th>🔑 Username</th>
-                    <th>📊 Bill Count</th>
-                    <th>💰 Total Sales</th>
-                    <th>⭐ Feedback Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% java.util.List leaderboard = (java.util.List)request.getAttribute("leaderboard");
-                   if (leaderboard != null && !leaderboard.isEmpty()) {
-                       int rank = 1;
-                       for (Object obj : leaderboard) {
-                           java.util.Map stats = (java.util.Map)obj;
-                           model.User cashier = (model.User)stats.get("cashier");
-                %>
-                <tr class="${rank <= 3 ? 'top-performer' : ''}">
-                    <td>
-                        <% if (rank == 1) { %>🥇<% } else if (rank == 2) { %>🥈<% } else if (rank == 3) { %>🥉<% } else { %>#<%= rank %><% } %>
-                    </td>
-                    <td><strong><%= cashier.getFullName() %></strong></td>
-                    <td><%= cashier.getUsername() %></td>
-                    <td><%= stats.get("billCount") %></td>
-                    <td><strong>$<%= String.format("%.2f", stats.get("totalSales")) %></strong></td>
-                    <td><%= stats.get("feedbackScore") %>/5</td>
-                </tr>
-                <%       }
-                   } else { %>
-                <tr><td colspan="6" class="no-data">No cashiers found.</td></tr>
-                <% } %>
-            </tbody>
-        </table>
+            <div class="report-header">
+                <div class="report-title">Top Performing Cashiers</div>
+                <div class="report-subtitle">Ranked by total sales and performance</div>
+            </div>
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>🏆 Rank</th>
+                            <th>👤 Full Name</th>
+                            <th>🔑 Username</th>
+                            <th>📊 Bill Count</th>
+                            <th>💰 Total Sales</th>
+                            <th>⭐ Feedback Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% java.util.List leaderboard = (java.util.List)request.getAttribute("leaderboard");
+                           if (leaderboard != null && !leaderboard.isEmpty()) {
+                               int rank = 1;
+                               for (Object obj : leaderboard) {
+                                   java.util.Map stats = (java.util.Map)obj;
+                                   model.User cashier = (model.User)stats.get("cashier");
+                        %>
+                        <tr class="${rank <= 3 ? 'top-performer' : ''}">
+                            <td>
+                                <% if (rank == 1) { %>🥇<% } else if (rank == 2) { %>🥈<% } else if (rank == 3) { %>🥉<% } else { %>#<%= rank %><% } %>
+                            </td>
+                            <td><strong><%= cashier.getFullName() %></strong></td>
+                            <td><%= cashier.getUsername() %></td>
+                            <td><%= stats.get("billCount") %></td>
+                            <td><strong>$<%= String.format("%.2f", stats.get("totalSales")) %></strong></td>
+                            <td><%= stats.get("feedbackScore") %>/5</td>
+                        </tr>
+                        <%       }
+                           } else { %>
+                        <tr><td colspan="6" class="no-data">No cashiers found.</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
     </div>
     
     <script>

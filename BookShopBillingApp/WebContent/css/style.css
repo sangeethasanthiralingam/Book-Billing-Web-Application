@@ -674,23 +674,99 @@ body {
     font-size: 1.5rem;
 }
 
-.book-search {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+/* Customer Section Styles */
+.customer-section, .book-section, .cart-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border-light);
 }
 
-.book-search input {
+.customer-section h3, .book-section h3, .cart-section h3 {
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.search-input-group input {
     flex: 1;
 }
 
-.search-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--color-teal);
-    color: var(--color-text-light);
-    border: none;
+.search-results {
+    margin-top: 1rem;
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border-e1);
     border-radius: 8px;
+    padding: 1rem;
+}
+
+.search-results h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.customer-result, .book-item {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-eee);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.customer-result:hover, .book-item:hover {
+    background-color: var(--color-hover-tint);
+}
+
+.customer-name, .book-title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.customer-details, .book-details {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.book-info {
+    flex: 1;
+}
+
+.selected-customer {
+    background: var(--color-bg-success);
+    border: 1px solid var(--color-success);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.selected-customer h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.customer-info p {
+    margin-bottom: 0.25rem;
+    color: var(--color-text-secondary);
+}
+
+.customer-info strong {
+    color: var(--color-text-primary);
+}
+
+/* Book Search Styles */
+.book-search {
+    margin-bottom: 1.5rem;
 }
 
 .book-list {
@@ -726,6 +802,7 @@ body {
     margin-top: 0.25rem;
 }
 
+/* Cart Styles */
 .cart-items {
     margin-bottom: 1.5rem;
 }
@@ -738,6 +815,7 @@ body {
     border: 1px solid var(--color-border-eee);
     border-radius: 8px;
     margin-bottom: 0.5rem;
+    background: var(--color-bg-main);
 }
 
 .cart-item-info {
@@ -754,10 +832,18 @@ body {
     font-size: 0.9rem;
 }
 
+.cart-item-total {
+    font-weight: 600;
+    color: var(--color-teal);
+    min-width: 80px;
+    text-align: right;
+}
+
 .quantity-controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 0 1rem;
 }
 
 .quantity-btn {
@@ -768,6 +854,11 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
+    min-width: 30px;
+}
+
+.quantity-btn:hover {
+    background: var(--color-teal-dark);
 }
 
 .remove-btn {
@@ -780,12 +871,18 @@ body {
     font-size: 0.9rem;
 }
 
-.no-books {
+.remove-btn:hover {
+    background: var(--color-error-dark);
+}
+
+.no-items, .no-books {
     text-align: center;
     color: var(--color-text-secondary);
     padding: 2rem;
+    font-style: italic;
 }
 
+/* Bill Summary Styles */
 .bill-summary {
     background: var(--color-bg-fa);
     padding: 1.5rem;
@@ -807,6 +904,35 @@ body {
     margin-top: 0.5rem;
 }
 
+/* Delivery Section */
+.delivery-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.delivery-section h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.delivery-section .form-group {
+    margin-bottom: 0.5rem;
+}
+
+.delivery-section label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.delivery-section input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+/* Payment Section */
 .payment-section {
     margin-top: 1.5rem;
 }
@@ -825,11 +951,28 @@ body {
     cursor: pointer;
     text-align: center;
     transition: border-color 0.3s ease;
+    position: relative;
+}
+
+.payment-method input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .payment-method.selected {
     border-color: var(--color-teal);
     background: var(--color-bg-fa);
+}
+
+.payment-method:hover {
+    border-color: var(--color-teal);
+}
+
+.payment-method input[type="radio"]:checked + div {
+    color: var(--color-teal);
+    font-weight: 600;
 }
 
 .generate-bill-btn {
@@ -845,8 +988,43 @@ body {
     transition: transform 0.2s ease;
 }
 
-.generate-bill-btn:hover {
+.generate-bill-btn:hover:not(:disabled) {
     transform: translateY(-2px);
+}
+
+.generate-bill-btn:disabled {
+    background: var(--color-bg-light-gray);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive Design for Billing */
+@media (max-width: 768px) {
+    .billing-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    
+    .quantity-controls {
+        justify-content: center;
+        margin: 0.5rem 0;
+    }
+    
+    .payment-methods {
+        flex-direction: column;
+    }
 }
 
 /* ========== INVOICE STYLES ========== */

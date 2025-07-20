@@ -155,7 +155,7 @@
             </div>
             <div class="filter-actions">
                 <button class="btn btn-primary" title="Generate">📊</button>
-            </div>
+        </div>
         </form>
         
         <div class="reports-grid">

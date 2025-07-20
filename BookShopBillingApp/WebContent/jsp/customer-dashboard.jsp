@@ -137,9 +137,11 @@
             <div class="no-data">
                 <p>📚 You have not made any purchases yet. Start shopping to see your book history here!</p>
                 <div class="action-buttons action-buttons-centered">
-                    <a href="${pageContext.request.contextPath}/controller/billing" class="btn btn-primary">
-                        🛒 Start Shopping
-                    </a>
+                    <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+                        <a href="${pageContext.request.contextPath}/controller/store" class="btn btn-primary">
+                            🛒 Start Shopping
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <% } %>

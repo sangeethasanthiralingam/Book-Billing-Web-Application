@@ -30,9 +30,9 @@ if ($javaPath) {
         if (Test-Path "lib") {
             $libJars = Get-ChildItem -Path "lib" -Filter "*.jar" | ForEach-Object { $_.FullName }
         }
-        $classpath = "bin"
+        $classpath = "bin;src"
         if ($libJars.Count -gt 0) {
-            $classpath = "bin;" + ($libJars -join ";")
+            $classpath = "bin;src;" + ($libJars -join ";")
             Write-Host "Including JARs in classpath: $($libJars.Count) files" -ForegroundColor Yellow
         }
         

@@ -223,4 +223,19 @@ public class ConfigurationService {
         checkCacheExpiry();
         return new HashMap<>(configCache);
     }
+
+    public String getSmtpHost() { return getPropertyOrDefault("smtp.host", "smtp.gmail.com"); }
+    public String getSmtpPort() { return getPropertyOrDefault("smtp.port", "587"); }
+    public String getSmtpUsername() { return getPropertyOrDefault("smtp.username", "your-email@gmail.com"); }
+    public String getSmtpPassword() { return getPropertyOrDefault("smtp.password", "your-app-password"); }
+    public String getSmtpFrom() { return getPropertyOrDefault("smtp.from", getSmtpUsername()); }
+    public String getAdminEmail() { return getPropertyOrDefault("admin.email", "your-email@gmail.com"); }
+
+    private String getPropertyOrDefault(String key, String defaultValue) {
+        String value = getConfigValue(key);
+        if (value == null || value.trim().isEmpty()) {
+            return defaultValue;
+        }
+        return value;
+    }
 } 

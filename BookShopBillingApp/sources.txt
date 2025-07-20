@@ -1,5 +1,6 @@
 src/util/Constants.java
 src/util/DBConnection.java
+src/util/MailUtil.java
 src/service/ConfigurationService.java
 src/service/BillCalculationService.java
 src/service/PaymentService.java
