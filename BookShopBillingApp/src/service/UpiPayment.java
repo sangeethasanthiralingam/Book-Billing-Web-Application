@@ -1,5 +1,9 @@
 package service;
 
+/**
+ * Strategy Pattern: UPI Payment Implementation
+ * Handles UPI (Unified Payment Interface) payment processing
+ */
 public class UpiPayment implements PaymentStrategy {
     private String upiId;
     
@@ -17,6 +21,11 @@ public class UpiPayment implements PaymentStrategy {
     @Override
     public String getPaymentMethod() {
         return "UPI";
+    }
+    
+    @Override
+    public String getPaymentDescription() {
+        return "UPI Payment to " + upiId;
     }
     
     public String getUpiId() {

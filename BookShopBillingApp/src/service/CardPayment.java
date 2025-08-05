@@ -1,5 +1,9 @@
 package service;
 
+/**
+ * Strategy Pattern: Card Payment Implementation
+ * Handles credit/debit card payment processing
+ */
 public class CardPayment implements PaymentStrategy {
     private String cardNumber;
     private String cardType; // VISA, MASTERCARD, etc.
@@ -20,6 +24,11 @@ public class CardPayment implements PaymentStrategy {
     @Override
     public String getPaymentMethod() {
         return "CARD";
+    }
+    
+    @Override
+    public String getPaymentDescription() {
+        return cardType + " Card Payment";
     }
     
     public String getCardNumber() {

@@ -11,29 +11,49 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--color-bg-main);
-    line-height: 1.6;
-    color: var(--color-text-primary);
+  background: var(--background);
+  color: var(--text);
+  font-family: 'EB Garamond', 'Georgia', serif;
+  margin: 0;
+  padding: 0;
+  background-image: url('/bookshop-billing/css/paper-texture.png'), linear-gradient(var(--background), var(--background));
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+h1, h2, h3, .logo {
+  font-family: 'Playfair Display', 'Merriweather', 'EB Garamond', 'Georgia', serif;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.7em;
 }
 
 /* ========== NAVIGATION ========== */
 .navbar {
-    background: var(--gradient-teal);
-    color: var(--color-text-light);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px var(--shadow-teal);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+  background: #23432c; /* Deep forest green, change to #7c2f2a for burgundy */
+  color: #fff;
+  padding: 1em 2em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Montserrat', 'Arial', sans-serif;
+  box-shadow: 0 4px 16px rgba(44, 34, 20, 0.10);
+  position: relative;
+  z-index: 10;
 }
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+.navbar .logo {
+  font-family: 'Playfair Display', 'Merriweather', 'EB Garamond', Georgia, serif;
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.logo-icon {
+  font-size: 1.3em;
+  margin-right: 0.3em;
+  vertical-align: middle;
 }
 
 .nav-links {
@@ -496,29 +516,6 @@ body {
 .activate-btn:hover { background: var(--color-bg-success); color: var(--color-success); }
 .view-btn:hover { background: var(--color-bg-teal-tint); color: var(--color-teal); }
 .btn-secondary:hover { background: var(--color-bg-info); color: var(--color-saffron); }
-
-/* Tooltip on hover */
-.action-btn[title]:hover::after,
-.edit-btn[title]:hover::after,
-.delete-btn[title]:hover::after,
-.activate-btn[title]:hover::after,
-.view-btn[title]:hover::after,
-.btn-secondary[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    left: 110%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--color-black);
-    color: var(--color-text-light);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    opacity: 1;
-    pointer-events: none;
-    z-index: 10;
-}
 
 /* ========== TABLES ========== */
 .transaction-table {
@@ -2768,3 +2765,119 @@ body.error-page {
   pointer-events: none;
 }
 
+/* Dashboard Tiles */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2em;
+  margin: 2em 0;
+}
+.stat-card {
+  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(60,40,20,0.06);
+  padding: 2em 1.5em 1.5em 1.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+  position: relative;
+  border: 1px solid var(--muted);
+}
+.stat-card:hover {
+  box-shadow: 0 6px 24px rgba(124,94,60,0.13);
+  transform: translateY(-4px) scale(1.02);
+  background: var(--bg-hover, #f7f3e8);
+}
+.stat-icon {
+  font-size: 2.2em;
+  margin-bottom: 0.5em;
+  opacity: 0.85;
+}
+.stat-card.books {
+  background: #f6efe6;
+  --bg-hover: #f3e9dd;
+}
+.stat-card.sales {
+  background: #eaf6ef;
+  --bg-hover: #e0f2e9;
+}
+.stat-card.bills {
+  background: #f6f3ea;
+  --bg-hover: #f2ede2;
+}
+.stat-card.customers {
+  background: #eaf1f6;
+  --bg-hover: #e2eaf2;
+}
+.stat-card h3 {
+  font-family: 'Playfair Display', 'Merriweather', 'EB Garamond', 'Georgia', serif;
+  font-size: 1.2em;
+  margin: 0 0 0.3em 0;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.stat-number {
+  font-size: 2.1em;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2em;
+}
+.stat-card p {
+  color: var(--muted);
+  font-size: 1em;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1em;
+  }
+  .stat-card {
+    padding: 1.2em 1em;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  margin-top: 1em;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  background: linear-gradient(90deg, #bfa980 0%, #f3e9dd 100%);
+  color: #3e2c18;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9em 1.6em;
+  font-size: 1.1em;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(124,94,60,0.08);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.action-btn:hover, .action-btn:focus {
+  background: linear-gradient(90deg, #f3e9dd 0%, #bfa980 100%);
+  color: #7c5e3c;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(124,94,60,0.13);
+}
+.action-btn .action-icon {
+  font-size: 1.3em;
+  margin-right: 0.3em;
+  vertical-align: middle;
+}
+/* Tooltip styles
+.action-btn[title] {
+  position: relative;
+} */

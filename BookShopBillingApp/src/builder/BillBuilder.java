@@ -5,9 +5,16 @@ import model.User;
 import model.BillItem;
 import java.util.Date;
 
+/**
+ * Builder Pattern: Bill Builder
+ * Constructs complex Bill objects step by step
+ */
 public class BillBuilder {
     private Bill bill;
     
+    /**
+     * Initialize a new BillBuilder with a fresh Bill instance
+     */
     public BillBuilder() {
         this.bill = new Bill();
     }
@@ -77,23 +84,63 @@ public class BillBuilder {
         return this;
     }
     
+    /**
+     * Build and return the final Bill object
+     * @return the constructed Bill object
+     * @throws IllegalStateException if required fields are missing
+     */
     public Bill build() {
+        // Validate required fields
+        if (bill.getBillNumber() == null || bill.getBillNumber().trim().isEmpty()) {
+            throw new IllegalStateException("Bill number is required");
+        }
+        if (bill.getCustomer() == null) {
+            throw new IllegalStateException("Customer is required");
+        }
+        if (bill.getCashier() == null) {
+            throw new IllegalStateException("Cashier is required");
+        }
+        
         return bill;
     }
     
     // Convenience methods
+    /**
+     * Set default status to PENDING
+     * @return this BillBuilder instance
+     */
     public BillBuilder withDefaultStatus() {
         bill.setStatus("PENDING");
         return this;
     }
     
+    /**
+     * Set default payment method to CASH
+     * @return this BillBuilder instance
+     */
     public BillBuilder withDefaultPaymentMethod() {
         bill.setPaymentMethod("CASH");
         return this;
     }
     
-    // Static convenience method for creating new bills
+    /**
+     * Static convenience method for creating new bills
+     * @param billNumber the bill number
+     * @param customer the customer
+     * @param cashier the cashier
+     * @return configured BillBuilder instance
+     */
     public static BillBuilder createNewBill(String billNumber, User customer, User cashier) {
+        if (billNumber == null || billNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Bill number cannot be null or empty");
+        }
+        if (customer == null) {
+            throw new IllegalArgumentException("Customer cannot be null");
+        }
+        if (cashier == null) {
+            throw new IllegalArgumentException("Cashier cannot be null");
+        }
+        
         return new BillBuilder()
                 .withBillNumber(billNumber)
                 .withCustomer(customer)

@@ -542,3 +542,6 @@ The BookShop Billing Application is now a complete, modern, and production-ready
 | Cart Functionality | ✅ Complete | localStorage with notification system |
 | Edit/Delete Operations | ✅ Complete | AJAX-based with user feedback |
 | User Experience | ✅ Complete | Notification system and animations |
+
+<!-- powershell -ExecutionPolicy Bypass -File build-web.ps1 -->
+<!-- .\deploy-tomcat.ps1 -Clean -StartTomcat   -->

@@ -1,101 +1,98 @@
-/* ========== SRI LANKAN COLOR PALETTE - CSS VARIABLES ========== */
-
 :root {
     /* ========== PRIMARY COLORS ========== */
-    --color-teal: #1E5F5B;
-    --color-teal-dark: #174C48;
-    --color-teal-light: #2A7A76;
-    --color-saffron: #F5A623;
-    --color-saffron-dark: #E0941A;
-    --color-saffron-darker: #D08515;
-    --color-coral: #FF6B5E;
-    
+    --color-teal: #5E5B52; /* Muted brown-gray for text/buttons */
+    --color-teal-dark: #4C493F;
+    --color-teal-light: #7C796F;
+    --color-saffron: #D97A35; /* Warm muted saffron (e.g., buttons) */
+    --color-saffron-dark: #C6692D;
+    --color-saffron-darker: #B85A25;
+    --color-coral: #D95F4D; /* Used as alert/highlight */
+  
     /* ========== SEMANTIC COLORS ========== */
-    --color-success: #28A745;
-    --color-success-dark: #1e7e34;
-    --color-error: #DC3545;
-    --color-error-dark: #B52A37;
-    --color-warning: #F5A623;
-    --color-info: #17a2b8;
-    
+    --color-success: #4CAF50;
+    --color-success-dark: #388E3C;
+    --color-error: #C62828;
+    --color-error-dark: #B71C1C;
+    --color-warning: #FFA000;
+    --color-info: #5E5B52;
+  
     /* ========== BACKGROUND COLORS ========== */
-    --color-bg-main: #FAFAFA;
+    --color-bg-main: #F9F6F1;
     --color-bg-white: #FFFFFF;
-    --color-bg-light-gray: #F5F5F5;
-    --color-bg-fa: #FAFAFA;
-    --color-bg-f8: #F8F9FA;
-    --color-bg-f5: #F5F5F5;
-    --color-bg-e6: #E6F2F1;
-    --color-bg-fd: #FDE2E1;
-    --color-bg-df: #DFF5E1;
-    
+    --color-bg-light-gray: #F0ECE7;
+    --color-bg-fa: #F9F6F1;
+    --color-bg-f8: #F5F3EF;
+    --color-bg-f5: #EEEAE4;
+    --color-bg-e6: #F2EDE8;
+    --color-bg-fd: #FBEAE7;
+    --color-bg-df: #E9F3E7;
+  
     /* ========== TEXT COLORS ========== */
-    --color-text-primary: #333333;
-    --color-text-secondary: #888888;
+    --color-text-primary: #2D2D2D;
+    --color-text-secondary: #6C6C6C;
     --color-text-light: #FFFFFF;
-    --color-text-muted: #888888;
+    --color-text-muted: #A0A0A0;
     --color-text-666: #666666;
     --color-text-555: #555555;
     --color-text-333: #333333;
     --color-text-888: #888888;
-    
+  
     /* ========== BORDER COLORS ========== */
-    --color-border-light: #F5F5F5;
-    --color-border-focus: #1E5F5B;
-    --color-border-input: #F5F5F5;
-    --color-border-e1: #E1E5E9;
-    --color-border-e9: #E9ECEF;
-    --color-border-eee: #EEEEEE;
-    --color-border-f0: #F0F0F0;
-    --color-border-ddd: #DDDDDD;
-    
+    --color-border-light: #E5E2DE;
+    --color-border-focus: #7C796F;
+    --color-border-input: #DDD9D4;
+    --color-border-e1: #DDD9D4;
+    --color-border-e9: #D3CEC7;
+    --color-border-eee: #E0DCD7;
+    --color-border-f0: #EAE6E0;
+    --color-border-ddd: #D4D0CB;
+  
     /* ========== INTERACTIVE COLORS ========== */
-    --color-hover-tint: rgba(30, 95, 91, 0.05);
-    --color-focus-shadow: rgba(30, 95, 91, 0.1);
-    --color-button-shadow: rgba(30, 95, 91, 0.3);
-    --color-saffron-shadow: rgba(245, 166, 35, 0.3);
-    --color-error-shadow: rgba(220, 53, 69, 0.3);
-    
+    --color-hover-tint: rgba(94, 91, 82, 0.05);
+    --color-focus-shadow: rgba(94, 91, 82, 0.1);
+    --color-button-shadow: rgba(94, 91, 82, 0.2);
+    --color-saffron-shadow: rgba(217, 122, 53, 0.3);
+    --color-error-shadow: rgba(198, 40, 40, 0.3);
+  
     /* ========== NOTIFICATION BACKGROUNDS ========== */
-    --color-bg-success: #DFF5E1;
-    --color-bg-error: #FDE2E1;
-    --color-bg-info: #E6F2F1;
-    --color-bg-teal-tint: rgba(30, 95, 91, 0.05);
-    
+    --color-bg-success: #E4F3E8;
+    --color-bg-error: #F9E2E2;
+    --color-bg-info: #F2EDE8;
+    --color-bg-teal-tint: rgba(94, 91, 82, 0.05);
+  
     /* ========== GRADIENT COLORS ========== */
     --gradient-teal: linear-gradient(135deg, var(--color-teal) 0%, var(--color-teal-light) 100%);
     --gradient-saffron: linear-gradient(135deg, var(--color-saffron) 0%, var(--color-saffron-dark) 100%);
     --gradient-error: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-dark) 100%);
     --gradient-success: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
-    --gradient-blue: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    --gradient-gray: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-    
+    --gradient-gray: linear-gradient(135deg, #C4BFB7 0%, #9F9A92 100%);
+  
     /* ========== ROLE COLORS ========== */
-    --color-role-admin: #DC3545;
-    --color-role-admin-dark: #C82333;
+    --color-role-admin: #B71C1C;
+    --color-role-admin-dark: #9A1515;
     --color-role-cashier: var(--color-saffron);
     --color-role-cashier-dark: var(--color-saffron-dark);
     --color-role-customer: var(--color-teal);
     --color-role-customer-dark: var(--color-teal-light);
-    
+  
     /* ========== STATUS COLORS ========== */
     --color-status-active: var(--color-success);
     --color-status-inactive: var(--color-error);
     --color-status-pending: var(--color-saffron);
     --color-status-overdue: var(--color-error);
     --color-status-paid: var(--color-success);
-    
+  
     /* ========== SHADOW COLORS ========== */
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-medium: rgba(0, 0, 0, 0.15);
-    --shadow-dark: rgba(0, 0, 0, 0.2);
-    --shadow-teal: rgba(30, 95, 91, 0.2);
-    
-    /* ========== ADDITIONAL COLORS FROM STYLE.CSS ========== */
-    --color-blue: #007bff;
-    --color-blue-dark: #0056b3;
-    --color-gray: #6c757d;
-    --color-gray-dark: #545b62;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.15);
+    --shadow-teal: rgba(94, 91, 82, 0.2);
+  
+    /* ========== ADDITIONAL COLORS ========== */
+    --color-blue: #3F51B5;
+    --color-blue-dark: #303F9F;
+    --color-gray: #9E9E9E;
+    --color-gray-dark: #757575;
     --color-white: #FFFFFF;
     --color-black: #000000;
     --color-transparent: transparent;
@@ -104,134 +101,9 @@
     --color-rgba-white-03: rgba(255, 255, 255, 0.3);
     --color-rgba-black-02: rgba(0, 0, 0, 0.2);
     --color-rgba-black-03: rgba(0, 0, 0, 0.3);
-    --color-rgba-teal-01: rgba(30, 95, 91, 0.1);
-    --color-rgba-teal-02: rgba(30, 95, 91, 0.2);
-    --color-rgba-teal-03: rgba(30, 95, 91, 0.3);
-    --color-rgba-teal-05: rgba(30, 95, 91, 0.05);
-}
-
-/* ========== COLOR UTILITY CLASSES ========== */
-
-/* Text Colors */
-.text-teal { color: var(--color-teal); }
-.text-saffron { color: var(--color-saffron); }
-.text-coral { color: var(--color-coral); }
-.text-success { color: var(--color-success); }
-.text-error { color: var(--color-error); }
-.text-warning { color: var(--color-warning); }
-.text-info { color: var(--color-teal); }
-.text-muted { color: var(--color-text-muted); }
-.text-primary { color: var(--color-text-primary); }
-
-/* Background Colors */
-.bg-teal { background-color: var(--color-teal); }
-.bg-saffron { background-color: var(--color-saffron); }
-.bg-coral { background-color: var(--color-coral); }
-.bg-soft-white { background-color: var(--color-bg-main); }
-.bg-light-gray { background-color: var(--color-bg-light-gray); }
-.bg-success-tint { background-color: var(--color-bg-success); }
-.bg-error-tint { background-color: var(--color-bg-error); }
-.bg-info-tint { background-color: var(--color-bg-info); }
-.bg-teal-tint { background-color: var(--color-bg-teal-tint); }
-
-/* Status Badges */
-.status-active {
-    background: var(--color-status-active);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-inactive {
-    background: var(--color-status-inactive);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-pending {
-    background: var(--color-status-pending);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-overdue {
-    background: var(--color-status-overdue);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-paid {
-    background: var(--color-status-paid);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-/* Role Badges */
-.role-admin {
-    background: linear-gradient(135deg, var(--color-role-admin) 0%, var(--color-role-admin-dark) 100%);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.role-cashier {
-    background: linear-gradient(135deg, var(--color-role-cashier) 0%, var(--color-role-cashier-dark) 100%);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.role-customer {
-    background: linear-gradient(135deg, var(--color-role-customer) 0%, var(--color-role-customer-dark) 100%);
-    color: var(--color-text-light);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-/* Notification Messages */
-.success-message {
-    background: var(--color-bg-success);
-    color: var(--color-success);
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--color-success);
-}
-
-.error-message {
-    background: var(--color-bg-error);
-    color: var(--color-error);
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--color-error);
-}
-
-.info-message {
-    background: var(--color-bg-info);
-    color: var(--color-teal);
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--color-teal);
-} 
+    --color-rgba-teal-01: rgba(94, 91, 82, 0.1);
+    --color-rgba-teal-02: rgba(94, 91, 82, 0.2);
+    --color-rgba-teal-03: rgba(94, 91, 82, 0.3);
+    --color-rgba-teal-05: rgba(94, 91, 82, 0.05);
+  }
+  

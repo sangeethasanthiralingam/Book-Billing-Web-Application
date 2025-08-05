@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import memento.BillMemento;
 
 public class Bill implements Serializable {
     private int id;
@@ -37,6 +38,23 @@ public class Bill implements Serializable {
         this.billNumber = billNumber;
         this.customer = customer;
         this.cashier = cashier;
+    }
+    
+    // Copy constructor for Memento pattern
+    public Bill(Bill other) {
+        this.id = other.id;
+        this.billNumber = other.billNumber;
+        this.customer = other.customer; // Consider deep copy if mutable
+        this.cashier = other.cashier;   // Consider deep copy if mutable
+        this.items = new ArrayList<>(other.items); // Deep copy if needed
+        this.subtotal = other.subtotal;
+        this.discount = other.discount;
+        this.tax = other.tax;
+        this.total = other.total;
+        this.status = other.status;
+        this.paymentMethod = other.paymentMethod;
+        this.billDate = other.billDate != null ? new Date(other.billDate.getTime()) : null;
+        // Copy other fields as needed
     }
     
     // Getters and Setters
@@ -108,6 +126,27 @@ public class Bill implements Serializable {
             this.subtotal += item.getTotal();
         }
         this.total = this.subtotal - this.discount + this.tax + this.deliveryCharge;
+    }
+
+    public BillMemento saveToMemento() {
+        return new BillMemento(this);
+    }
+
+    public void restoreFromMemento(BillMemento memento) {
+        Bill state = memento.getSavedState();
+        this.id = state.id;
+        this.billNumber = state.billNumber;
+        this.customer = state.customer;
+        this.cashier = state.cashier;
+        this.items = new ArrayList<>(state.items);
+        this.subtotal = state.subtotal;
+        this.discount = state.discount;
+        this.tax = state.tax;
+        this.total = state.total;
+        this.status = state.status;
+        this.paymentMethod = state.paymentMethod;
+        this.billDate = state.billDate != null ? new Date(state.billDate.getTime()) : null;
+        // Restore other fields as needed
     }
     
     @Override

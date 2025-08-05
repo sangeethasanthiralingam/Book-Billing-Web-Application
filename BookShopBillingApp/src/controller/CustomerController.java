@@ -590,6 +590,17 @@ public class CustomerController extends BaseController {
         }
     }
     
+    /**
+     * Handle account number generation for AJAX (plain text)
+     */
+    public void handleGenerateAccountNumber(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String accountNumber = "ACC-" + System.currentTimeMillis();
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(accountNumber);
+    }
+    
     // Helper methods
     
     private List<User> filterCustomers(List<User> customers, String searchTerm, String statusFilter) {

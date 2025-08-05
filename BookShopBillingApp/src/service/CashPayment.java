@@ -1,5 +1,9 @@
 package service;
 
+/**
+ * Strategy Pattern: Cash Payment Implementation
+ * Handles cash payment processing
+ */
 public class CashPayment implements PaymentStrategy {
     
     @Override
@@ -12,5 +16,10 @@ public class CashPayment implements PaymentStrategy {
     @Override
     public String getPaymentMethod() {
         return "CASH";
+    }
+    
+    @Override
+    public String getPaymentDescription() {
+        return "Cash Payment";
     }
 } 

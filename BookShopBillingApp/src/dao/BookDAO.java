@@ -7,9 +7,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO Pattern: Book Data Access Object
+ * Handles all database operations for Book entities
+ */
 public class BookDAO {
-    private DBConnection dbConnection;
+    private final DBConnection dbConnection;
     
+    /**
+     * Initialize BookDAO with database connection
+     */
     public BookDAO() {
         this.dbConnection = DBConnection.getInstance();
     }

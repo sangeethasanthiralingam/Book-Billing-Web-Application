@@ -5,7 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static DBConnection instance;
+    // Thread-safe Singleton with volatile keyword
+    private static volatile DBConnection instance;
     private Connection connection;
     
     // Database configuration
@@ -13,6 +14,7 @@ public class DBConnection {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root@1234";
     
+    // Private constructor to prevent instantiation
     private DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -22,9 +24,14 @@ public class DBConnection {
         }
     }
     
+    // Thread-safe getInstance method with double-checked locking
     public static DBConnection getInstance() {
         if (instance == null) {
-            instance = new DBConnection();
+            synchronized (DBConnection.class) {
+                if (instance == null) {
+                    instance = new DBConnection();
+                }
+            }
         }
         return instance;
     }

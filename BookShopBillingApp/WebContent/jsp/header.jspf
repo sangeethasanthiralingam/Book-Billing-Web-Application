@@ -1,25 +1,30 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700&display=swap" rel="stylesheet">
 <nav class="navbar">
-    <div class="logo"> Online Billing System Pahana Edu</div>
-    <div class="nav-links">
+    <div class="logo">
+        <span class="logo-icon">&#128214;</span>
+        Pahana Edu <span style="font-weight: normal;">BOOKSHOP</span>
+    </div>
+    <div class="nav-links" style="display: flex; align-items: center; gap: 1.5em; margin-left: 2em;">
         <c:if test="${sessionScope.userRole == 'ADMIN'}">
-            <a href="${pageContext.request.contextPath}/controller/dashboard">Dashboard</a>
-            <a href="${pageContext.request.contextPath}/controller/books">Books</a>
-            <a href="${pageContext.request.contextPath}/controller/system-config">Settings</a>
-            <a href="${pageContext.request.contextPath}/controller/users">User Management</a>
-            <a href="${pageContext.request.contextPath}/controller/customers">Customers</a>
-            <a href="${pageContext.request.contextPath}/controller/leaderboard">Leaderboard</a>
+            <a href="${pageContext.request.contextPath}/controller/dashboard" class="button">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/controller/books" class="button">Books</a>
+            <a href="${pageContext.request.contextPath}/controller/system-config" class="button">Settings</a>
+            <a href="${pageContext.request.contextPath}/controller/users" class="button">User Management</a>
+            <a href="${pageContext.request.contextPath}/controller/customers" class="button">Customers</a>
+            <a href="${pageContext.request.contextPath}/controller/leaderboard" class="button">Leaderboard</a>
         </c:if>
         <c:if test="${sessionScope.userRole == 'CASHIER'}">
-            <a href="${pageContext.request.contextPath}/controller/billing">Billing</a>
-            <a href="${pageContext.request.contextPath}/controller/reports">Sales Report</a>
+            <a href="${pageContext.request.contextPath}/controller/billing" class="button">Billing</a>
+            <a href="${pageContext.request.contextPath}/controller/reports" class="button">Sales Report</a>
         </c:if>
         <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
-            <a href="${pageContext.request.contextPath}/controller/customer-dashboard">My Dashboard</a>
+            <a href="${pageContext.request.contextPath}/controller/customer-dashboard" class="button">My Dashboard</a>
         </c:if>
+        <a href="${pageContext.request.contextPath}/controller/help" class="button">Help</a>
         <c:if test="${not empty sessionScope.user}">
-            <a href="${pageContext.request.contextPath}/controller/logout" class="logout-btn">Logout</a>
+            <a href="${pageContext.request.contextPath}/controller/logout" class="logout-link" style="color: #b85c4c; font-family: 'Montserrat', Arial, sans-serif; font-weight: 600; text-decoration: none; margin-left: 2em;">Log out</a>
         </c:if>
-        <a href="${pageContext.request.contextPath}/controller/help">Help</a>
     </div>
 </nav> 

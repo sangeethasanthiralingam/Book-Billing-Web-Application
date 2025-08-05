@@ -135,6 +135,9 @@ public class FrontControllerServlet extends HttpServlet {
             case "create-customer":
                 customerController.handleCreateCustomer(request, response);
                 break;
+            case "generate-account-number":
+                customerController.handleGenerateAccountNumber(request, response);
+                break;
                 
             // User management routes (Admin only)
             case "add-user":
