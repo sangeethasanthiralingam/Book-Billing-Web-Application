@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 public class BillItem implements Serializable {
     private int id;
+    private int billId; // Add billId field
+    private int bookId; // Add bookId field
     private Book book;
     private int quantity;
     private double unitPrice;
+    private double price; // Add price field
     private double total;
     private double discountPercent;
     private String notes;
@@ -54,6 +57,20 @@ public class BillItem implements Serializable {
     
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+    
+    // New getter/setter methods
+    public int getBillId() { return billId; }
+    public void setBillId(int billId) { this.billId = billId; }
+    
+    public int getBookId() { return bookId; }
+    public void setBookId(int bookId) { this.bookId = bookId; }
+    
+    public double getPrice() { return price; }
+    public void setPrice(double price) { 
+        this.price = price;
+        this.unitPrice = price; // Keep unitPrice in sync
+        calculateTotal();
+    }
     
     // Helper method to calculate total with discount
     private void calculateTotal() {

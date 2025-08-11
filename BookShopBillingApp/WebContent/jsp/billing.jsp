@@ -104,22 +104,24 @@
                         <div id="bookSearchResults" class="search-results">
                             <h4>Available Books:</h4>
                             <div id="bookResultsList">
-                    <% if (request.getAttribute("books") != null && !((java.util.List)request.getAttribute("books")).isEmpty()) { %>
-                        <% for (model.Book book : (java.util.List<model.Book>)request.getAttribute("books")) { %>
+                                <!-- Initial books from server (will be replaced by dynamic search results) -->
+                                <% if (request.getAttribute("books") != null && !((java.util.List)request.getAttribute("books")).isEmpty()) { %>
+                                    <% for (model.Book book : (java.util.List<model.Book>)request.getAttribute("books")) { %>
                                         <div class="book-item" data-book-id="${book.id}" data-book-title="${book.title}" data-book-price="${book.price}" data-book-stock="${book.quantity}">
                                             <div class="book-info">
-                            <div class="book-title">${book.title}</div>
-                            <div class="book-details">By ${book.author} | ISBN: ${book.isbn} | Price: $${String.format("%.2f", book.price)} | Stock: ${book.quantity}</div>
+                                                <div class="book-title">${book.title}</div>
+                                                <div class="book-details">By ${book.author} | ISBN: ${book.isbn} | Price: $${String.format("%.2f", book.price)} | Stock: ${book.quantity}</div>
                                             </div>
                                             <button type="button" class="btn btn-primary" onclick="addToCart(${book.id}, '${book.title}', ${book.price}, ${book.quantity})">Add to Cart</button>
-                    </div>
-                        <% } %>
-                    <% } else { %>
-                        <div class="no-books">
-                            <p>No books available. Please add some books first.</p>
-                    </div>
-                    <% } %>
-                </div>
+                                        </div>
+                                    <% } %>
+                                <% } else { %>
+                                    <div class="no-books">
+                                        <p>No books available. Please add some books first.</p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -160,6 +162,25 @@
                         <span>Total:</span>
                         <span id="total">$0.00</span>
                     </div>
-    </script>
+                    
+                    <!-- Payment Options -->
+                    <div class="payment-section" style="margin-top: 20px;">
+                        <h4>Payment Method:</h4>
+                        <select id="paymentMethod" class="form-control" style="margin-bottom: 10px;">
+                            <option value="CASH">Cash</option>
+                            <option value="CARD">Card</option>
+                            <option value="UPI">UPI</option>
+                        </select>
+                        
+                        <button type="button" class="btn btn-success" onclick="generateBill()" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold;">
+                            🧾 Generate Bill
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="${pageContext.request.contextPath}/js/billing.js"></script>
 </body>
 </html>

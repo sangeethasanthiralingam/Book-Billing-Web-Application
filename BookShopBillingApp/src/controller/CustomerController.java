@@ -1,18 +1,19 @@
 package controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import dao.BillDAO;
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import dao.UserDAO;
-import dao.BillDAO;
-import model.User;
 import model.Bill;
 import model.BillItem;
+import model.User;
 
 /**
  * Controller for customer-related operations

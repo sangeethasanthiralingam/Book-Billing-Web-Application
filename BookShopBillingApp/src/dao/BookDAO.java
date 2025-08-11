@@ -202,4 +202,41 @@ public class BookDAO {
         }
         return 0;
     }
+    
+    public List<Book> searchBooks(String searchTerm) {
+        List<Book> books = new ArrayList<>();
+        String query = "SELECT * FROM books WHERE (title LIKE ? OR author LIKE ? OR isbn LIKE ?) AND is_active = 1 ORDER BY title";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Book book = new Book();
+                book.setId(rs.getInt("id"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setIsbn(rs.getString("isbn"));
+                book.setPrice(rs.getDouble("price"));
+                book.setQuantity(rs.getInt("quantity"));
+                book.setCategory(rs.getString("category"));
+                book.setPublisher(rs.getString("publisher"));
+                book.setPublicationYear(rs.getObject("publication_year") != null ? rs.getInt("publication_year") : null);
+                book.setActive(rs.getBoolean("is_active"));
+                book.setCoverImage(rs.getString("cover_image"));
+                book.setLanguage(rs.getString("language"));
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Database error: " + e.getMessage());
+        }
+        return books;
+    }
 } 

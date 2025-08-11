@@ -444,4 +444,28 @@ public class BillDAO {
         }
         return stats;
     }
-} 
+    
+    /**
+     * Save individual bill item
+     */
+    public boolean saveBillItem(BillItem item) {
+        String query = "INSERT INTO bill_items (bill_id, book_id, quantity, unit_price, total) VALUES (?, ?, ?, ?, ?)";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, item.getBillId());
+            stmt.setInt(2, item.getBookId());
+            stmt.setInt(3, item.getQuantity());
+            stmt.setDouble(4, item.getPrice());
+            stmt.setDouble(5, item.getPrice() * item.getQuantity()); // Calculate total
+            
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}

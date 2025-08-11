@@ -21,7 +21,6 @@ public class FrontControllerServlet extends HttpServlet {
     private final AuthController authController = new AuthController();
     private final BookController bookController = new BookController();
     private final CustomerController customerController = new CustomerController();
-    private final UserController userController = new UserController();
     private final BillingController billingController = new BillingController();
     private final DashboardController dashboardController = new DashboardController();
     private final ReportController reportController = new ReportController();
@@ -44,12 +43,20 @@ public class FrontControllerServlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
         String action = pathInfo != null ? pathInfo.substring(1) : "";
+        
+        System.out.println("[FrontController] Request URI: " + request.getRequestURI());
+        System.out.println("[FrontController] Path Info: " + pathInfo);
+        System.out.println("[FrontController] Action: " + action);
+        System.out.println("[FrontController] Method: " + request.getMethod());
 
         // Check authentication (except for login and register)
         if (!action.equals("login") && !action.equals("register") && !isAuthenticated(request)) {
+            System.out.println("[FrontController] User not authenticated, redirecting to login");
             response.sendRedirect(request.getContextPath() + "/jsp/login.jsp");
             return;
         }
+        
+        System.out.println("[FrontController] User authenticated, proceeding with routing");
 
         try {
             routeRequest(action, request, response);
@@ -63,6 +70,7 @@ public class FrontControllerServlet extends HttpServlet {
     private void routeRequest(String action, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        System.out.println("[FrontController] Routing action: '" + action + "'");
         // Authentication routes
         switch (action) {
             case "login":
@@ -139,24 +147,25 @@ public class FrontControllerServlet extends HttpServlet {
                 customerController.handleGenerateAccountNumber(request, response);
                 break;
                 
-            // User management routes (Admin only)
+            // User management routes (Admin only) - handled by customer controller for now
             case "add-user":
-                userController.handleAddUser(request, response);
+                customerController.handleCreateCustomer(request, response);
                 break;
             case "users":
-                userController.handleUsers(request, response);
+                customerController.handleCustomers(request, response);
                 break;
             case "edit-user":
-                userController.handleEditUser(request, response);
+                customerController.handleCustomerForm(request, response);
                 break;
             case "delete-user":
-                userController.handleDeleteUser(request, response);
+                customerController.handleDeleteCustomer(request, response);
                 break;
             case "cashiers":
-                userController.handleCashiers(request, response);
+                customerController.handleCustomers(request, response);
                 break;
             case "leaderboard":
-                userController.handleCashierLeaderboard(request, response);
+                // TODO: Implement leaderboard functionality
+                handleHelp(request, response);
                 break;
                 
             // Billing routes
@@ -168,6 +177,13 @@ public class FrontControllerServlet extends HttpServlet {
                 break;
             case "generate-bill":
                 billingController.handleGenerateBill(request, response);
+                break;
+            case "search-books-billing":
+                billingController.handleSearchBooks(request, response);
+                break;
+            case "search-customers-billing":
+                System.out.println("[FrontController] Matched search-customers-billing route");
+                billingController.handleSearchCustomers(request, response);
                 break;
                 
             // Dashboard routes
@@ -198,6 +214,7 @@ public class FrontControllerServlet extends HttpServlet {
                 
             // Default route
             default:
+                System.out.println("[FrontController] No route matched, using default route");
                 handleDefaultRoute(request, response);
                 break;
         }
