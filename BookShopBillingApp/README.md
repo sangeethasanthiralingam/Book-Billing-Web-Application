@@ -545,3 +545,4 @@ The BookShop Billing Application is now a complete, modern, and production-ready
 
 <!-- powershell -ExecutionPolicy Bypass -File build-web.ps1 -->
 <!-- .\deploy-tomcat.ps1 -Clean -StartTomcat   -->
+<!-- powershell.exe -ExecutionPolicy Bypass -File ./deploy-tomcat.ps1 -Clean -StartTomcat -->
