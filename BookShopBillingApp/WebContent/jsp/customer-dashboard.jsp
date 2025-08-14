@@ -36,6 +36,9 @@
                 <a href="${pageContext.request.contextPath}/controller/customer-reset-password" class="btn btn-secondary">
                     🔐 Change Password
                 </a>
+                <a href="${pageContext.request.contextPath}/controller/customer-store" class="btn btn-success">
+                    🛒 Shop Books
+                </a>
             </div>
         </div>
         
