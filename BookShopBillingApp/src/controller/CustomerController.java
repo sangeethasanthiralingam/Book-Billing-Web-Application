@@ -310,6 +310,254 @@ public class CustomerController extends BaseController {
     }
     
     /**
+     * Handle customer store page
+     */
+    public void handleCustomerStore(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            dao.BookDAO bookDAO = new dao.BookDAO();
+            String search = getParameter(request, "search", "");
+            String category = getParameter(request, "category", "");
+            String priceRange = getParameter(request, "priceRange", "");
+            
+            List<model.Book> books = bookDAO.getAllBooks();
+            
+            // Apply filters
+            books = filterBooksForStore(books, search, category, priceRange);
+            
+            // Get unique categories
+            java.util.Set<String> categories = new java.util.HashSet<>();
+            List<model.Book> allBooks = bookDAO.getAllBooks();
+            for (model.Book book : allBooks) {
+                if (book.getCategory() != null && !book.getCategory().trim().isEmpty()) {
+                    categories.add(book.getCategory());
+                }
+            }
+            
+            request.setAttribute("books", books);
+            request.setAttribute("categories", categories);
+            addCommonAttributes(request);
+            
+        } catch (Exception e) {
+            handleException(request, response, e, "loading customer store");
+        }
+        request.getRequestDispatcher("/jsp/customer-store.jsp").forward(request, response);
+    }
+    
+    /**
+     * Handle customer order placement
+     */
+    public void handleCustomerPlaceOrder(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String userRole = getUserRole(request);
+        Integer userId = getUserId(request);
+        
+        if (!"CUSTOMER".equals(userRole) || userId == null) {
+            sendJsonError(response, "Only customers can place orders");
+            return;
+        }
+        
+        try {
+            // Read JSON from request body
+            java.io.BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String jsonData = sb.toString();
+            
+            // Parse order data
+            org.json.JSONObject orderData = new org.json.JSONObject(jsonData);
+            int customerId = orderData.getInt("customerId");
+            String paymentMethod = orderData.getString("paymentMethod");
+            boolean isDelivery = orderData.optBoolean("isDelivery", false);
+            String deliveryAddress = orderData.optString("deliveryAddress", "");
+            org.json.JSONArray itemsArray = orderData.getJSONArray("items");
+            
+            // Validate customer
+            if (customerId != userId) {
+                sendJsonError(response, "Invalid customer ID");
+                return;
+            }
+            
+            // Get customer and create bill
+            dao.UserDAO userDAO = new dao.UserDAO();
+            User customer = userDAO.getUserById(customerId);
+            
+            if (customer == null) {
+                sendJsonError(response, "Customer not found");
+                return;
+            }
+            
+            // Create bill items and calculate totals
+            dao.BookDAO bookDAO = new dao.BookDAO();
+            List<model.BillItem> billItems = new ArrayList<>();
+            double subtotal = 0.0;
+            
+            for (int i = 0; i < itemsArray.length(); i++) {
+                org.json.JSONObject itemData = itemsArray.getJSONObject(i);
+                int bookId = itemData.getInt("bookId");
+                int quantity = itemData.getInt("quantity");
+                double price = itemData.getDouble("price");
+                
+                // Validate book and stock
+                model.Book book = bookDAO.getBookById(bookId);
+                if (book == null) {
+                    sendJsonError(response, "Book not found: " + bookId);
+                    return;
+                }
+                
+                if (book.getQuantity() < quantity) {
+                    sendJsonError(response, "Insufficient stock for: " + book.getTitle());
+                    return;
+                }
+                
+                // Create bill item
+                model.BillItem billItem = new model.BillItem();
+                billItem.setBook(book);
+                billItem.setQuantity(quantity);
+                billItem.setUnitPrice(price);
+                billItem.setTotal(quantity * price);
+                
+                billItems.add(billItem);
+                subtotal += billItem.getTotal();
+            }
+            
+            // Calculate bill totals
+            double tax = subtotal * 0.10; // 10% tax
+            double total = subtotal + tax;
+            
+            // Create bill
+            model.Bill bill = new model.Bill();
+            bill.setBillNumber("ORD-" + System.currentTimeMillis());
+            bill.setCustomer(customer);
+            bill.setCashier(customer); // Customer is both customer and cashier for self-service
+            bill.setSubtotal(subtotal);
+            bill.setDiscount(0.0);
+            bill.setTax(tax);
+            bill.setTotal(total);
+            bill.setPaymentMethod(paymentMethod);
+            bill.setStatus("PENDING");
+            bill.setDelivery(isDelivery);
+            bill.setDeliveryAddress(deliveryAddress);
+            bill.setItems(billItems);
+            
+            // Save bill
+            dao.BillDAO billDAO = new dao.BillDAO();
+            boolean success = billDAO.saveBill(bill);
+            
+            if (success) {
+                // Update book quantities
+                for (model.BillItem item : billItems) {
+                    bookDAO.updateQuantity(item.getBook().getId(), item.getQuantity());
+                }
+                
+                // Send success response
+                org.json.JSONObject response_data = new org.json.JSONObject();
+                response_data.put("success", true);
+                response_data.put("billId", bill.getId());
+                response_data.put("billNumber", bill.getBillNumber());
+                response_data.put("total", total);
+                response_data.put("message", "Order placed successfully");
+                
+                sendJsonResponse(response, response_data.toString());
+            } else {
+                sendJsonError(response, "Failed to place order");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendJsonError(response, "Error placing order: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handle customer order confirmation
+     */
+    public void handleCustomerOrderConfirmation(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String userRole = getUserRole(request);
+        Integer userId = getUserId(request);
+        
+        if (!"CUSTOMER".equals(userRole) || userId == null) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+            return;
+        }
+        
+        String billIdStr = request.getParameter("billId");
+        if (billIdStr == null || billIdStr.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/controller/customer-dashboard");
+            return;
+        }
+        
+        try {
+            int billId = Integer.parseInt(billIdStr);
+            dao.BillDAO billDAO = new dao.BillDAO();
+            model.Bill bill = billDAO.getBillById(billId);
+            
+            // Verify this bill belongs to the current customer
+            if (bill == null || bill.getCustomer().getId() != userId) {
+                response.sendRedirect(request.getContextPath() + "/controller/customer-dashboard");
+                return;
+            }
+            
+            List<model.BillItem> billItems = billDAO.getBillItems(billId);
+            
+            request.setAttribute("bill", bill);
+            request.setAttribute("billItems", billItems);
+            addCommonAttributes(request);
+            
+        } catch (Exception e) {
+            handleException(request, response, e, "loading order confirmation");
+        }
+        
+        request.getRequestDispatcher("/jsp/customer-order-confirmation.jsp").forward(request, response);
+    }
+    
+    /**
+     * Handle getting book details for modal (AJAX)
+     */
+    public void handleGetBookDetails(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            String bookIdStr = request.getParameter("id");
+            if (bookIdStr == null || bookIdStr.trim().isEmpty()) {
+                sendJsonError(response, "Book ID is required");
+                return;
+            }
+            
+            int bookId = Integer.parseInt(bookIdStr);
+            dao.BookDAO bookDAO = new dao.BookDAO();
+            model.Book book = bookDAO.getBookById(bookId);
+            
+            if (book == null) {
+                sendJsonError(response, "Book not found");
+                return;
+            }
+            
+            // Convert book to JSON
+            org.json.JSONObject bookJson = new org.json.JSONObject();
+            bookJson.put("id", book.getId());
+            bookJson.put("title", book.getTitle());
+            bookJson.put("author", book.getAuthor());
+            bookJson.put("isbn", book.getIsbn());
+            bookJson.put("price", book.getPrice());
+            bookJson.put("quantity", book.getQuantity());
+            bookJson.put("category", book.getCategory());
+            bookJson.put("publisher", book.getPublisher());
+            bookJson.put("publicationYear", book.getPublicationYear());
+            bookJson.put("language", book.getLanguage());
+            bookJson.put("coverImage", book.getCoverImage());
+            
+            sendJsonResponse(response, bookJson.toString());
+            
+        } catch (Exception e) {
+            sendJsonError(response, "Error fetching book details: " + e.getMessage());
+        }
+    }
+    
+    /**
      * Handle viewing a single customer
      */
     public void handleViewCustomer(HttpServletRequest request, HttpServletResponse response) 
@@ -703,5 +951,51 @@ public class CustomerController extends BaseController {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    private List<model.Book> filterBooksForStore(List<model.Book> books, String search, String category, String priceRange) {
+        List<model.Book> filtered = new ArrayList<>();
+        
+        for (model.Book book : books) {
+            boolean matches = true;
+            
+            // Search filter
+            if (search != null && !search.trim().isEmpty()) {
+                String term = search.trim().toLowerCase();
+                matches &= (book.getTitle() != null && book.getTitle().toLowerCase().contains(term)) ||
+                          (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(term)) ||
+                          (book.getIsbn() != null && book.getIsbn().toLowerCase().contains(term));
+            }
+            
+            // Category filter
+            if (category != null && !category.trim().isEmpty()) {
+                matches &= category.equals(book.getCategory());
+            }
+            
+            // Price range filter
+            if (priceRange != null && !priceRange.trim().isEmpty()) {
+                double price = book.getPrice();
+                switch (priceRange) {
+                    case "0-500":
+                        matches &= price <= 500;
+                        break;
+                    case "500-1000":
+                        matches &= price > 500 && price <= 1000;
+                        break;
+                    case "1000-2000":
+                        matches &= price > 1000 && price <= 2000;
+                        break;
+                    case "2000+":
+                        matches &= price > 2000;
+                        break;
+                }
+            }
+            
+            if (matches) {
+                filtered.add(book);
+            }
+        }
+        
+        return filtered;
     }
 } 
