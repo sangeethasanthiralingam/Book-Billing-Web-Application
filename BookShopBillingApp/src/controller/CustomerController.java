@@ -341,7 +341,7 @@ public class CustomerController extends BaseController {
         } catch (Exception e) {
             handleException(request, response, e, "loading customer store");
         }
-        request.getRequestDispatcher("/jsp/customer-store.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
     }
     
     /**

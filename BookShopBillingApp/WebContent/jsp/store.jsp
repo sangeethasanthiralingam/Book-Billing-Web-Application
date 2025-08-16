@@ -153,31 +153,60 @@
 
     // --- Collection logic with localStorage ---
     let collection = JSON.parse(localStorage.getItem('collection') || '[]');
-    function saveCollection() { localStorage.setItem('collection', JSON.stringify(collection)); updateCollectionDisplay(); }
-    function addToCollectionFromData(btn) { const book = JSON.parse(btn.getAttribute('data-book')); if (!collection.some(b => b.id === book.id)) { collection.push(book); saveCollection(); } }
-    function removeFromCollection(id) { collection = collection.filter(b => b.id !== id); saveCollection(); }
+    
+    function saveCollection() { 
+        localStorage.setItem('collection', JSON.stringify(collection)); 
+        updateCollectionDisplay(); 
+    }
+    
+    function addToCollectionFromData(btn) { 
+        const book = JSON.parse(btn.getAttribute('data-book')); 
+        if (!collection.some(b => b.id == book.id)) { 
+            collection.push(book); 
+            saveCollection();
+            showNotification('Book added to collection!', 'success');
+        } else {
+            showNotification('Book already in collection!', 'info');
+        }
+    }
+    
+    function removeFromCollection(id) { 
+        collection = collection.filter(b => b.id != id); 
+        saveCollection(); 
+        showNotification('Book removed from collection!', 'success');
+    }
     function updateCollectionDisplay() {
         const listDiv = document.getElementById('collectionList');
         const countSpan = document.getElementById('collectionCount');
+        
         if (countSpan) countSpan.textContent = collection.length;
         if (!listDiv) return;
+        
         if (collection.length === 0) {
             listDiv.innerHTML = '<div class="no-books"><p>No books in your collection.</p></div>';
         } else {
             let html = '<ul style="list-style:none;padding:0;">';
             collection.forEach(book => {
-                html += `<li style='margin-bottom:0.5rem;'>
-                    <span><b>${book.title}</b> (LKR ${book.price})</span>
-                    <button style='margin-left:1rem;background:var(--color-error);color:#fff;border:none;border-radius:5px;padding:0.2rem 0.7rem;cursor:pointer;' onclick='removeFromCollection(${book.id})'>Remove</button>
+                html += `<li style='margin-bottom:0.5rem; padding:0.5rem; border:1px solid #eee; border-radius:5px;'>
+                    <div><b>${book.title}</b></div>
+                    <div style='font-size:0.9rem; color:#666;'>by ${book.author}</div>
+                    <div style='color:var(--color-teal); font-weight:bold;'>LKR ${book.price}</div>
+                    <button style='margin-top:0.3rem;background:var(--color-error);color:#fff;border:none;border-radius:3px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;' onclick='removeFromCollection("${book.id}")'>Remove</button>
                 </li>`;
             });
             html += '</ul>';
             listDiv.innerHTML = html;
         }
     }
+    
     function toggleCollectionSidebar() {
         const sidebar = document.getElementById('collectionSidebar');
-        if (sidebar.style.display === 'none' || !sidebar.style.display) { sidebar.style.display = 'block'; updateCollectionDisplay(); } else { sidebar.style.display = 'none'; }
+        if (sidebar.style.right === '-340px' || !sidebar.style.right) { 
+            sidebar.style.right = '0px'; 
+            updateCollectionDisplay(); 
+        } else { 
+            sidebar.style.right = '-340px'; 
+        }
     }
     function openCollectionModal() { document.getElementById('collectionModal').style.display = 'flex'; }
     function closeCollectionModal() { document.getElementById('collectionModal').style.display = 'none'; }
@@ -194,7 +223,7 @@
         // Get the correct base path
         var basePath = '${pageContext.request.contextPath}';
         if (!basePath) {
-            basePath = window.location.pathname.split('/jsp')[0];
+            basePath = '/bookshop-billing';
         }
         
         fetch(`${basePath}/controller/send-collection`, {

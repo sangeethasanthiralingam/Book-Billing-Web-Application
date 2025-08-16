@@ -21,7 +21,7 @@
         </c:if>
         <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
             <a href="${pageContext.request.contextPath}/controller/customer-dashboard" class="button">My Dashboard</a>
-            <a href="${pageContext.request.contextPath}/controller/customer-store" class="button">📚 Shop Books</a>
+            <a href="${pageContext.request.contextPath}/controller/store" class="button">📚 Shop Books</a>
         </c:if>
         <a href="${pageContext.request.contextPath}/controller/help" class="button">Help</a>
         <c:if test="${not empty sessionScope.user}">
