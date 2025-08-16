@@ -56,13 +56,6 @@ src/decorator/PremiumBookDecorator.java
 src/decorator/DiscountBookDecorator.java
 src/template/ReportTemplate.java
 src/template/SalesReportTemplate.java
-src/template/DailySalesReportTemplate.java
-src/template/MonthlySalesReportTemplate.java
-src/template/RevenueReportTemplate.java
 src/visitor/BookVisitor.java
 src/visitor/SalesReportVisitor.java
-src/visitor/InventoryVisitor.java
-src/visitor/RevenueVisitor.java
 src/memento/BillHistory.java
-src/memento/BillMemento.java
-src/memento/BillCaretaker.java
