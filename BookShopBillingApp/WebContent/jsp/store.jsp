@@ -182,33 +182,56 @@
     function openCollectionModal() { document.getElementById('collectionModal').style.display = 'flex'; }
     function closeCollectionModal() { document.getElementById('collectionModal').style.display = 'none'; }
     function sendCollection() {
-        if (collection.length === 0) return;
+        if (collection.length === 0) {
+            showNotification('No books in collection to send!', 'error');
+            return;
+        }
         const btn = document.getElementById('sendCollectionBtn');
         btn.disabled = true;
         document.getElementById('collectionMsg').textContent = 'Sending...';
         const note = document.getElementById('collectionNote').value;
-        var basePath = window.location.pathname.replace(/\/jsp\/store\.jsp$/, '');
-        fetch(`${window.location.origin}${basePath}/controller/send-collection`, {
+        
+        // Get the correct base path
+        var basePath = '${pageContext.request.contextPath}';
+        if (!basePath) {
+            basePath = window.location.pathname.split('/jsp')[0];
+        }
+        
+        fetch(`${basePath}/controller/send-collection`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({books: collection, note: note})
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        })
         .then(data => {
             if (data.success) {
                 document.getElementById('collectionMsg').textContent = 'Collection sent to admin!';
+                showNotification('Collection sent successfully to admin!', 'success');
                 collection = [];
                 saveCollection();
                 document.getElementById('collectionNote').value = '';
                 closeCollectionModal();
+                setTimeout(() => {
+                    document.getElementById('collectionMsg').textContent = '';
+                }, 3000);
             } else {
-                document.getElementById('collectionMsg').textContent = 'Failed: ' + data.message;
+                document.getElementById('collectionMsg').textContent = 'Failed: ' + (data.message || 'Unknown error');
+                showNotification('Failed to send collection: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(err => {
+            console.error('Error sending collection:', err);
             document.getElementById('collectionMsg').textContent = 'Error sending collection.';
+            showNotification('Error sending collection. Please try again.', 'error');
         })
-        .finally(() => { btn.disabled = false; });
+        .finally(() => { 
+            btn.disabled = false; 
+        });
     }
     document.addEventListener('DOMContentLoaded', function() { updateCollectionDisplay(); });
     </script>

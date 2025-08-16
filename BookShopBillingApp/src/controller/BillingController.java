@@ -16,10 +16,32 @@ import model.BillItem;
 import model.Book;
 import model.User;
 
+// Design Pattern Imports
+import command.*;
+import observer.*;
+import state.*;
+import decorator.*;
+import template.*;
+import visitor.*;
+
 /**
- * Controller for billing operations
+ * Enhanced Controller for billing operations using multiple design patterns
+ * Integrates: Command, Observer, State, Decorator, Template, and Visitor patterns
  */
 public class BillingController extends BaseController {
+    
+    // Design Pattern Components
+    private final OrderInvoker orderInvoker;
+    private final OrderManager orderManager;
+    
+    public BillingController() {
+        this.orderInvoker = new OrderInvoker();
+        this.orderManager = OrderManager.getInstance();
+        
+        // Register observers
+        orderManager.registerObserver(new InventoryObserver());
+        orderManager.registerObserver(new CustomerNotificationObserver("admin@bookshop.com", "Admin"));
+    }
     
     /**
      * Handle billing page
@@ -113,12 +135,20 @@ public class BillingController extends BaseController {
             String isDeliveryStr = extractJsonValue(jsonData, "isDelivery");
             String deliveryAddress = extractJsonValue(jsonData, "deliveryAddress");
             
-            System.out.println("[BillingController] customerId: " + customerIdStr);
-            System.out.println("[BillingController] paymentMethod: " + paymentMethod);
+            System.out.println("[BillingController] customerId: '" + customerIdStr + "'");
+            System.out.println("[BillingController] paymentMethod: '" + paymentMethod + "'");
+            System.out.println("[BillingController] isDelivery: '" + isDeliveryStr + "'");
+            System.out.println("[BillingController] deliveryAddress: '" + deliveryAddress + "'");
 
-            if (customerIdStr == null || paymentMethod == null) {
-                System.out.println("[BillingController] Missing required data - customerId or paymentMethod null");
-                sendJsonError(response, "Missing required data: customerId or paymentMethod");
+            if (customerIdStr == null || customerIdStr.trim().isEmpty()) {
+                System.out.println("[BillingController] Missing or empty customerId");
+                sendJsonError(response, "Missing required data: customerId");
+                return;
+            }
+            
+            if (paymentMethod == null || paymentMethod.trim().isEmpty()) {
+                System.out.println("[BillingController] Missing or empty paymentMethod");
+                sendJsonError(response, "Missing required data: paymentMethod");
                 return;
             }
             
@@ -307,13 +337,23 @@ public class BillingController extends BaseController {
     
     private String extractJsonValue(String json, String key) {
         try {
-            String pattern = "\"" + key + "\"\\s*:\\s*\"([^\"]*)\"";
-            java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
+            // Try string value first
+            String stringPattern = "\"" + key + "\"\\s*:\\s*\"([^\"]*)\"";
+            java.util.regex.Pattern p = java.util.regex.Pattern.compile(stringPattern);
             java.util.regex.Matcher m = p.matcher(json);
             if (m.find()) {
                 return m.group(1);
             }
+            
+            // Try numeric value (without quotes)
+            String numericPattern = "\"" + key + "\"\\s*:\\s*([0-9]+)";
+            p = java.util.regex.Pattern.compile(numericPattern);
+            m = p.matcher(json);
+            if (m.find()) {
+                return m.group(1);
+            }
         } catch (Exception e) {
+            System.out.println("[BillingController] Error extracting JSON value for key '" + key + "': " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -481,6 +521,236 @@ public class BillingController extends BaseController {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    /**
+     * Apply Decorator Pattern to enhance books with premium features
+     */
+    private List<CartItem> applyBookDecorators(List<CartItem> cartItems) {
+        List<CartItem> enhancedItems = new ArrayList<>();
+        
+        try {
+            BookDAO bookDAO = new BookDAO();
+            
+            for (CartItem item : cartItems) {
+                Book book = bookDAO.getBookById(item.bookId);
+                if (book != null) {
+                    // Apply premium decoration for high-value books
+                    if (book.getPrice() > 50.0) {
+                        PremiumBookDecorator premiumBook = new PremiumBookDecorator(book, "Hardcover Edition");
+                        premiumBook.applyDecoration();
+                        
+                        // Update item price with premium pricing
+                        CartItem enhancedItem = new CartItem();
+                        enhancedItem.bookId = item.bookId;
+                        enhancedItem.quantity = item.quantity;
+                        enhancedItem.price = premiumBook.getDecoratedPrice();
+                        enhancedItems.add(enhancedItem);
+                        
+                        System.out.println("Applied premium decoration to book: " + book.getTitle());
+                    } else {
+                        // Apply discount decoration for regular books
+                        DiscountBookDecorator discountBook = new DiscountBookDecorator(book, 5.0);
+                        discountBook.applyDecoration();
+                        
+                        CartItem enhancedItem = new CartItem();
+                        enhancedItem.bookId = item.bookId;
+                        enhancedItem.quantity = item.quantity;
+                        enhancedItem.price = discountBook.getDecoratedPrice();
+                        enhancedItems.add(enhancedItem);
+                        
+                        System.out.println("Applied discount decoration to book: " + book.getTitle());
+                    }
+                } else {
+                    enhancedItems.add(item); // Keep original if book not found
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error applying decorators: " + e.getMessage());
+            return cartItems; // Return original items if decoration fails
+        }
+        
+        return enhancedItems;
+    }
+    
+    /**
+     * Generate sales report using Template Pattern
+     */
+    public void handleGenerateReport(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String reportType = request.getParameter("reportType");
+            if (reportType == null) reportType = "SALES";
+            
+            // Use Template Pattern for report generation
+            SalesReportTemplate reportTemplate = new SalesReportTemplate();
+            String report = reportTemplate.generateReport(reportType);
+            
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(report);
+            
+            System.out.println("Generated report using Template Pattern: " + reportType);
+            
+        } catch (Exception e) {
+            sendJsonError(response, "Error generating report: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handle order state management
+     */
+    public void handleOrderState(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String billIdStr = request.getParameter("billId");
+            String action = request.getParameter("action");
+            
+            if (billIdStr == null || action == null) {
+                sendJsonError(response, "Missing billId or action parameter");
+                return;
+            }
+            
+            int billId = Integer.parseInt(billIdStr);
+            BillDAO billDAO = new BillDAO();
+            Bill bill = billDAO.getBillById(billId);
+            
+            if (bill == null) {
+                sendJsonError(response, "Bill not found");
+                return;
+            }
+            
+            // Use State Pattern for order management
+            OrderContext orderContext = new OrderContext(bill);
+            
+            switch (action.toLowerCase()) {
+                case "process":
+                    orderContext.processOrder();
+                    break;
+                case "cancel":
+                    orderContext.cancelOrder();
+                    break;
+                case "complete":
+                    orderContext.completeOrder();
+                    break;
+                default:
+                    sendJsonError(response, "Invalid action: " + action);
+                    return;
+            }
+            
+            // Notify observers
+            orderManager.updateOrderStatus(billId, orderContext.getCurrentStateName(), 
+                                         "Order state changed to: " + orderContext.getCurrentStateName());
+            
+            String json = "{\"success\":true,\"newState\":\"" + orderContext.getCurrentStateName() + "\"}";
+            sendJsonResponse(response, json);
+            
+        } catch (Exception e) {
+            sendJsonError(response, "Error managing order state: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handle command history operations
+     */
+    public void handleCommandHistory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String action = request.getParameter("action");
+            
+            if ("undo".equals(action)) {
+                boolean success = orderInvoker.undoLastCommand();
+                String json = "{\"success\":" + success + ",\"message\":\"" + 
+                             (success ? "Command undone successfully" : "No commands to undo") + "\"}";
+                sendJsonResponse(response, json);
+            } else if ("history".equals(action)) {
+                List<OrderCommand> history = orderInvoker.getCommandHistory();
+                StringBuilder json = new StringBuilder("{\"commands\":[");
+                
+                for (int i = 0; i < history.size(); i++) {
+                    if (i > 0) json.append(",");
+                    OrderCommand cmd = history.get(i);
+                    json.append("{\"type\":\"" + cmd.getCommandType() + "\",\"description\":\"" + 
+                               escapeJson(cmd.getDescription()) + "\"}");
+                }
+                
+                json.append("]}");
+                sendJsonResponse(response, json.toString());
+            } else {
+                sendJsonError(response, "Invalid action: " + action);
+            }
+            
+        } catch (Exception e) {
+            sendJsonError(response, "Error handling command history: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Demonstrate all design patterns in action
+     */
+    public void handlePatternDemo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            StringBuilder demo = new StringBuilder();
+            demo.append("=== DESIGN PATTERNS DEMONSTRATION ===\n\n");
+            
+            // 1. Singleton Pattern (already in use)
+            demo.append("1. SINGLETON PATTERN:\n");
+            demo.append("   - OrderManager instance: ").append(OrderManager.getInstance().hashCode()).append("\n");
+            demo.append("   - Same instance check: ").append(OrderManager.getInstance() == OrderManager.getInstance()).append("\n\n");
+            
+            // 2. Command Pattern
+            demo.append("2. COMMAND PATTERN:\n");
+            demo.append("   - Commands in history: ").append(orderInvoker.getHistorySize()).append("\n");
+            demo.append("   - Pending commands: ").append(orderInvoker.getPendingCount()).append("\n\n");
+            
+            // 3. Observer Pattern
+            demo.append("3. OBSERVER PATTERN:\n");
+            demo.append("   - Registered observers: ").append(orderManager.getObservers().size()).append("\n");
+            for (OrderObserver observer : orderManager.getObservers()) {
+                demo.append("   - Observer: ").append(observer.getObserverId()).append("\n");
+            }
+            demo.append("\n");
+            
+            // 4. State Pattern Demo
+            demo.append("4. STATE PATTERN:\n");
+            Bill dummyBill = new Bill();
+            dummyBill.setBillNumber("DEMO-" + System.currentTimeMillis());
+            OrderContext demoContext = new OrderContext(dummyBill);
+            demo.append("   - Initial state: ").append(demoContext.getCurrentStateName()).append("\n");
+            demoContext.processOrder();
+            demo.append("   - After processing: ").append(demoContext.getCurrentStateName()).append("\n\n");
+            
+            // 5. Decorator Pattern Demo
+            demo.append("5. DECORATOR PATTERN:\n");
+            Book demoBook = new Book();
+            demoBook.setTitle("Demo Book");
+            demoBook.setPrice(25.99);
+            PremiumBookDecorator premiumDemo = new PremiumBookDecorator(demoBook, "Demo Premium");
+            demo.append("   - Original price: $").append(demoBook.getPrice()).append("\n");
+            demo.append("   - Decorated price: $").append(premiumDemo.getDecoratedPrice()).append("\n\n");
+            
+            // 6. Template Pattern Demo
+            demo.append("6. TEMPLATE PATTERN:\n");
+            SalesReportTemplate templateDemo = new SalesReportTemplate();
+            demo.append("   - Report type: ").append(templateDemo.getReportType()).append("\n");
+            demo.append("   - Supported types: ").append(String.join(", ", templateDemo.getSupportedReportTypes())).append("\n\n");
+            
+            // 7. Visitor Pattern Demo
+            demo.append("7. VISITOR PATTERN:\n");
+            SalesReportVisitor visitorDemo = new SalesReportVisitor();
+            visitorDemo.visit(demoBook);
+            demo.append("   - Visitor applied to demo book\n\n");
+            
+            demo.append("=== ALL PATTERNS SUCCESSFULLY DEMONSTRATED ===\n");
+            
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(demo.toString());
+            
+        } catch (Exception e) {
+            sendJsonError(response, "Error in pattern demonstration: " + e.getMessage());
+        }
     }
     
     /**

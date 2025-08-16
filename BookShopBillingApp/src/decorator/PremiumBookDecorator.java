@@ -36,7 +36,7 @@ public class PremiumBookDecorator extends AbstractBookDecorator {
         if (!decorationApplied) {
             applyDecoration();
         }
-        return "⭐ " + book.getTitle() + " ⭐ [PREMIUM: " + premiumFeature + "]";
+        return "[PREMIUM] " + book.getTitle() + " [" + premiumFeature + "]";
     }
     
     @Override

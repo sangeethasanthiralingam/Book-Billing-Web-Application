@@ -273,18 +273,28 @@ let selectedCustomerData = null;
 let cartItems = [];
 
 function selectCustomer(customerId) {
+    console.log('Selecting customer with ID:', customerId);
+    
     // Find customer data from the last search results
     fetch(`/bookshop-billing/controller/search-customers-billing?searchTerm=`)
         .then(response => response.json())
         .then(customers => {
-            const customer = customers.find(c => c.id === customerId);
+            console.log('Available customers:', customers);
+            const customer = customers.find(c => c.id == customerId); // Use == for type coercion
             if (customer) {
                 selectedCustomerData = customer;
+                console.log('Selected customer data:', selectedCustomerData);
                 displaySelectedCustomer(customer);
                 hideCustomerSearchResults();
+            } else {
+                console.error('Customer not found with ID:', customerId);
+                showMessage('Customer not found', 'error');
             }
         })
-        .catch(error => console.error('Error fetching customer:', error));
+        .catch(error => {
+            console.error('Error fetching customer:', error);
+            showMessage('Error selecting customer', 'error');
+        });
 }
 
 function displaySelectedCustomer(customer) {
@@ -519,17 +529,32 @@ function escapeHtml(text) {
 }
 
 function generateBill() {
+    console.log('=== GENERATE BILL DEBUG ===');
+    console.log('selectedCustomerData:', selectedCustomerData);
+    console.log('cartItems:', cartItems);
+    console.log('paymentMethod element:', document.getElementById('paymentMethod'));
+    
     if (!selectedCustomerData) {
+        console.log('ERROR: No customer selected');
         showMessage('Please select a customer first.', 'error');
         return;
     }
     
     if (cartItems.length === 0) {
+        console.log('ERROR: No items in cart');
         showMessage('Please add items to cart first.', 'error');
         return;
     }
     
     const paymentMethod = document.getElementById('paymentMethod').value;
+    console.log('paymentMethod value:', paymentMethod);
+    
+    if (!paymentMethod) {
+        console.log('ERROR: No payment method selected');
+        showMessage('Please select a payment method.', 'error');
+        return;
+    }
+    
     const generateButton = document.querySelector('.btn-success');
     
     // Show loading state
@@ -538,16 +563,18 @@ function generateBill() {
     showLoading(generateButton.parentElement);
     
     const billData = {
-        customerId: selectedCustomerData.id,
+        customerId: String(selectedCustomerData.id),
         paymentMethod: paymentMethod,
-        isDelivery: false,
-        deliveryAddress: '',
+        isDelivery: "false",
+        deliveryAddress: "",
         items: cartItems.map(item => ({
             bookId: item.id,
             quantity: item.quantity,
             price: item.price
         }))
     };
+    
+    console.log('Sending bill data:', JSON.stringify(billData, null, 2));
     
     fetch('/bookshop-billing/controller/generate-bill', {
         method: 'POST',

@@ -72,6 +72,9 @@
                 <a href="${pageContext.request.contextPath}/controller/invoice" class="action-btn btn-danger" title="Generate and print invoices for customers">
                     <span class="action-icon">🧾</span> Generate Invoice
                 </a>
+                <a href="${pageContext.request.contextPath}/jsp/design-patterns.jsp" class="action-btn btn-success" title="Demonstrate all design patterns in action">
+                    <span class="action-icon">🎯</span> Design Patterns Demo
+                </a>
             </div>
         </div>
         
@@ -82,24 +85,59 @@
                 <thead>
                     <tr>
                         <th>Bill #</th>
+                        <th>Customer</th>
                         <th>Date</th>
                         <th>Total</th>
-                        <th>Payment Method</th>
+                        <th>Payment</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for (model.Bill bill : (java.util.List<model.Bill>)request.getAttribute("recentBills")) { %>
                     <tr>
-                        <td>${bill.billNumber}</td>
-                        <td>${bill.billDate}</td>
-                        <td>$${String.format("%.2f", bill.total)}</td>
-                        <td>${bill.paymentMethod}</td>
-                        <td>${bill.status}</td>
+                        <td><strong><%= bill.getBillNumber() %></strong></td>
+                        <td>
+                            <% if (bill.getCustomer() != null) { %>
+                                <%= bill.getCustomer().getFullName() %>
+                                <% if (bill.getCustomer().getPhone() != null) { %>
+                                    <br><small><%= bill.getCustomer().getPhone() %></small>
+                                <% } %>
+                            <% } else { %>
+                                <em>N/A</em>
+                            <% } %>
+                        </td>
+                        <td><%= new java.text.SimpleDateFormat("MMM dd, yyyy HH:mm").format(bill.getBillDate()) %></td>
+                        <td><strong>$<%= String.format("%.2f", bill.getTotal()) %></strong></td>
+                        <td><%= bill.getPaymentMethod() %></td>
+                        <td>
+                            <span class="status-badge status-<%= bill.getStatus().toLowerCase() %>">
+                                <%= bill.getStatus() %>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/controller/invoice?billId=<%= bill.getId() %>" 
+                               class="btn-small btn-primary" target="_blank" title="View Invoice">
+                                📄 Invoice
+                            </a>
+                        </td>
                     </tr>
                     <% } %>
                 </tbody>
             </table>
+            <div class="table-footer">
+                <p><em>Showing last 5 transactions</em></p>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="recent-transactions">
+            <h2 class="section-title"><span class="section-icon">🧾</span>Recent Transactions</h2>
+            <div class="no-data">
+                <p>No recent transactions found.</p>
+                <a href="${pageContext.request.contextPath}/controller/billing" class="btn btn-primary">
+                    Create Your First Bill
+                </a>
+            </div>
         </div>
         <% } %>
     </div>

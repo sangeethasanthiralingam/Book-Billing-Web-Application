@@ -13,25 +13,26 @@
     <div class="container">
         <div class="invoice">
             <div class="invoice-header">
-                <div class="invoice-title">📚 BookShop</div>
-                <div class="invoice-number">Invoice #BILL-2024-001</div>
+                <div class="invoice-title">📚 ${systemName != null ? systemName : 'BookShop Billing System'}</div>
+                <div class="invoice-number">Invoice #${bill != null ? bill.billNumber : 'N/A'}</div>
             </div>
             
             <div class="invoice-body">
+                <% if (request.getAttribute("bill") != null) { %>
                 <div class="invoice-info">
                     <div class="info-section">
                         <h3>Bill To</h3>
                         <div class="info-row">
                             <span class="info-label">Name:</span>
-                            <span class="info-value">John Doe</span>
+                            <span class="info-value">${bill.customer != null ? bill.customer.fullName : 'N/A'}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Phone:</span>
-                            <span class="info-value">+1 (555) 123-4567</span>
+                            <span class="info-value">${bill.customer != null && bill.customer.phone != null ? bill.customer.phone : 'N/A'}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Email:</span>
-                            <span class="info-value">john.doe@email.com</span>
+                            <span class="info-value">${bill.customer != null && bill.customer.email != null ? bill.customer.email : 'N/A'}</span>
                         </div>
                     </div>
                     
@@ -39,15 +40,15 @@
                         <h3>Bill Details</h3>
                         <div class="info-row">
                             <span class="info-label">Date:</span>
-                            <span class="info-value">January 15, 2024</span>
+                            <span class="info-value">${bill.billDate != null ? bill.billDate : 'N/A'}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Time:</span>
-                            <span class="info-value">14:30:25</span>
+                            <span class="info-label">Payment:</span>
+                            <span class="info-value">${bill.paymentMethod != null ? bill.paymentMethod : 'N/A'}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Cashier:</span>
-                            <span class="info-value">Sarah Johnson</span>
+                            <span class="info-value">${bill.cashier != null ? bill.cashier.fullName : 'N/A'}</span>
                         </div>
                     </div>
                 </div>
@@ -63,41 +64,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>The Great Gatsby</td>
-                            <td>F. Scott Fitzgerald</td>
-                            <td>2</td>
-                            <td>$12.99</td>
-                            <td>$25.98</td>
-                        </tr>
-                        <tr>
-                            <td>To Kill a Mockingbird</td>
-                            <td>Harper Lee</td>
-                            <td>1</td>
-                            <td>$14.99</td>
-                            <td>$14.99</td>
-                        </tr>
+                        <% if (request.getAttribute("billItems") != null && !((java.util.List)request.getAttribute("billItems")).isEmpty()) { %>
+                            <% for (model.BillItem item : (java.util.List<model.BillItem>)request.getAttribute("billItems")) { %>
+                            <tr>
+                                <td><%= item.getBook() != null ? item.getBook().getTitle() : "N/A" %></td>
+                                <td><%= item.getBook() != null ? item.getBook().getAuthor() : "N/A" %></td>
+                                <td><%= item.getQuantity() %></td>
+                                <td>$<%= String.format("%.2f", item.getUnitPrice()) %></td>
+                                <td>$<%= String.format("%.2f", item.getTotal()) %></td>
+                            </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #999;">No items found</td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
                 
                 <div class="total-section">
                     <div class="total-row">
                         <span>Subtotal:</span>
-                        <span>$40.97</span>
+                        <span>$${String.format("%.2f", bill.subtotal)}</span>
                     </div>
                     <div class="total-row">
-                        <span>Discount (10%):</span>
-                        <span>-$4.10</span>
+                        <span>Discount:</span>
+                        <span>-$${String.format("%.2f", bill.discount)}</span>
                     </div>
                     <div class="total-row">
-                        <span>Tax (8.5%):</span>
-                        <span>$3.13</span>
+                        <span>Tax:</span>
+                        <span>$${String.format("%.2f", bill.tax)}</span>
                     </div>
                     <div class="total-row final">
                         <span>Total Amount:</span>
-                        <span>$40.00</span>
+                        <span>$${String.format("%.2f", bill.total)}</span>
                     </div>
                 </div>
+                <% } else { %>
+                <div class="no-data">
+                    <p>No bill data found.</p>
+                </div>
+                <% } %>
                 
                 <div class="actions">
                     <button class="action-btn print-btn" onclick="window.print()">🖨️ Print</button>

@@ -454,6 +454,17 @@ h1, h2, h3, .logo {
     box-shadow: 0 4px 12px var(--shadow-teal);
 }
 
+.btn-success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: var(--color-text-light);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
 .btn:hover {
     text-decoration: none;
 }
@@ -522,11 +533,15 @@ h1, h2, h3, .logo {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .transaction-table th,
 .transaction-table td {
-    padding: 0.6rem 0.5rem;
+    padding: 12px 8px;
     text-align: left;
     border-bottom: 1px solid var(--color-border-eee);
     vertical-align: middle;
@@ -536,14 +551,68 @@ h1, h2, h3, .logo {
     background-color: var(--color-bg-fa);
     font-weight: 600;
     color: var(--color-text-primary);
+    font-size: 14px;
 }
 
 .transaction-table tr {
-    height: 44px;
+    transition: background-color 0.2s ease;
 }
 
 .transaction-table tr:hover {
     background-color: var(--color-hover-tint);
+}
+
+.transaction-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.table-footer {
+    text-align: center;
+    margin-top: 15px;
+    color: #666;
+    font-style: italic;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.no-data p {
+    margin-bottom: 20px;
+    font-size: 16px;
 }
 
 .books-table,
@@ -2511,7 +2580,8 @@ body.error-page {
     .action-buttons,
     .form-actions,
     .btn,
-    .no-print {
+    .no-print,
+    .actions {
         display: none !important;
     }
     
@@ -2519,6 +2589,97 @@ body.error-page {
         max-width: none !important;
         margin: 0 !important;
         padding: 0 !important;
+    }
+    
+    .invoice {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 20px !important;
+        margin: 0 !important;
+    }
+    
+    .invoice-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #333;
+    }
+    
+    .invoice-title {
+        font-size: 24pt;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .invoice-number {
+        font-size: 14pt;
+        color: #666;
+    }
+    
+    .invoice-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .info-section h3 {
+        font-size: 14pt;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+    
+    .info-row {
+        margin-bottom: 8px;
+        font-size: 11pt;
+    }
+    
+    .info-label {
+        font-weight: bold;
+    }
+    
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        font-size: 10pt;
+    }
+    
+    .items-table th,
+    .items-table td {
+        border: 1px solid #333;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    .items-table th {
+        background: #f0f0f0;
+        font-weight: bold;
+    }
+    
+    .total-section {
+        margin-top: 30px;
+        text-align: right;
+    }
+    
+    .total-row {
+        margin-bottom: 8px;
+        font-size: 11pt;
+    }
+    
+    .total-row.final {
+        font-size: 14pt;
+        font-weight: bold;
+        border-top: 2px solid #333;
+        padding-top: 10px;
+        margin-top: 15px;
+    }
+    
+    body {
+        font-size: 12pt;
+        background: white !important;
+        color: black !important;
     }
     
     .form-card,
@@ -2531,15 +2692,9 @@ body.error-page {
         page-break-inside: avoid;
     }
     
-    body {
-        font-size: 12pt;
-        background: white !important;
-    }
-    
     .transaction-table,
     .books-table,
-    .customers-table,
-    .items-table {
+    .customers-table {
         font-size: 10pt;
     }
 }

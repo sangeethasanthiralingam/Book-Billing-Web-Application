@@ -208,7 +208,7 @@ PERSONAL.md
 *.note
 
 # Documentation files (move to docs/ folder)
-*.md
+# *.md
 !README.md
 /docs/
 

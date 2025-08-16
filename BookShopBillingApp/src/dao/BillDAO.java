@@ -78,7 +78,8 @@ public class BillDAO {
     }
     
     public Bill getBillById(int id) {
-        String query = "SELECT b.*, u1.full_name as customer_name, u2.full_name as cashier_name " +
+        String query = "SELECT b.*, u1.full_name as customer_name, u1.phone as customer_phone, u1.email as customer_email, " +
+                      "u2.full_name as cashier_name " +
                       "FROM bills b " +
                       "JOIN users u1 ON b.customer_id = u1.id " +
                       "JOIN users u2 ON b.cashier_id = u2.id " +
@@ -101,6 +102,20 @@ public class BillDAO {
                 bill.setTotal(rs.getDouble("total"));
                 bill.setPaymentMethod(rs.getString("payment_method"));
                 bill.setStatus(rs.getString("status"));
+                
+                // Create customer object
+                model.User customer = new model.User();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullName(rs.getString("customer_name"));
+                customer.setPhone(rs.getString("customer_phone"));
+                customer.setEmail(rs.getString("customer_email"));
+                bill.setCustomer(customer);
+                
+                // Create cashier object
+                model.User cashier = new model.User();
+                cashier.setId(rs.getInt("cashier_id"));
+                cashier.setFullName(rs.getString("cashier_name"));
+                bill.setCashier(cashier);
                 
                 // Load bill items
                 bill.setItems(getBillItems(id));
@@ -231,7 +246,8 @@ public class BillDAO {
     
     public List<Bill> getRecentBills(int limit) {
         List<Bill> bills = new ArrayList<>();
-        String query = "SELECT b.*, u1.full_name as customer_name, u2.full_name as cashier_name " +
+        String query = "SELECT b.*, u1.full_name as customer_name, u1.phone as customer_phone, " +
+                      "u2.full_name as cashier_name " +
                       "FROM bills b " +
                       "JOIN users u1 ON b.customer_id = u1.id " +
                       "JOIN users u2 ON b.cashier_id = u2.id " +
@@ -254,6 +270,18 @@ public class BillDAO {
                 bill.setTotal(rs.getDouble("total"));
                 bill.setPaymentMethod(rs.getString("payment_method"));
                 bill.setStatus(rs.getString("status"));
+                
+                // Create customer and cashier objects
+                model.User customer = new model.User();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullName(rs.getString("customer_name"));
+                customer.setPhone(rs.getString("customer_phone"));
+                bill.setCustomer(customer);
+                
+                model.User cashier = new model.User();
+                cashier.setId(rs.getInt("cashier_id"));
+                cashier.setFullName(rs.getString("cashier_name"));
+                bill.setCashier(cashier);
                 
                 bills.add(bill);
             }
@@ -336,7 +364,12 @@ public class BillDAO {
 
     public List<Bill> getRecentBillsByCashier(int cashierId, int limit) {
         List<Bill> bills = new ArrayList<>();
-        String query = "SELECT * FROM bills WHERE cashier_id = ? ORDER BY bill_date DESC LIMIT ?";
+        String query = "SELECT b.*, u1.full_name as customer_name, u1.phone as customer_phone, " +
+                      "u2.full_name as cashier_name " +
+                      "FROM bills b " +
+                      "JOIN users u1 ON b.customer_id = u1.id " +
+                      "JOIN users u2 ON b.cashier_id = u2.id " +
+                      "WHERE b.cashier_id = ? ORDER BY b.bill_date DESC LIMIT ?";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, cashierId);
@@ -353,6 +386,19 @@ public class BillDAO {
                 bill.setTotal(rs.getDouble("total"));
                 bill.setPaymentMethod(rs.getString("payment_method"));
                 bill.setStatus(rs.getString("status"));
+                
+                // Create customer and cashier objects
+                model.User customer = new model.User();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullName(rs.getString("customer_name"));
+                customer.setPhone(rs.getString("customer_phone"));
+                bill.setCustomer(customer);
+                
+                model.User cashier = new model.User();
+                cashier.setId(rs.getInt("cashier_id"));
+                cashier.setFullName(rs.getString("cashier_name"));
+                bill.setCashier(cashier);
+                
                 bills.add(bill);
             }
         } catch (SQLException e) {

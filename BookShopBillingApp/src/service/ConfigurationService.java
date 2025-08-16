@@ -57,6 +57,13 @@ public class ConfigurationService {
         configCache.put("ACCOUNT_LENGTH", "6");
         configCache.put("LOW_STOCK_THRESHOLD", "5");
         configCache.put("AUTO_RESTOCK_ENABLED", "false");
+        // Email configuration
+        configCache.put("smtp.host", "smtp.gmail.com");
+        configCache.put("smtp.port", "587");
+        configCache.put("smtp.username", "your-email@gmail.com");
+        configCache.put("smtp.password", "your-app-password");
+        configCache.put("smtp.from", "your-email@gmail.com");
+        configCache.put("admin.email", "admin@pahanaedu.com");
     }
     
     private void refreshCache() {

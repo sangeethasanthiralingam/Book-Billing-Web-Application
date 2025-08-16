@@ -21,6 +21,7 @@ public class FrontControllerServlet extends HttpServlet {
     private final AuthController authController = new AuthController();
     private final BookController bookController = new BookController();
     private final CustomerController customerController = new CustomerController();
+    private final UserController userController = new UserController();
     private final BillingController billingController = new BillingController();
     private final DashboardController dashboardController = new DashboardController();
     private final ReportController reportController = new ReportController();
@@ -147,25 +148,24 @@ public class FrontControllerServlet extends HttpServlet {
                 customerController.handleGenerateAccountNumber(request, response);
                 break;
                 
-            // User management routes (Admin only) - handled by customer controller for now
+            // User management routes (Admin only)
             case "add-user":
-                customerController.handleCreateCustomer(request, response);
+                userController.handleAddUser(request, response);
                 break;
             case "users":
-                customerController.handleCustomers(request, response);
+                userController.handleUsers(request, response);
                 break;
             case "edit-user":
-                customerController.handleCustomerForm(request, response);
+                userController.handleEditUser(request, response);
                 break;
             case "delete-user":
-                customerController.handleDeleteCustomer(request, response);
+                userController.handleDeleteUser(request, response);
                 break;
             case "cashiers":
-                customerController.handleCustomers(request, response);
+                userController.handleCashiers(request, response);
                 break;
             case "leaderboard":
-                // TODO: Implement leaderboard functionality
-                handleHelp(request, response);
+                userController.handleCashierLeaderboard(request, response);
                 break;
                 
             // Billing routes
@@ -186,6 +186,20 @@ public class FrontControllerServlet extends HttpServlet {
                 billingController.handleSearchCustomers(request, response);
                 break;
                 
+            // Design Pattern routes - NEW FUNCTIONALITY
+            case "pattern-demo":
+                billingController.handlePatternDemo(request, response);
+                break;
+            case "generate-report":
+                billingController.handleGenerateReport(request, response);
+                break;
+            case "order-state":
+                billingController.handleOrderState(request, response);
+                break;
+            case "command-history":
+                billingController.handleCommandHistory(request, response);
+                break;
+                
             // Dashboard routes
             case "dashboard":
                 dashboardController.handleDashboard(request, response);
@@ -194,6 +208,9 @@ public class FrontControllerServlet extends HttpServlet {
             // Report routes
             case "reports":
                 reportController.handleReports(request, response);
+                break;
+            case "pattern-reports":
+                billingController.handleGenerateReport(request, response);
                 break;
                 
             // Configuration routes
@@ -294,10 +311,15 @@ public class FrontControllerServlet extends HttpServlet {
             System.out.println("================================");
             
             try {
-                util.MailUtil.sendMailHtml(adminEmail, "Book Collection Request from " + customerName, html.toString());
-                System.out.println("Email sent successfully to admin: " + adminEmail);
+                if (adminEmail != null && !adminEmail.isEmpty() && !"your-email@gmail.com".equals(adminEmail)) {
+                    util.MailUtil.sendMailHtml(adminEmail, "Book Collection Request from " + customerName, html.toString());
+                    System.out.println("Email sent successfully to admin: " + adminEmail);
+                } else {
+                    System.out.println("Admin email not configured. Please configure SMTP settings in system config.");
+                }
             } catch (Exception emailException) {
                 System.err.println("Failed to send email: " + emailException.getMessage());
+                emailException.printStackTrace();
             }
             
             response.setContentType("application/json");
