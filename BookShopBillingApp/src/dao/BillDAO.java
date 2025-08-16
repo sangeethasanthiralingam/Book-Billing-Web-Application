@@ -514,4 +514,70 @@ public class BillDAO {
         }
         return false;
     }
+    
+    /**
+     * Get collection requests (bills with status COLLECTION_REQUEST)
+     */
+    public List<Bill> getCollectionRequests(int limit) {
+        List<Bill> requests = new ArrayList<>();
+        String query = "SELECT * FROM bills WHERE status = 'PENDING' AND payment_method = 'COLLECTION' ORDER BY bill_date DESC LIMIT ?";
+        
+        System.out.println("DEBUG: Executing query: " + query);
+        System.out.println("DEBUG: Limit: " + limit);
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            
+            int count = 0;
+            
+            while (rs.next()) {
+                count++;
+                System.out.println("DEBUG: Found collection request #" + count + ": " + rs.getString("bill_number"));
+                
+                Bill request = new Bill();
+                request.setId(rs.getInt("id"));
+                request.setBillNumber(rs.getString("bill_number"));
+                request.setBillDate(rs.getTimestamp("bill_date"));
+                request.setStatus(rs.getString("status"));
+                request.setTotal(rs.getDouble("total"));
+                
+                // Get customer separately
+                model.User customer = getUserById(rs.getInt("customer_id"));
+                request.setCustomer(customer);
+                
+                // Load bill items (requested books)
+                request.setItems(getBillItems(request.getId()));
+                
+                requests.add(request);
+            }
+            
+            System.out.println("DEBUG: Total collection requests found: " + requests.size());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return requests;
+    }
+    
+    private model.User getUserById(int userId) {
+        String query = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                model.User user = new model.User();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -68,7 +68,7 @@
             </div>
             <div class="stat-card">
                 <h3>📖 Books Bought</h3>
-                <div class="stat-number">${customer.getUnitsConsumed() != null ? customer.getUnitsConsumed() : 0}</div>
+                <div class="stat-number">${totalItems != null ? totalItems : 0}</div>
                 <div class="stat-text">Total books purchased</div>
             </div>
         </div>

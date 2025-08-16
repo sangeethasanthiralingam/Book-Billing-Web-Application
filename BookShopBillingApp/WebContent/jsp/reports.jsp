@@ -137,11 +137,11 @@
             <div class="filter-fields">
                 <div class="form-group">
                     <label>Date From</label>
-                    <input type="date" value="2024-01-01">
+                    <input type="date" id="dateFrom">
                 </div>
                 <div class="form-group">
                     <label>Date To</label>
-                    <input type="date" value="2024-01-31">
+                    <input type="date" id="dateTo">
                 </div>
                 <div class="form-group">
                     <label>Report Type</label>
@@ -162,12 +162,12 @@
             <div class="report-card">
                 <div class="report-header">
                     <div class="report-title">📊 Sales Summary</div>
-                    <div class="report-subtitle">January 2024</div>
+                    <div class="report-subtitle">August 2025</div>
                 </div>
                 <div class="report-body">
                     <div class="metric">
                         <span class="metric-label">Total Sales</span>
-                        <span class="metric-value">$${totalBills != null ? String.format("%.2f", totalBills * 50.82) : "0.00"}</span>
+                        <span class="metric-value">$${totalSales != null ? String.format("%.2f", totalSales) : "0.00"}</span>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Total Bills</span>
@@ -179,7 +179,7 @@
                     </div>
                     <div class="metric">
                         <span class="metric-label">Average Bill Value</span>
-                        <span class="metric-value">$${totalBills != null && totalBills > 0 ? String.format("%.2f", (totalBills * 50.82) / totalBills) : "0.00"}</span>
+                        <span class="metric-value">${todayCustomers != null ? todayCustomers : 0}</span>
                     </div>
                 </div>
             </div>
@@ -262,11 +262,67 @@
         <div class="export-section">
             <h3 class="mb-1rem">Export Reports</h3>
             <div class="export-buttons">
-                <button class="export-btn export-pdf">📄 Export as PDF</button>
-                <button class="export-btn export-excel">📊 Export to Excel</button>
-                <button class="export-btn export-csv">📋 Export as CSV</button>
+                <button class="export-btn export-pdf" onclick="exportToPDF()">📄 Export as PDF</button>
+                <button class="export-btn export-excel" onclick="exportToExcel()">📊 Export to Excel</button>
+                <button class="export-btn export-csv" onclick="exportToCSV()">📋 Export as CSV</button>
             </div>
         </div>
+        
+        <script>
+        function exportToPDF() {
+            window.print();
+        }
+        
+        function exportToExcel() {
+            const data = getReportData();
+            const csv = convertToCSV(data);
+            downloadFile(csv, 'reports.xls', 'application/vnd.ms-excel');
+        }
+        
+        function exportToCSV() {
+            const data = getReportData();
+            const csv = convertToCSV(data);
+            downloadFile(csv, 'reports.csv', 'text/csv');
+        }
+        
+        function getReportData() {
+            const metrics = document.querySelectorAll('.metric');
+            const data = [['Metric', 'Value']];
+            metrics.forEach(metric => {
+                const label = metric.querySelector('.metric-label')?.textContent || '';
+                const value = metric.querySelector('.metric-value')?.textContent || '';
+                if (label && value) data.push([label, value]);
+            });
+            return data;
+        }
+        
+        function convertToCSV(data) {
+            return data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+        
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Set current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const currentDate = today.toISOString().split('T')[0];
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            
+            const dateFrom = document.getElementById('dateFrom');
+            const dateTo = document.getElementById('dateTo');
+            
+            if (dateFrom) dateFrom.value = firstDay;
+            if (dateTo) dateTo.value = currentDate;
+        });
+        </script>
         <% } %>
     </div>
 </body>

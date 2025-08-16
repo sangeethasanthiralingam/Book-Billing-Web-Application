@@ -115,6 +115,7 @@ BookShopBillingApp/
 ### Core Functionality
 - **User Authentication**: Login/logout with role-based access
 - **Book Management**: Add, edit, delete, and search books
+- **Customer Store**: Browse books, build collections, send to admin
 - **Billing System**: Create bills with multiple items and payment methods
 - **Invoice Generation**: Generate and print invoices
 - **Reports**: Sales, inventory, and revenue reports
@@ -131,7 +132,7 @@ BookShopBillingApp/
 ### User Roles
 - **ADMIN**: Full system access
 - **CASHIER**: Billing and inventory access
-- **CUSTOMER**: View and purchase books
+- **CUSTOMER**: Browse store, build collections, view purchase history
 
 ## 🛠️ Technology Stack
 
@@ -371,6 +372,24 @@ cp -r bin/* WebContent/WEB-INF/classes/
 - Real-time form validation
 - Interactive elements with hover effects
 - Professional invoice layout
+- Collection management with localStorage
+- AJAX-based notifications
+
+## 📚 Store & Collection Features
+
+### Customer Store (`/controller/store`)
+- **Book Browsing**: Grid layout with book covers, titles, authors, prices
+- **Search & Filter**: Search by title/author/category, category dropdown
+- **My Collection**: Personal book collection with localStorage persistence
+- **Collection Management**: Add/remove books, view collection sidebar
+- **Send to Admin**: Email collection with optional note to admin
+
+### Collection Functionality
+- **Persistent Storage**: Uses localStorage for collection data
+- **Real-time Updates**: Dynamic collection counter and sidebar
+- **Admin Communication**: Send collection requests via AJAX
+- **Notification System**: Success/error messages with animations
+- **Responsive Design**: Mobile-friendly collection interface
 
 ## 🔧 Configuration
 
@@ -393,6 +412,26 @@ private static final String PASSWORD = "your_password";
 2. **Top Selling Books**: Best-selling books with quantities
 3. **Revenue Analysis**: Daily/monthly revenue trends
 4. **Inventory Status**: Stock levels and low stock alerts
+5. **Today's Report**: Current date sales data (Updated: August 16, 2025)
+
+## 🔗 API Endpoints
+
+### Store & Collection
+- `GET /controller/store` - Customer book store with collection feature
+- `POST /controller/send-collection` - Send customer collection to admin (AJAX)
+
+### Book Management
+- `GET /controller/books` - Book listing with search and pagination
+- `GET /controller/search-books` - Advanced book search with filters
+- `POST /controller/add-book` - Add new book (Admin only)
+- `POST /controller/edit-book` - Edit existing book (Admin only)
+- `DELETE /controller/delete-book` - Delete book (Admin only)
+
+### Customer Management
+- `GET /controller/customers` - Customer listing with stats
+- `GET /controller/customer-dashboard` - Customer personal dashboard
+- `POST /controller/search-customers` - AJAX customer search
+- `POST /controller/create-customer` - Create customer via AJAX
 
 ## 🔒 Security Features
 
@@ -568,13 +607,22 @@ powershell -ExecutionPolicy Bypass -File build-web.ps1
 .\deploy-tomcat.ps1 -Clean -StartTomcat
 ```
 
-### **Access Design Patterns Demo**
+### **Access Application Features**
 1. **Main Application**: `http://localhost:8080/bookshop-billing`
-2. **Design Patterns Demo**: `http://localhost:8080/bookshop-billing/jsp/design-patterns.jsp`
-3. **Dashboard Access**: Click "Design Patterns Demo" button
+2. **Customer Store**: `http://localhost:8080/bookshop-billing/controller/store`
+3. **Design Patterns Demo**: `http://localhost:8080/bookshop-billing/jsp/design-patterns.jsp`
+4. **Dashboard Access**: Click "Design Patterns Demo" button
 
-### **Test Pattern APIs**
+### **Test Application APIs**
 ```bash
+# Test Store Functionality
+curl "http://localhost:8080/bookshop-billing/controller/store"
+
+# Test Collection Sending (POST with JSON)
+curl -X POST "http://localhost:8080/bookshop-billing/controller/send-collection" \
+  -H "Content-Type: application/json" \
+  -d '{"books":[{"id":1,"title":"Test Book","author":"Test Author","price":10.99}],"note":"Test collection"}'
+
 # Test Command Pattern
 curl "http://localhost:8080/bookshop-billing/controller/command-history?action=history"
 

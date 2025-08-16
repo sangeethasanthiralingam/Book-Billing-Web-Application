@@ -182,6 +182,10 @@ function showMessage(message, type = 'success') {
     }, 5000);
 }
 
+function showNotification(message, type = 'success') {
+    showMessage(message, type);
+}
+
 function searchCustomer(isRealTime = false) {
     const searchInput = document.getElementById('customerSearch').value;
     console.log('Searching for customers with term:', searchInput);
@@ -272,15 +276,24 @@ function searchBooks(isRealTime = false) {
 let selectedCustomerData = null;
 let cartItems = [];
 
-function selectCustomer(customerId) {
-    console.log('Selecting customer with ID:', customerId);
+function selectCustomer(customerOrId) {
+    console.log('Selecting customer:', customerOrId);
     
-    // Find customer data from the last search results
+    // If it's already a customer object, use it directly
+    if (typeof customerOrId === 'object' && customerOrId.id) {
+        selectedCustomerData = customerOrId;
+        displaySelectedCustomer(customerOrId);
+        hideCustomerSearchResults();
+        return;
+    }
+    
+    // Otherwise, fetch by ID
+    const customerId = customerOrId;
     fetch(`/bookshop-billing/controller/search-customers-billing?searchTerm=`)
         .then(response => response.json())
         .then(customers => {
             console.log('Available customers:', customers);
-            const customer = customers.find(c => c.id == customerId); // Use == for type coercion
+            const customer = customers.find(c => c.id == customerId);
             if (customer) {
                 selectedCustomerData = customer;
                 console.log('Selected customer data:', selectedCustomerData);
@@ -372,14 +385,15 @@ function createCustomer(event) {
     });
 }
 
-function addToCart(bookId, bookTitle, bookPrice, bookStock) {
+function addToCart(bookId, bookTitle, bookPrice, bookStock, quantity = 1) {
     // Check if book is already in cart
     const existingItem = cartItems.find(item => item.id === bookId);
     
     if (existingItem) {
         // Increase quantity if stock allows
-        if (existingItem.quantity < bookStock) {
-            existingItem.quantity += 1;
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity <= bookStock) {
+            existingItem.quantity = newQuantity;
             showMessage(`Updated ${bookTitle} quantity to ${existingItem.quantity}`, 'success');
         } else {
             showMessage('Cannot add more. Stock limit reached.', 'error');
@@ -391,7 +405,7 @@ function addToCart(bookId, bookTitle, bookPrice, bookStock) {
             id: bookId,
             title: bookTitle,
             price: parseFloat(bookPrice),
-            quantity: 1,
+            quantity: quantity,
             stock: bookStock
         });
         showMessage(`Added ${bookTitle} to cart`, 'success');

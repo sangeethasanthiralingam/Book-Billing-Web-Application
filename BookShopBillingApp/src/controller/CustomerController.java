@@ -338,10 +338,12 @@ public class CustomerController extends BaseController {
             request.setAttribute("categories", categories);
             addCommonAttributes(request);
             
+            request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
+            
         } catch (Exception e) {
             handleException(request, response, e, "loading customer store");
+            return;
         }
-        request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
     }
     
     /**
@@ -589,13 +591,19 @@ public class CustomerController extends BaseController {
 
             List<Bill> bills = billDAO.getBillsByCustomer(userId);
             double totalSpent = 0.0;
+            int totalBooksCount = 0;
             for (Bill bill : bills) {
                 totalSpent += bill.getTotal();
+                List<BillItem> items = billDAO.getBillItems(bill.getId());
+                for (BillItem item : items) {
+                    totalBooksCount += item.getQuantity();
+                }
             }
 
             request.setAttribute("user", customer);
             request.setAttribute("bills", bills);
             request.setAttribute("totalSpent", totalSpent);
+            request.setAttribute("totalBooksCount", totalBooksCount);
             request.setAttribute("billCount", bills.size());
             addCommonAttributes(request);
 

@@ -183,5 +183,35 @@
     </div>
     
     <script src="${pageContext.request.contextPath}/js/billing.js"></script>
+    
+    <% if (request.getAttribute("collectionRequest") != null) { %>
+    <script>
+    // Auto-fill collection request data
+    document.addEventListener('DOMContentLoaded', function() {
+        <% model.Bill collectionRequest = (model.Bill)request.getAttribute("collectionRequest"); %>
+        
+        // Auto-select customer
+        const customer = {
+            id: <%= collectionRequest.getCustomer().getId() %>,
+            fullName: '<%= collectionRequest.getCustomer().getFullName() %>',
+            phone: '<%= collectionRequest.getCustomer().getPhone() %>',
+            email: '<%= collectionRequest.getCustomer().getEmail() %>',
+            accountNumber: '<%= collectionRequest.getCustomer().getAccountNumber() != null ? collectionRequest.getCustomer().getAccountNumber() : "" %>'
+        };
+        
+        // Set global variable and display customer
+        selectedCustomerData = customer;
+        displaySelectedCustomer(customer);
+        
+        // Auto-add books to cart
+        <% for (model.BillItem item : collectionRequest.getItems()) { %>
+        addToCart(<%= item.getBook().getId() %>, '<%= item.getBook().getTitle() %>', <%= item.getUnitPrice() %>, 999, <%= item.getQuantity() %>);
+        <% } %>
+        
+        // Show notification
+        showNotification('Collection request loaded! Customer and books added automatically.', 'success');
+    });
+    </script>
+    <% } %>
 </body>
 </html>

@@ -148,7 +148,7 @@ public class FrontControllerServlet extends HttpServlet {
                 customerController.handleGenerateAccountNumber(request, response);
                 break;
             case "customer-store":
-                customerController.handleCustomerStore(request, response);
+                response.sendRedirect(request.getContextPath() + "/controller/store");
                 break;
             case "customer-place-order":
                 customerController.handleCustomerPlaceOrder(request, response);

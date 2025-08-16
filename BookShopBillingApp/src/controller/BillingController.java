@@ -51,8 +51,26 @@ public class BillingController extends BaseController {
         try {
             BookDAO bookDAO = new BookDAO();
             UserDAO userDAO = new UserDAO();
+            BillDAO billDAO = new BillDAO();
+            
             List<Book> books = bookDAO.getAllBooks();
             List<User> customers = userDAO.getUsersByRole("CUSTOMER");
+            
+            // Check if this is from a collection request
+            String collectionId = request.getParameter("collectionId");
+            if (collectionId != null && !collectionId.isEmpty()) {
+                try {
+                    int billId = Integer.parseInt(collectionId);
+                    Bill collectionRequest = billDAO.getBillById(billId);
+                    if (collectionRequest != null) {
+                        request.setAttribute("collectionRequest", collectionRequest);
+                        request.setAttribute("preSelectedCustomer", collectionRequest.getCustomer());
+                        request.setAttribute("preSelectedBooks", collectionRequest.getItems());
+                    }
+                } catch (NumberFormatException e) {
+                    // Invalid collection ID, ignore
+                }
+            }
             
             request.setAttribute("books", books);
             request.setAttribute("customers", customers);

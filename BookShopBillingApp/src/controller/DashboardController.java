@@ -41,12 +41,19 @@ public class DashboardController extends BaseController {
                 double todaySales = billDAO.getTodaySalesTotal();
                 int todayCustomers = billDAO.getTodayCustomersCount();
                 List<Bill> recentBills = billDAO.getRecentBills(5);
+                
+                // Get collection requests
+                System.out.println("DEBUG: About to call getCollectionRequests(10)");
+                List<Bill> collectionRequests = billDAO.getCollectionRequests(10);
+                System.out.println("DEBUG: getCollectionRequests returned: " + (collectionRequests != null ? collectionRequests.size() : "null") + " items");
+                
                 request.setAttribute("totalBooks", totalBooks);
                 request.setAttribute("lowStockBooks", lowStockBooks);
                 request.setAttribute("todayBills", todayBills);
                 request.setAttribute("todaySales", todaySales);
                 request.setAttribute("todayCustomers", todayCustomers);
                 request.setAttribute("recentBills", recentBills);
+                request.setAttribute("collectionRequests", collectionRequests);
             }
             addCommonAttributes(request);
             

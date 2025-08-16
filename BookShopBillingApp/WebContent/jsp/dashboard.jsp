@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${systemName != null ? systemName : 'Set System Name in Settings'} - Dashboard</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/compact-requests.css">
 </head>
 <body>
     <div class="container">
@@ -140,6 +141,77 @@
             </div>
         </div>
         <% } %>
+        
+        <!-- DEBUG: User Role: <%= session.getAttribute("userRole") %> -->
+        <!-- DEBUG: Collection Requests: <%= request.getAttribute("collectionRequests") %> -->
+        <!-- DEBUG: Collection Requests Size: <%= request.getAttribute("collectionRequests") != null ? ((java.util.List)request.getAttribute("collectionRequests")).size() : "null" %> -->
+        <% if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("ADMIN") && request.getAttribute("collectionRequests") != null && !((java.util.List)request.getAttribute("collectionRequests")).isEmpty()) { %>
+        <div class="collection-requests">
+            <div class="requests-header">
+                <h2 class="section-title"><span class="section-icon">📚</span>Collection Requests (<%= ((java.util.List)request.getAttribute("collectionRequests")).size() %>)</h2>
+                <div class="requests-controls">
+                    <button class="toggle-view-btn" onclick="toggleRequestsView()">📋 Compact View</button>
+                </div>
+            </div>
+            
+            <div class="requests-container" id="requestsContainer">
+                <% for (model.Bill collectionRequest : (java.util.List<model.Bill>)request.getAttribute("collectionRequests")) { %>
+                <div class="request-card-compact">
+                    <div class="request-info">
+                        <div class="customer-summary">
+                            <h4><%= collectionRequest.getCustomer().getFullName() %></h4>
+                            <span class="request-meta"><%= new java.text.SimpleDateFormat("MMM dd").format(collectionRequest.getBillDate()) %> • <%= collectionRequest.getItems().size() %> books • LKR <%= String.format("%.2f", collectionRequest.getTotal()) %></span>
+                        </div>
+                        <div class="request-actions-compact">
+                            <button class="view-details-btn" onclick="toggleDetails(<%= collectionRequest.getId() %>)">👁️</button>
+                            <a href="${pageContext.request.contextPath}/controller/billing?collectionId=<%= collectionRequest.getId() %>" 
+                               class="pay-btn">💳 Pay</a>
+                        </div>
+                    </div>
+                    
+                    <div class="request-details" id="details-<%= collectionRequest.getId() %>" style="display:none;">
+                        <div class="contact-info">
+                            <span>📧 <%= collectionRequest.getCustomer().getEmail() %></span>
+                            <span>📞 <%= collectionRequest.getCustomer().getPhone() %></span>
+                        </div>
+                        <div class="books-summary">
+                            <% for (model.BillItem item : collectionRequest.getItems()) { %>
+                            <div class="book-line">
+                                <span class="book-name"><%= item.getBook().getTitle() %></span>
+                                <span class="book-price">LKR <%= String.format("%.2f", item.getUnitPrice()) %></span>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
     </div>
+
+<script>
+function toggleDetails(requestId) {
+    const details = document.getElementById('details-' + requestId);
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+    } else {
+        details.style.display = 'none';
+    }
+}
+
+function toggleRequestsView() {
+    const container = document.getElementById('requestsContainer');
+    const btn = document.querySelector('.toggle-view-btn');
+    
+    if (container.style.maxHeight === '400px' || !container.style.maxHeight) {
+        container.style.maxHeight = 'none';
+        btn.textContent = '📋 Compact View';
+    } else {
+        container.style.maxHeight = '400px';
+        btn.textContent = '📋 Full View';
+    }
+}
+</script>
 </body>
 </html> 

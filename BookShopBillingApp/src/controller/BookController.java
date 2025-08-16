@@ -212,25 +212,21 @@ public class BookController extends BaseController {
      */
     public void handleStore(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        try {
-            BookDAO bookDAO = new BookDAO();
-            List<Book> books = bookDAO.getAllBooks();
-            
-            // Collect unique categories
-            java.util.Set<String> categories = new java.util.HashSet<>();
-            for (Book book : books) {
-                if (book.getCategory() != null && !book.getCategory().trim().isEmpty()) {
-                    categories.add(book.getCategory());
-                }
+        
+        BookDAO bookDAO = new BookDAO();
+        List<Book> books = bookDAO.getAllBooks();
+        
+        java.util.Set<String> categories = new java.util.HashSet<>();
+        for (Book book : books) {
+            if (book.getCategory() != null && !book.getCategory().trim().isEmpty()) {
+                categories.add(book.getCategory());
             }
-            
-            request.setAttribute("books", books);
-            request.setAttribute("categories", categories);
-            addCommonAttributes(request);
-            
-        } catch (Exception e) {
-            handleException(request, response, e, "loading store");
         }
+        
+        request.setAttribute("books", books);
+        request.setAttribute("categories", categories);
+        request.setAttribute("systemName", "BookShop Billing System");
+        
         request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
     }
     
