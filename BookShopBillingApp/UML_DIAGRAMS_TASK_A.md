@@ -250,7 +250,7 @@ classDiagram
     class Discount {
         <<abstract>>
         #double value
-        +abstract calculateDiscount(double) double
+        +calculateDiscount(double) double
     }
     
     class PercentageDiscount {
@@ -325,39 +325,42 @@ classDiagram
         +processOrder(OrderContext) void
         +cancelOrder(OrderContext) void
         +getStateName() String
-    }
-    
-    class CompletedState {
-        +getStateName() String
+        +getStatus() String
     }
     
     class PendingState {
         +processOrder(OrderContext) void
-        +getStateName() String
+        +getStatus() String
     }
     
     class ProcessingState {
         +processOrder(OrderContext) void
-        +getStateName() String
+        +getStatus() String
     }
     
     class CompletedState {
         +getStateName() String
+        +getStatus() String
     }
     
     %% Decorator Pattern
     class BookDecorator {
-        <<interface>>
-        +getDecoratedPrice() double
-        +getDecoratedTitle() String
-        +applyDecoration() void
+        <<abstract>>
+        #Book book
+        +BookDecorator(Book)
+        +getPrice() double
+        +getDescription() String
     }
     
     class PremiumBookDecorator {
-        -Book book
-        -String premiumFeature
-        +getDecoratedPrice() double
-        +applyDecoration() void
+        +getPrice() double
+        +getDescription() String
+    }
+    
+    class DiscountBookDecorator {
+        -double discountRate
+        +getPrice() double
+        +getDescription() String
     }
     
     %% Template Pattern
@@ -365,28 +368,30 @@ classDiagram
         <<abstract>>
         +generateReport() String
         #collectData() void
-        #formatData() void
-        #generateOutput() String
+        #formatData() String
+        #addHeader() String
+        #addFooter() String
     }
     
     class SalesReportTemplate {
-        +generateReport() String
-        #collectData() void
+        +collectData() void
+        +formatData() String
+        +addHeader() String
+        +addFooter() String
     }
     
     %% Visitor Pattern
     class BookVisitor {
         <<interface>>
         +visit(Book) void
-        +visit(PremiumBookDecorator) void
-        +getReport() String
+        +getResult() Object
     }
     
     class SalesReportVisitor {
-        -double totalRevenue
+        -double totalSales
         -int totalBooks
         +visit(Book) void
-        +getSalesReport() String
+        +getResult() SalesReport
     }
     
     %% Store and Collection Classes
@@ -411,70 +416,6 @@ classDiagram
         +removeBook(Book) void
         +getBooks() List~Book~
         +sendToAdmin() boolean
-    }
-        +abstract processOrder(OrderContext) void
-        +abstract getStatus() String
-    }
-    
-    class PendingState {
-        +processOrder(OrderContext) void
-        +getStatus() String
-    }
-    
-    class ProcessingState {
-        +processOrder(OrderContext) void
-        +getStatus() String
-    }
-    
-    %% Decorator Pattern
-    class BookDecorator {
-        <<abstract>>
-        #Book book
-        +BookDecorator(Book)
-        +abstract getPrice() double
-        +abstract getDescription() String
-    }
-    
-    class PremiumBookDecorator {
-        +getPrice() double
-        +getDescription() String
-    }
-    
-    class DiscountBookDecorator {
-        -double discountRate
-        +getPrice() double
-        +getDescription() String
-    }
-    
-    %% Template Pattern
-    class ReportTemplate {
-        <<abstract>>
-        +generateReport() String
-        #abstract collectData() void
-        #abstract formatData() String
-        #abstract addHeader() String
-        #abstract addFooter() String
-    }
-    
-    class SalesReportTemplate {
-        +collectData() void
-        +formatData() String
-        +addHeader() String
-        +addFooter() String
-    }
-    
-    %% Visitor Pattern
-    class BookVisitor {
-        <<interface>>
-        +visit(Book) void
-        +getResult() Object
-    }
-    
-    class SalesReportVisitor {
-        -double totalSales
-        -int totalBooks
-        +visit(Book) void
-        +getResult() SalesReport
     }
     
     %% Relationships
@@ -509,6 +450,7 @@ classDiagram
     
     OrderState <|-- PendingState
     OrderState <|-- ProcessingState
+    OrderState <|-- CompletedState
     OrderContext --> OrderState
     
     BookDecorator <|-- PremiumBookDecorator
