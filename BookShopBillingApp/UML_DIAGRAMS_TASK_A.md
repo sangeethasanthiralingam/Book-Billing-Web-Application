@@ -419,9 +419,9 @@ classDiagram
     }
     
     %% Relationships
-    User ||--o{ Bill : creates
-    Bill ||--o{ BillItem : contains
-    Book ||--o{ BillItem : references
+    User ||--o{ Bill
+    Bill ||--o{ BillItem
+    Book ||--o{ BillItem
     
     FrontControllerServlet --> BillingController
     BillingController --> BookDAO
