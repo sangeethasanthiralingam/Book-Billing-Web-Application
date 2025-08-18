@@ -65,9 +65,10 @@ graph TB
     Customer --> UC14
     Customer --> UC15
     
-    UC3 ..> UC9 : <<includes>>
-    UC3 ..> UC4 : <<extends>>
-    UC4 ..> UC5 : <<includes>>
+    %% Use edge labels instead of <<include>> / <<extend>>
+    UC3 -.-> UC9  : includes
+    UC3 -.-> UC4  : extends
+    UC4 -.-> UC5  : includes
 ```
 
 ### **Use Case Descriptions:**
