@@ -641,7 +641,6 @@ sequenceDiagram
 4. **Error Handling**: All operations include proper exception handling (not shown for clarity)
 5. **Performance**: Pattern overhead is acceptable for educational and functional benefits
 
----
 
 ## 4. DESIGN DECISIONS SUMMARY
 
@@ -659,88 +658,90 @@ sequenceDiagram
 
 ### **Pattern Selection Rationale:**
 
-1. **Creational Patterns**: Manage object creation complexity and ensure proper initialization
-2. **Structural Patterns**: Organize code structure and provide flexible composition
-3. **Behavioral Patterns**: Handle complex business logic and inter-object communication
+1. **Creational Patterns**: Manage object creation complexity and ensure proper initialization  
+2. **Structural Patterns**: Organize code structure and provide flexible composition  
+3. **Behavioral Patterns**: Handle complex business logic and inter-object communication  
 
 ### **Quality Attributes Addressed:**
-- **Maintainability**: Clear separation of concerns, single responsibility
-- **Extensibility**: Pattern-based design allows easy feature addition
-- **Testability**: Modular design enables unit and integration testing
-- **Performance**: Singleton pattern optimizes resource usage
-- **Security**: Role-based access control and input validation
-- **Usability**: Intuitive user interface with real-time feedback
-
----
+- **Maintainability**: Clear separation of concerns, single responsibility  
+- **Extensibility**: Pattern-based design allows easy feature addition  
+- **Testability**: Modular design enables unit and integration testing  
+- **Performance**: Singleton pattern optimizes resource usage  
+- **Security**: Role-based access control and input validation  
+- **Usability**: Intuitive user interface with real-time feedback  
 
 ## 5. IMPLEMENTATION NOTES
 
 ### **Technology Mapping:**
-- **Use Cases** → JSP pages and Servlet controllers
-- **Classes** → Java classes with proper package structure
-- **Sequences** → HTTP request/response cycles with pattern integration
+- **Use Cases** → JSP pages and Servlet controllers  
+- **Classes** → Java classes with proper package structure  
+- **Sequences** → HTTP request/response cycles with pattern integration  
 
 ### **Database Design:**
-- **Users Table**: Authentication and role management
-- **Books Table**: Inventory management
-- **Bills Table**: Transaction records
-- **Bill_Items Table**: Line item details
+- **Users Table**: Authentication and role management  
+- **Books Table**: Inventory management  
+- **Bills Table**: Transaction records  
+- **Bill_Items Table**: Line item details  
 
 ### **Pattern Implementation Status:**
-✅ All 12 design patterns are fully implemented and integrated
-✅ Interactive demonstration interface available
-✅ Production-ready with comprehensive error handling
-✅ Complete documentation and setup guides
+✅ All 12 design patterns are fully implemented and integrated  
+✅ Interactive demonstration interface available  
+✅ Production-ready with comprehensive error handling  
+✅ Complete documentation and setup guides  
 
 **This UML analysis provides the foundation for a robust, pattern-driven billing system that serves both functional and educational purposes.**
+
+---
+
+```mermaid
+classDiagram
     %% Relationships
-    User ||--o{ Bill : customer
-    User ||--o{ Bill : cashier
-    User ||--o{ Collection : creates
-    Bill ||--o{ BillItem : contains
-    Book ||--o{ BillItem : references
-    Collection ||--o{ Book : contains
-    
-    FrontControllerServlet --> BookController : routes
-    FrontControllerServlet --> CustomerController : routes
-    FrontControllerServlet --> BillingController : routes
-    
-    BookController --> BookDAO : uses
-    CustomerController --> UserDAO : uses
-    BillingController --> BillDAO : uses
-    
-    BookDAO --> DBConnection : uses
-    UserDAO --> DBConnection : uses
-    BillDAO --> DBConnection : uses
-    
+    User --> Bill
+    User --> Collection
+    Bill --> BillItem
+    Book --> BillItem
+    Collection --> Book
+
+    FrontControllerServlet --> BookController
+    FrontControllerServlet --> CustomerController
+    FrontControllerServlet --> BillingController
+
+    BookController --> BookDAO
+    CustomerController --> UserDAO
+    BillingController --> BillDAO
+
+    BookDAO --> DBConnection
+    UserDAO --> DBConnection
+    BillDAO --> DBConnection
+
     PaymentStrategy <|-- CashPayment
     PaymentStrategy <|-- CardPayment
     PaymentStrategy <|-- UpiPayment
-    
+
     Discount <|-- PercentageDiscount
     Discount <|-- FixedDiscount
-    DiscountFactory --> Discount : creates
-    
+    DiscountFactory --> Discount
+
     OrderCommand <|-- CreateOrderCommand
-    OrderInvoker --> OrderCommand : executes
-    
+    OrderInvoker --> OrderCommand
+
     OrderObserver <|-- InventoryObserver
-    OrderManager --> OrderObserver : notifies
-    
+    OrderManager --> OrderObserver
+
     OrderState <|-- PendingState
     OrderState <|-- ProcessingState
     OrderState <|-- CompletedState
-    OrderContext --> OrderState : manages
-    
+    OrderContext --> OrderState
+
     BookDecorator <|-- PremiumBookDecorator
-    PremiumBookDecorator --> Book : decorates
-    
+    BookDecorator --> Book
+
     ReportTemplate <|-- SalesReportTemplate
     BookVisitor <|-- SalesReportVisitor
-    
-    BillingController --> OrderInvoker : uses
-    BillingController --> OrderManager : uses
-    BillingController --> BillBuilder : uses
+
+    BillingController --> OrderInvoker
+    BillingController --> OrderManager
+    BillingController --> BillBuilder
 ```
 
 ### **Design Pattern Integration:**
