@@ -326,6 +326,10 @@ classDiagram
         +getStateName() String
     }
     
+    class CompletedState {
+        +getStateName() String
+    }
+    
     class PendingState {
         +processOrder(OrderContext) void
         +getStateName() String
