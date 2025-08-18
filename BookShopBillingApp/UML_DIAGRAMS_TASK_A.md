@@ -418,48 +418,48 @@ classDiagram
         +sendToAdmin() boolean
     }
     
-    %% Relationships
-    User ||--o{ Bill
-    Bill ||--o{ BillItem
-    Book ||--o{ BillItem
-    
-    FrontControllerServlet --> BillingController
-    BillingController --> BookDAO
-    BillingController --> UserDAO
-    BillingController --> BillDAO
-    
-    BookDAO --> DBConnection
-    UserDAO --> DBConnection
-    BillDAO --> DBConnection
-    
-    PaymentStrategy <|-- CashPayment
-    PaymentStrategy <|-- CardPayment
-    PaymentStrategy <|-- UpiPayment
-    
-    Discount <|-- PercentageDiscount
-    Discount <|-- FixedDiscount
-    DiscountFactory --> Discount
-    
-    BillBuilder --> Bill
-    
-    OrderCommand <|-- CreateOrderCommand
-    OrderInvoker --> OrderCommand
-    
-    OrderObserver <|-- InventoryObserver
-    OrderManager --> OrderObserver
-    
-    OrderState <|-- PendingState
-    OrderState <|-- ProcessingState
-    OrderState <|-- CompletedState
-    OrderContext --> OrderState
-    
-    BookDecorator <|-- PremiumBookDecorator
-    BookDecorator <|-- DiscountBookDecorator
-    BookDecorator --> Book
-    
-    ReportTemplate <|-- SalesReportTemplate
-    
-    BookVisitor <|-- SalesReportVisitor
+%% Relationships
+User --> Bill
+Bill --> BillItem
+Book --> BillItem
+
+FrontControllerServlet --> BillingController
+BillingController --> BookDAO
+BillingController --> UserDAO
+BillingController --> BillDAO
+
+BookDAO --> DBConnection
+UserDAO --> DBConnection
+BillDAO --> DBConnection
+
+PaymentStrategy <|-- CashPayment
+PaymentStrategy <|-- CardPayment
+PaymentStrategy <|-- UpiPayment
+
+Discount <|-- PercentageDiscount
+Discount <|-- FixedDiscount
+DiscountFactory --> Discount
+
+BillBuilder --> Bill
+
+OrderCommand <|-- CreateOrderCommand
+OrderInvoker --> OrderCommand
+
+OrderObserver <|-- InventoryObserver
+OrderManager --> OrderObserver
+
+OrderState <|-- PendingState
+OrderState <|-- ProcessingState
+OrderState <|-- CompletedState
+OrderContext --> OrderState
+
+BookDecorator <|-- PremiumBookDecorator
+BookDecorator <|-- DiscountBookDecorator
+BookDecorator --> Book
+
+ReportTemplate <|-- SalesReportTemplate
+
+BookVisitor <|-- SalesReportVisitor
 ```
 
 ### **Key Design Decisions Explained:**
