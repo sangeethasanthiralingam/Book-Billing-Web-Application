@@ -22,6 +22,15 @@ public class ConfigController extends BaseController {
         try {
             ConfigurationService configService = ConfigurationService.getInstance();
             Map<String, String> configs = configService.getConfigMap();
+            
+            // Ensure all required configs exist with default values
+            if (configs.isEmpty()) {
+                SystemConfigDAO configDAO = new SystemConfigDAO();
+                configDAO.initializeDefaultConfigs();
+                configService.forceRefresh();
+                configs = configService.getConfigMap();
+            }
+            
             request.setAttribute("configs", configs);
             
         } catch (Exception e) {

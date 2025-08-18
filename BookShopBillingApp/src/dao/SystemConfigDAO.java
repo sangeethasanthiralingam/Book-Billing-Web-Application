@@ -33,6 +33,7 @@ public class SystemConfigDAO {
                 config.setActive(rs.getBoolean("is_active"));
                 configs.add(config);
             }
+            
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Database error: " + e.getMessage());
@@ -157,38 +158,76 @@ public class SystemConfigDAO {
     }
     
     public void initializeDefaultConfigs() {
-        // Check if configs already exist
-        if (getAllConfigs().isEmpty()) {
-            addDefaultConfigs();
+        System.out.println("[SystemConfigDAO] Checking if default configs need to be initialized...");
+        
+        // Always try to add default configs (INSERT IGNORE will prevent duplicates)
+        try {
+            String checkQuery = "SELECT COUNT(*) FROM system_configs";
+            try (Connection conn = dbConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(checkQuery);
+                 ResultSet rs = stmt.executeQuery()) {
+                
+                rs.next();
+                int count = rs.getInt(1);
+                System.out.println("[SystemConfigDAO] Found " + count + " existing configs");
+                
+                if (count == 0) {
+                    System.out.println("[SystemConfigDAO] Adding default configurations...");
+                    addDefaultConfigs();
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[SystemConfigDAO] Error checking configs: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
     private void addDefaultConfigs() {
-        // Billing Configuration
-        addConfig(new SystemConfig("UNIT_RATE", "2.50", "Rate per unit consumed", "BILLING"));
-        addConfig(new SystemConfig("TAX_RATE", "0.10", "Tax rate as decimal (10%)", "BILLING"));
-        addConfig(new SystemConfig("DELIVERY_CHARGE", "5.00", "Fixed delivery charge", "BILLING"));
+        System.out.println("[SystemConfigDAO] Adding default configurations to database...");
         
-        // Discount Configuration
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_1_THRESHOLD", "20", "Units threshold for 5% discount", "DISCOUNT"));
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_1_PERCENT", "0.05", "5% discount rate", "DISCOUNT"));
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_2_THRESHOLD", "50", "Units threshold for 10% discount", "DISCOUNT"));
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_2_PERCENT", "0.10", "10% discount rate", "DISCOUNT"));
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_3_THRESHOLD", "100", "Units threshold for 15% discount", "DISCOUNT"));
-        addConfig(new SystemConfig("DISCOUNT_LEVEL_3_PERCENT", "0.15", "15% discount rate", "DISCOUNT"));
+        // Use direct SQL INSERT to ensure configs are added
+        String insertQuery = "INSERT IGNORE INTO system_configs (config_key, config_value, description, category) VALUES (?, ?, ?, ?)";
         
-        // System Configuration
-        // Do not add SYSTEM_NAME or COMPANY_NAME by default. Admin must set it from UI.
-        addConfig(new SystemConfig("COMPANY_ADDRESS", "Colombo City, Sri Lanka", "Company address", "SYSTEM"));
-        addConfig(new SystemConfig("COMPANY_PHONE", "+94 11 1234567", "Company phone number", "SYSTEM"));
-        addConfig(new SystemConfig("COMPANY_EMAIL", "info@pahanaedu.com", "Company email", "SYSTEM"));
+        String[][] defaultConfigs = {
+            {"UNIT_RATE", "2.50", "Rate per unit consumed for billing calculation", "BILLING"},
+            {"TAX_RATE", "0.10", "Tax rate as decimal (e.g., 0.10 for 10%)", "BILLING"},
+            {"DELIVERY_CHARGE", "5.00", "Fixed delivery charge amount", "BILLING"},
+            {"DISCOUNT_LEVEL_1_THRESHOLD", "20", "Units threshold for first discount level", "DISCOUNT"},
+            {"DISCOUNT_LEVEL_1_PERCENT", "0.05", "Discount percentage for level 1 (e.g., 0.05 for 5%)", "DISCOUNT"},
+            {"DISCOUNT_LEVEL_2_THRESHOLD", "50", "Units threshold for second discount level", "DISCOUNT"},
+            {"DISCOUNT_LEVEL_2_PERCENT", "0.10", "Discount percentage for level 2 (e.g., 0.10 for 10%)", "DISCOUNT"},
+            {"DISCOUNT_LEVEL_3_THRESHOLD", "100", "Units threshold for third discount level", "DISCOUNT"},
+            {"DISCOUNT_LEVEL_3_PERCENT", "0.15", "Discount percentage for level 3 (e.g., 0.15 for 15%)", "DISCOUNT"},
+            {"COMPANY_NAME", "Online Billing System Pahana Edu", "Company name displayed on bills and reports", "SYSTEM"},
+            {"COMPANY_ADDRESS", "Colombo City, Sri Lanka", "Company address for bills", "SYSTEM"},
+            {"COMPANY_PHONE", "+94 11 1234567", "Company phone number", "SYSTEM"},
+            {"COMPANY_EMAIL", "info@pahanaedu.com", "Company email address", "SYSTEM"},
+            {"ACCOUNT_PREFIX", "ACC-", "Prefix for customer account numbers", "ACCOUNT"},
+            {"ACCOUNT_LENGTH", "6", "Number of digits in account numbers", "ACCOUNT"},
+            {"LOW_STOCK_THRESHOLD", "5", "Minimum stock level for low stock alerts", "INVENTORY"},
+            {"AUTO_RESTOCK_ENABLED", "false", "Enable automatic restock alerts", "INVENTORY"}
+        };
         
-        // Account Configuration
-        addConfig(new SystemConfig("ACCOUNT_PREFIX", "ACC-", "Prefix for customer account numbers", "ACCOUNT"));
-        addConfig(new SystemConfig("ACCOUNT_LENGTH", "6", "Length of account number digits", "ACCOUNT"));
-        
-        // Inventory Configuration
-        addConfig(new SystemConfig("LOW_STOCK_THRESHOLD", "5", "Minimum stock level for alerts", "INVENTORY"));
-        addConfig(new SystemConfig("AUTO_RESTOCK_ENABLED", "false", "Enable automatic restock alerts", "INVENTORY"));
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
+            
+            for (String[] config : defaultConfigs) {
+                stmt.setString(1, config[0]);
+                stmt.setString(2, config[1]);
+                stmt.setString(3, config[2]);
+                stmt.setString(4, config[3]);
+                
+                int result = stmt.executeUpdate();
+                if (result > 0) {
+                    System.out.println("[SystemConfigDAO] Added config: " + config[0] + " = " + config[1]);
+                }
+            }
+            
+            System.out.println("[SystemConfigDAO] Default configurations added successfully");
+            
+        } catch (SQLException e) {
+            System.err.println("[SystemConfigDAO] Error adding default configs: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 } 
