@@ -4,17 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.BillDAO;
-import dao.BookDAO;
-import dao.UserDAO;
+import dao.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Bill;
-import model.BillItem;
-import model.Book;
-import model.User;
+import model.*;
+import util.*;
 
 // Design Pattern Imports
 import command.*;

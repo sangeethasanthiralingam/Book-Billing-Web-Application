@@ -140,6 +140,16 @@ INSERT INTO system_config (config_key, config_value, description) VALUES
 ('smtp_username', 'your-email@gmail.com', 'SMTP username'),
 ('smtp_password', 'your-app-password', 'SMTP password'),
 ('smtp_from', 'noreply@bookshop.com', 'From email address');
+
+-- Sample collection request (for testing)
+INSERT INTO bills (bill_number, bill_date, customer_id, cashier_id, subtotal, discount, tax, total, payment_method, status) 
+VALUES ('COLL-001', NOW(), 3, 1, 27.98, 0, 0, 27.98, 'COLLECTION', 'PENDING');
+
+-- Sample collection items
+SET @bill_id = LAST_INSERT_ID();
+INSERT INTO bill_items (bill_id, book_id, quantity, unit_price, total) VALUES
+(@bill_id, 1, 1, 12.99, 12.99),
+(@bill_id, 2, 1, 14.99, 14.99);
 ```
 
 ## ⚙️ Application Configuration
@@ -236,6 +246,8 @@ startup.bat   # Windows
 - **Main Application**: http://localhost:8080/bookshop-billing/
 - **Login Page**: http://localhost:8080/bookshop-billing/login.jsp
 - **Admin Dashboard**: http://localhost:8080/bookshop-billing/controller/dashboard
+- **Customer Store**: http://localhost:8080/bookshop-billing/controller/store
+- **Billing System**: http://localhost:8080/bookshop-billing/controller/billing
 
 ### Default Credentials
 - **Admin**: username=`admin`, password=`admin123`
@@ -251,8 +263,23 @@ startup.bat   # Windows
 4. Test all major functionalities:
    - Book management
    - Customer management
+   - Customer store and collection requests
+   - Auto-fill billing from collection requests
    - Billing operations
    - Reports generation
+
+### Collection Requests Workflow Testing
+1. **Customer Side**:
+   - Login as customer or access `/controller/store`
+   - Browse books and add to collection
+   - Send collection request to admin
+
+2. **Admin Side**:
+   - Login as admin
+   - View collection requests on dashboard
+   - Click "💳 Pay" to process payment
+   - Billing page auto-fills customer and books
+   - Complete payment processing
 
 ## 🔧 Troubleshooting
 
@@ -305,14 +332,48 @@ Enable debug logging by adding to `web.xml`:
 ## 📊 Application Features
 
 ### User Roles and Permissions
-- **ADMIN**: Full system access, user management, system configuration
+- **ADMIN**: Full system access, user management, system configuration, collection request management
 - **CASHIER**: Billing operations, inventory management, customer management
-- **CUSTOMER**: View books, make purchases, view purchase history
+- **CUSTOMER**: View books, make purchases, view purchase history, create collection requests
+
+### 🆕 New Features: Collection Requests System
+
+#### Customer Store (`/controller/store`)
+- **Book Browsing**: Grid layout with book covers, search, and category filtering
+- **My Collection**: Personal book collection with localStorage persistence
+- **Collection Management**: Add/remove books, view collection sidebar with totals
+- **Send to Admin**: Email collection requests with optional notes
+- **Real-time Search**: Auto-search functionality with visual feedback
+
+#### Admin Dashboard Enhancement
+- **Collection Requests Display**: Compact cards showing customer requests
+- **Customer Information**: Name, email, phone, request date
+- **Book Details**: Requested books with prices and quantities
+- **Total Calculation**: Automatic total value calculation
+- **Quick Actions**: Direct "💳 Pay" button for processing
+- **Expandable Details**: Click to view full request information
+
+#### Auto-Fill Billing System
+- **Seamless Integration**: Collection requests → Billing page workflow
+- **Auto-Customer Selection**: Customer automatically selected from request
+- **Auto-Book Addition**: All requested books added to cart with quantities
+- **Auto-Amount Calculation**: Subtotal, tax, discount, and total pre-calculated
+- **Ready for Payment**: Just select payment method and process
+
+#### Collection Request Workflow
+1. **Customer**: Browse store → Add books to collection → Send request
+2. **System**: Store request with PENDING status and COLLECTION payment method
+3. **Admin**: View requests on dashboard → Click "💳 Pay"
+4. **Billing**: Auto-filled form → Select payment method → Generate bill
+5. **Completion**: Status changes to PAID, request removed from pending list
 
 ### Core Functionality
 - ✅ User authentication and authorization
 - ✅ Book management (CRUD operations)
 - ✅ Customer management
+- ✅ Customer book store with collection management
+- ✅ Collection requests system (Customer → Admin workflow)
+- ✅ Auto-fill billing from collection requests
 - ✅ Billing and invoice generation
 - ✅ Payment processing (Cash, Card, UPI)
 - ✅ Discount application (Percentage, Fixed)
@@ -402,6 +463,30 @@ tail -f $TOMCAT_HOME/logs/catalina.out
 
 ## ✅ Setup Complete!
 
-Your BookShop Billing Application is now ready to use with the new modular controller architecture. The application provides a solid foundation for a production billing system with modern Java technologies and best practices.
+Your BookShop Billing Application is now ready to use with:
+
+### ✨ **Latest Features (Updated)**
+- ✅ **Modular Controller Architecture**: Clean, maintainable MVC structure
+- ✅ **Customer Store System**: Interactive book browsing with collection management
+- ✅ **Collection Requests**: Customer-to-Admin workflow for book requests
+- ✅ **Auto-Fill Billing**: Seamless integration from requests to payment processing
+- ✅ **Enhanced UI/UX**: Modern, responsive design with animations and notifications
+- ✅ **Compact Dashboard**: Space-efficient collection request management
+- ✅ **Real-time Features**: Auto-search, live updates, and instant feedback
+
+### 🚀 **Ready for Production**
+The application now provides a complete end-to-end solution for:
+- Customer book discovery and collection building
+- Admin request management and processing
+- Streamlined billing and payment workflows
+- Professional invoice generation and reporting
+
+### 📞 **Quick Start**
+1. Access: http://localhost:8080/bookshop-billing
+2. Login as admin (admin/admin123) or customer (customer1/customer123)
+3. Test collection requests: `/controller/store` → Add books → Send to admin
+4. Process payments: Admin dashboard → Collection requests → 💳 Pay
+
+Your modern BookShop Billing System is now fully operational! 🎉he application provides a solid foundation for a production billing system with modern Java technologies and best practices.
 
 For additional features and customizations, refer to the main README.md file and the controller refactoring summary. 
