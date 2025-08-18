@@ -173,6 +173,14 @@
                             <option value="UPI">UPI</option>
                         </select>
                         
+                        <!-- DEBUG: collectionRequest = <%= request.getAttribute("collectionRequest") %> -->
+                        <% if (request.getAttribute("collectionRequest") != null) { %>
+                        <input type="hidden" id="collectionId" value="<%= ((model.Bill)request.getAttribute("collectionRequest")).getId() %>">
+                        <!-- DEBUG: collectionId = <%= ((model.Bill)request.getAttribute("collectionRequest")).getId() %> -->
+                        <% } else { %>
+                        <!-- DEBUG: No collectionRequest found -->
+                        <% } %>
+                        
                         <button type="button" class="btn btn-success" onclick="generateBill()" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold;">
                             🧾 Generate Bill
                         </button>

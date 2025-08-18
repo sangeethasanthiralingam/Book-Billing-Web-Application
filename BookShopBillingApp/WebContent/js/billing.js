@@ -588,6 +588,25 @@ function generateBill() {
         }))
     };
     
+    // Add collection ID if this is from a collection request
+    console.log('Looking for collectionId input...');
+    const collectionIdInput = document.getElementById('collectionId');
+    console.log('collectionIdInput element:', collectionIdInput);
+    console.log('All hidden inputs:', document.querySelectorAll('input[type="hidden"]'));
+    
+    if (collectionIdInput) {
+        console.log('collectionIdInput value:', collectionIdInput.value);
+        console.log('collectionIdInput value type:', typeof collectionIdInput.value);
+        if (collectionIdInput.value && collectionIdInput.value.trim() !== '') {
+            billData.collectionId = collectionIdInput.value;
+            console.log('Including collectionId in request:', collectionIdInput.value);
+        } else {
+            console.log('collectionId input found but value is empty');
+        }
+    } else {
+        console.log('No collectionId input found');
+    }
+    
     console.log('Sending bill data:', JSON.stringify(billData, null, 2));
     
     fetch('/bookshop-billing/controller/generate-bill', {
