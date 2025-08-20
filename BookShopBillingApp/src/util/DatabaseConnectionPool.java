@@ -87,7 +87,7 @@ public class DatabaseConnectionPool {
             // Start cleanup thread
             startCleanupThread();
             
-            LOGGER.info("Database connection pool initialized with " + MIN_POOL_SIZE + " connections");
+            LOGGER.log(Level.INFO, "Database connection pool initialized with {0} connections", MIN_POOL_SIZE);
             
         } catch (ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "MySQL JDBC driver not found", e);
@@ -164,8 +164,8 @@ public class DatabaseConnectionPool {
         try {
             // Unwrap to get the original connection
             Connection originalConnection = connection;
-            if (connection instanceof ConnectionWrapper) {
-                originalConnection = ((ConnectionWrapper) connection).getWrappedConnection();
+            if (connection instanceof ConnectionWrapper connectionWrapper) {
+                originalConnection = connectionWrapper.getWrappedConnection();
             }
             
             // Create pooled connection and add back to pool
@@ -214,7 +214,7 @@ public class DatabaseConnectionPool {
         
         totalConnections.incrementAndGet();
         
-        LOGGER.fine("Created new database connection. Total connections: " + totalConnections.get());
+        LOGGER.log(Level.FINE, "Created new database connection. Total connections: {0}", totalConnections.get());
         
         return new PooledConnection(connection);
     }
@@ -307,7 +307,7 @@ public class DatabaseConnectionPool {
         }
         
         if (cleanedUp > 0) {
-            LOGGER.fine("Cleaned up " + cleanedUp + " expired connections");
+            LOGGER.log(Level.FINE, "Cleaned up {0} expired connections", cleanedUp);
         }
     }
     

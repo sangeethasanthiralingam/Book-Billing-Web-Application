@@ -1,16 +1,13 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import command.OrderCommand;
-import command.OrderInvoker;
 import dao.BillDAO;
 import dao.BookDAO;
 import dao.UserDAO;
-import decorator.DiscountBookDecorator;
-import decorator.PremiumBookDecorator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,13 +16,14 @@ import model.Bill;
 import model.BillItem;
 import model.Book;
 import model.User;
-import observer.CustomerNotificationObserver;
-import observer.InventoryObserver;
-import observer.OrderManager;
-import observer.OrderObserver;
-import state.OrderContext;
-import template.SalesReportTemplate;
-import visitor.SalesReportVisitor;
+
+// Design Pattern Imports
+import command.*;
+import observer.*;
+import state.*;
+import decorator.*;
+import template.*;
+import visitor.*;
 
 /**
  * Enhanced Controller for billing operations using multiple design patterns
@@ -155,6 +153,9 @@ public class BillingController extends BaseController {
             String paymentMethod = extractJsonValue(jsonData, "paymentMethod");
             String isDeliveryStr = extractJsonValue(jsonData, "isDelivery");
             String deliveryAddress = extractJsonValue(jsonData, "deliveryAddress");
+            String collectionIdStr = extractJsonValue(jsonData, "collectionId");
+            
+            System.out.println("[BillingController] collectionId from JSON: '" + collectionIdStr + "'");
             
             System.out.println("[BillingController] customerId: '" + customerIdStr + "'");
             System.out.println("[BillingController] paymentMethod: '" + paymentMethod + "'");
@@ -240,6 +241,17 @@ public class BillingController extends BaseController {
             boolean success = saveBillWithItems(bill, cartItems, billDAO);
 
             if (success) {
+                // Check if this was from a collection request and update its status
+                if (collectionIdStr != null && !collectionIdStr.isEmpty()) {
+                    try {
+                        int collectionId = Integer.parseInt(collectionIdStr);
+                        updateCollectionRequestStatus(collectionId, "PAID");
+                        System.out.println("[BillingController] Updated collection request " + collectionId + " to PAID");
+                    } catch (NumberFormatException e) {
+                        System.out.println("[BillingController] Invalid collection ID: " + collectionIdStr);
+                    }
+                }
+                
                 String json = "{\"success\":true,\"billId\":" + bill.getId() + ",\"billNumber\":\"" + 
                              bill.getBillNumber() + "\"}";
                 sendJsonResponse(response, json);
@@ -290,11 +302,11 @@ public class BillingController extends BaseController {
                 User customer = customers.get(i);
                 if (i > 0) json.append(",");
                 json.append("{");
-                json.append("\"id\":" + customer.getId() + ",");
-                json.append("\"fullName\":\"" + escapeJson(customer.getFullName()) + "\",");
-                json.append("\"phone\":\"" + escapeJson(customer.getPhone()) + "\",");
-                json.append("\"email\":\"" + escapeJson(customer.getEmail()) + "\",");
-                json.append("\"accountNumber\":\"" + escapeJson(customer.getAccountNumber()) + "\"");
+                json.append("\"id\":").append(customer.getId()).append(",");
+                json.append("\"fullName\":\"").append(escapeJson(customer.getFullName())).append("\",");
+                json.append("\"phone\":\"").append(escapeJson(customer.getPhone())).append("\",");
+                json.append("\"email\":\"").append(escapeJson(customer.getEmail())).append("\",");
+                json.append("\"accountNumber\":\"").append(escapeJson(customer.getAccountNumber())).append("\"");
                 json.append("}");
             }
             json.append("]");
@@ -303,7 +315,7 @@ public class BillingController extends BaseController {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json.toString());
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error searching customers: " + e.getMessage());
         }
@@ -335,12 +347,12 @@ public class BillingController extends BaseController {
                 Book book = books.get(i);
                 if (i > 0) json.append(",");
                 json.append("{");
-                json.append("\"id\":" + book.getId() + ",");
-                json.append("\"title\":\"" + escapeJson(book.getTitle()) + "\",");
-                json.append("\"author\":\"" + escapeJson(book.getAuthor()) + "\",");
-                json.append("\"isbn\":\"" + escapeJson(book.getIsbn()) + "\",");
-                json.append("\"price\":" + book.getPrice() + ",");
-                json.append("\"quantity\":" + book.getQuantity());
+                json.append("\"id\":").append(book.getId()).append(",");
+                json.append("\"title\":\"").append(escapeJson(book.getTitle())).append("\",");
+                json.append("\"author\":\"").append(escapeJson(book.getAuthor())).append("\",");
+                json.append("\"isbn\":\"").append(escapeJson(book.getIsbn())).append("\",");
+                json.append("\"price\":").append(book.getPrice()).append(",");
+                json.append("\"quantity\":").append(book.getQuantity());
                 json.append("}");
             }
             json.append("]");
@@ -349,7 +361,7 @@ public class BillingController extends BaseController {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json.toString());
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error searching books: " + e.getMessage());
         }
@@ -374,7 +386,6 @@ public class BillingController extends BaseController {
             }
         } catch (Exception e) {
             System.out.println("[BillingController] Error extracting JSON value for key '" + key + "': " + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }
@@ -432,9 +443,8 @@ public class BillingController extends BaseController {
             } else {
                 System.out.println("[BillingController] No items array found in JSON");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("[BillingController] Error parsing items from JSON: " + e.getMessage());
-            e.printStackTrace();
         }
         return items;
     }
@@ -451,7 +461,7 @@ public class BillingController extends BaseController {
                 return m.group(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[BillingController] Error extracting numeric value for key '" + key + "': " + e.getMessage());
         }
         return null;
     }
@@ -536,9 +546,8 @@ public class BillingController extends BaseController {
                 stmt.close();
             }
             conn.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("[BillingController] Error saving bill with items: " + e.getMessage());
-            e.printStackTrace();
         }
         return false;
     }
@@ -612,7 +621,7 @@ public class BillingController extends BaseController {
             
             System.out.println("Generated report using Template Pattern: " + reportType);
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             sendJsonError(response, "Error generating report: " + e.getMessage());
         }
     }
@@ -644,18 +653,13 @@ public class BillingController extends BaseController {
             OrderContext orderContext = new OrderContext(bill);
             
             switch (action.toLowerCase()) {
-                case "process":
-                    orderContext.processOrder();
-                    break;
-                case "cancel":
-                    orderContext.cancelOrder();
-                    break;
-                case "complete":
-                    orderContext.completeOrder();
-                    break;
-                default:
+                case "process" -> orderContext.processOrder();
+                case "cancel" -> orderContext.cancelOrder();
+                case "complete" -> orderContext.completeOrder();
+                default -> {
                     sendJsonError(response, "Invalid action: " + action);
                     return;
+                }
             }
             
             // Notify observers
@@ -665,7 +669,7 @@ public class BillingController extends BaseController {
             String json = "{\"success\":true,\"newState\":\"" + orderContext.getCurrentStateName() + "\"}";
             sendJsonResponse(response, json);
             
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             sendJsonError(response, "Error managing order state: " + e.getMessage());
         }
     }
@@ -678,29 +682,29 @@ public class BillingController extends BaseController {
         try {
             String action = request.getParameter("action");
             
-            if ("undo".equals(action)) {
-                boolean success = orderInvoker.undoLastCommand();
-                String json = "{\"success\":" + success + ",\"message\":\"" + 
-                             (success ? "Command undone successfully" : "No commands to undo") + "\"}";
-                sendJsonResponse(response, json);
-            } else if ("history".equals(action)) {
-                List<OrderCommand> history = orderInvoker.getCommandHistory();
-                StringBuilder json = new StringBuilder("{\"commands\":[");
-                
-                for (int i = 0; i < history.size(); i++) {
-                    if (i > 0) json.append(",");
-                    OrderCommand cmd = history.get(i);
-                    json.append("{\"type\":\"" + cmd.getCommandType() + "\",\"description\":\"" + 
-                               escapeJson(cmd.getDescription()) + "\"}");
-                }
-                
-                json.append("]}");
-                sendJsonResponse(response, json.toString());
-            } else {
+            if (null == action) {
                 sendJsonError(response, "Invalid action: " + action);
+            } else switch (action) {
+                case "undo" ->                     {
+                        boolean success = orderInvoker.undoLastCommand();
+                        String json = "{\"success\":" + success + ",\"message\":\"" +
+                                (success ? "Command undone successfully" : "No commands to undo") + "\"}";
+                        sendJsonResponse(response, json);
+                    }
+                case "history" ->                     {
+                        List<OrderCommand> history = orderInvoker.getCommandHistory();
+                        StringBuilder json = new StringBuilder("{\"commands\":[");
+                        for (int i = 0; i < history.size(); i++) {
+                            if (i > 0) json.append(",");
+                            OrderCommand cmd = history.get(i);
+                            json.append("{\"type\":\"").append(cmd.getCommandType()).append("\",\"description\":\"").append(escapeJson(cmd.getDescription())).append("\"}");
+                        }       json.append("]}");
+                        sendJsonResponse(response, json.toString());
+                    }
+                default -> sendJsonError(response, "Invalid action: " + action);
             }
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             sendJsonError(response, "Error handling command history: " + e.getMessage());
         }
     }
@@ -768,8 +772,28 @@ public class BillingController extends BaseController {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(demo.toString());
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             sendJsonError(response, "Error in pattern demonstration: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Update collection request status
+     */
+    private void updateCollectionRequestStatus(int collectionId, String newStatus) {
+        try {
+            String query = "UPDATE bills SET status = ? WHERE id = ?";
+            try (java.sql.Connection conn = util.DBConnection.getInstance().getConnection(); java.sql.PreparedStatement stmt = conn.prepareStatement(query)) {
+                
+                stmt.setString(1, newStatus);
+                stmt.setInt(2, collectionId);
+                
+                int rowsUpdated = stmt.executeUpdate();
+                System.out.println("[BillingController] Updated " + rowsUpdated + " collection request(s)");
+                
+            }
+        } catch (SQLException e) {
+            System.out.println("[BillingController] Error updating collection request status: " + e.getMessage());
         }
     }
     
