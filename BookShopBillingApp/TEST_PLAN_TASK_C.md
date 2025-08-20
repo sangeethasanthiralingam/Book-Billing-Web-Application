@@ -163,11 +163,12 @@ public class BillBuilder {
 ### **Test Pyramid Implementation**
 
 ```mermaid
-pyramid
-    title Test Pyramid
-    "UI Tests (10%)" : 10
-    "Integration Tests (20%)" : 20
-    "Unit Tests (70%)" : 70
+flowchart TD
+    A["UI Tests (10%)"]
+    B["Integration Tests (20%)"]
+    C["Unit Tests (70%)"]
+
+    A --> B --> C
 ```
 
 ### **Test Categories and Rationale**
