@@ -1,11 +1,15 @@
 package dao;
 
-import model.Book;
-import util.DBConnection;
-import service.ConfigurationService;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Book;
+import service.ConfigurationService;
+import util.DBConnection;
 
 /**
  * DAO Pattern: Book Data Access Object
@@ -239,4 +243,24 @@ public class BookDAO {
         }
         return books;
     }
-} 
+
+    public boolean save(Book book) {
+        if (book.getId() == 0) {
+            return addBook(book);
+        } else {
+            return updateBook(book);
+        }
+    }
+
+    public Book findById(int id) {
+        return getBookById(id);
+    }
+
+    public boolean update(Book book) {
+        return updateBook(book);
+    }
+
+    public boolean delete(int id) {
+        return deleteBook(id);
+    }
+}
