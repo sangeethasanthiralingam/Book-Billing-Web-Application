@@ -5,7 +5,7 @@ package service;
  */
 public class CardPayment implements PaymentStrategy {
     private String cardNumber;
-    private String cardType; // VISA, MASTERCARD, etc.
+    private String cardType;
 
     public CardPayment(String cardNumber, String cardType) {
         this.cardNumber = cardNumber;
@@ -13,31 +13,28 @@ public class CardPayment implements PaymentStrategy {
     }
 
     @Override
-    public String getPaymentDetails() {
-        if (!isValidCardNumber()) {
-            return "Card Payment - Invalid card number";
-        }
-        return "Card Payment - Details processed securely";
-    }
-
-    @Override
     public boolean processPayment(double amount) {
-        // Validate input parameters
         if (amount <= 0) {
-            System.out.println("Invalid amount: $" + amount);
+            System.out.println("Invalid card payment amount: " + amount);
             return false;
         }
-        
-        if (!isValidCardNumber()) {
+        if (!isValidCard(cardNumber)) {
             System.out.println("Invalid card number provided");
             return false;
         }
-        
-        // In a real application, this would integrate with payment gateways
-        String maskedCardNumber = getMaskedCardNumber();
-        System.out.println("Processing " + cardType + " payment of $" + amount
-                + " with card ending in " + maskedCardNumber);
-        return true; // Simulate successful payment
+        System.out.println("Processing card payment of $" + amount + " using " + cardType);
+        return true;
+    }
+
+    private boolean isValidCard(String cardNumber) {
+        // Simple validation: non-null, 13-19 digits
+        return cardNumber != null && cardNumber.matches("\\d{13,19}");
+    }
+
+    @Override
+    public String getPaymentDetails() {
+        return "Card Payment: " + cardType + " ending with " + 
+               (cardNumber.length() >= 4 ? cardNumber.substring(cardNumber.length() - 4) : cardNumber);
     }
 
     @Override
@@ -58,25 +55,4 @@ public class CardPayment implements PaymentStrategy {
         return cardType;
     }
     
-    /**
-     * Validates if the card number is valid
-     * @return true if card number is valid, false otherwise
-     */
-    private boolean isValidCardNumber() {
-        return cardNumber != null && 
-               !cardNumber.trim().isEmpty() && 
-               cardNumber.length() >= 4 &&
-               cardNumber.matches("\\d+"); // Only digits
-    }
-    
-    /**
-     * Gets the last 4 digits of the card number safely
-     * @return last 4 digits or the entire number if less than 4 digits
-     */
-    private String getMaskedCardNumber() {
-        if (cardNumber == null || cardNumber.length() < 4) {
-            return "****";
-        }
-        return cardNumber.substring(cardNumber.length() - 4);
-    }
 }

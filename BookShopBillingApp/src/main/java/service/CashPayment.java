@@ -8,9 +8,13 @@ public class CashPayment implements PaymentStrategy {
     
     @Override
     public boolean processPayment(double amount) {
-        // In a real application, this would integrate with cash register systems
+        // Cash payment should be positive
+        if (amount <= 0) {
+            System.out.println("Invalid cash payment amount: " + amount);
+            return false;
+        }
         System.out.println("Processing cash payment of $" + amount);
-        return true; // Simulate successful payment
+        return true;
     }
     
     @Override
