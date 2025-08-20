@@ -1082,16 +1082,27 @@ jobs:
 gantt
     title Test Execution Timeline
     dateFormat  YYYY-MM-DD
+
     section Unit Tests
-    Development Phase    :active, unit, 2024-01-01, 2024-01-15
+    Planning Phase        :active, unit, 2025-07-01, 2025-07-04
+
+    section UI Design
+    UI Design Phase       :ui, after unit, 7d
+
     section Integration Tests
-    Integration Phase    :int, after unit, 5d
+    Integration Phase     :int, after ui, 2d
+
     section System Tests
-    System Testing       :sys, after int, 7d
+    System Testing        :sys, after int, 7d
+
     section Performance Tests
-    Performance Testing  :perf, after sys, 3d
+    Performance Testing   :perf, after sys, 3d
+
     section Security Tests
-    Security Testing     :sec, after perf, 2d
+    Security Testing      :sec, after perf, 2d
+
+    section Reporting
+    Reporting Phase       :rep, after sec, 2d
 ```
 
 #### **Test Reporting Configuration**
