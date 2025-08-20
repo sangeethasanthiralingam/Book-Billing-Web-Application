@@ -148,7 +148,7 @@ class BillingControllerTest {
         when(request.getRequestDispatcher("/jsp/invoice.jsp")).thenReturn(dispatcher);
         
 
-        billingController.handleGenerateInvoice(request, response);
+        billingController.handleInvoice(request, response);
         
 
         verify(request).setAttribute("bill", testBill);
@@ -163,7 +163,7 @@ class BillingControllerTest {
         when(billDAO.findById(999)).thenReturn(null);
         
 
-        billingController.handleGenerateInvoice(request, response);
+        billingController.handleInvoice(request, response);
         
 
         verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "Bill not found");

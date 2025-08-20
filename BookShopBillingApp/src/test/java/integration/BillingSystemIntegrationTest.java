@@ -138,7 +138,7 @@ class BillingSystemIntegrationTest {
     @DisplayName("Should retrieve customer purchase history")
     void testCustomerPurchaseHistory() {
 
-        List<Bill> customerBills = billDAO.findByCustomerId(testCustomer.getId());
+        List<Bill> customerBills = billDAO.getBillsByCustomer(testCustomer.getId());
         
 
         assertNotNull(customerBills);
