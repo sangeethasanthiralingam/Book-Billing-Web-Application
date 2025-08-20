@@ -212,6 +212,7 @@ public class BillDAO {
         return 0;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public double getTodaySalesTotal() {
         String query = "SELECT COALESCE(SUM(total), 0) FROM bills WHERE DATE(bill_date) = CURDATE()";
         
@@ -579,5 +580,37 @@ public class BillDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Save a bill (alias for saveBill, for test compatibility)
+     */
+    public boolean save(Bill bill) {
+        return saveBill(bill);
+    }
+
+    /**
+     * Update a bill (implement as needed)
+     */
+    public boolean update(Bill bill) {
+        // Implement update logic if needed for your tests
+        // For now, return false or throw UnsupportedOperationException
+        throw new UnsupportedOperationException("Update not implemented");
+    }
+
+    /**
+     * Find a bill by ID (alias for getBillById, for test compatibility)
+     */
+    public Bill findById(int id) {
+        return getBillById(id);
+    }
+
+    /**
+     * Delete a bill by ID (implement as needed)
+     */
+    public boolean delete(int id) {
+        // Implement delete logic if needed for your tests
+        // For now, return false or throw UnsupportedOperationException
+        throw new UnsupportedOperationException("Delete not implemented");
     }
 }

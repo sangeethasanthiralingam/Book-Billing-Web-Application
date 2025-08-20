@@ -47,12 +47,12 @@ public class BookDAO {
                 books.add(book);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error: " + e.getMessage());
         }
         return books;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public Book getBookById(int id) {
         String query = "SELECT * FROM books WHERE id = ?";
         
@@ -86,6 +86,7 @@ public class BookDAO {
         return null;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean addBook(Book book) {
         String query = "INSERT INTO books (title, author, isbn, price, quantity, category, publisher, publication_year, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
@@ -109,6 +110,7 @@ public class BookDAO {
         return false;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean updateBook(Book book) {
         String query = "UPDATE books SET title=?, author=?, isbn=?, price=?, quantity=?, category=?, publisher=?, publication_year=?, language=? WHERE id=?";
         
@@ -133,6 +135,7 @@ public class BookDAO {
         return false;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean deleteBook(int id) {
         String query = "DELETE FROM books WHERE id = ?";
         
@@ -147,6 +150,7 @@ public class BookDAO {
         return false;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean updateQuantity(int bookId, int quantity) {
         String query = "UPDATE books SET quantity = quantity - ? WHERE id = ? AND quantity >= ?";
         
@@ -164,6 +168,7 @@ public class BookDAO {
         return false;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public int getTotalBooksCount() {
         String query = "SELECT COUNT(*) FROM books";
         
@@ -181,6 +186,7 @@ public class BookDAO {
         return 0;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     public int getLowStockBooksCount() {
         ConfigurationService configService = ConfigurationService.getInstance();
         int threshold = configService.getLowStockThreshold();
@@ -234,9 +240,28 @@ public class BookDAO {
                 books.add(book);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error: " + e.getMessage());
         }
         return books;
     }
-} 
+
+    public boolean save(Book book) {
+        if (book.getId() == 0) {
+            return addBook(book);
+        } else {
+            return updateBook(book);
+        }
+    }
+
+    public Book findById(int id) {
+        return getBookById(id);
+    }
+
+    public boolean update(Book book) {
+        return updateBook(book);
+    }
+
+    public boolean delete(int id) {
+        return deleteBook(id);
+    }
+}

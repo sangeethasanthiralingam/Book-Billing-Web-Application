@@ -259,9 +259,8 @@ public class BillingController extends BaseController {
                 sendJsonError(response, "Failed to save bill");
             }
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println("[BillingController] Error generating bill: " + e.getMessage());
-            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error generating bill: " + e.getMessage());
         }
@@ -347,11 +346,11 @@ public class BillingController extends BaseController {
                 Book book = books.get(i);
                 if (i > 0) json.append(",");
                 json.append("{");
-                json.append("\"id\":" + book.getId() + ",");
-                json.append("\"title\":\"" + escapeJson(book.getTitle()) + "\",");
-                json.append("\"author\":\"" + escapeJson(book.getAuthor()) + "\",");
-                json.append("\"isbn\":\"" + escapeJson(book.getIsbn()) + "\",");
-                json.append("\"price\":" + book.getPrice() + ",");
+                json.append("\"id\":").append(book.getId()).append(",");
+                json.append("\"title\":\"").append(escapeJson(book.getTitle())).append("\",");
+                json.append("\"author\":\"").append(escapeJson(book.getAuthor())).append("\",");
+                json.append("\"isbn\":\"").append(escapeJson(book.getIsbn())).append("\",");
+                json.append("\"price\":").append(book.getPrice()).append(",");
                 json.append("\"quantity\":" + book.getQuantity());
                 json.append("}");
             }
