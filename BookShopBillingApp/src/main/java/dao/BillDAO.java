@@ -1,14 +1,22 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import model.Bill;
 import model.BillItem;
 import util.DBConnection;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BillDAO {
-    private DBConnection dbConnection;
+    private final DBConnection dbConnection;
     
     public BillDAO() {
         this.dbConnection = DBConnection.getInstance();
@@ -579,5 +587,29 @@ public class BillDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Returns statistics for all cashiers (users with role CASHIER).
+     * Example: total bills handled, total amount processed, etc.
+     */
+    public List<Map<String, Object>> getCashierStats() {
+        List<Map<String, Object>> statsList = new ArrayList<>();
+        String query = "SELECT cashier_id, COUNT(*) AS billCount, SUM(total) AS totalProcessed " +
+                       "FROM bills GROUP BY cashier_id";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> stats = new HashMap<>();
+                stats.put("cashierId", rs.getInt("cashier_id"));
+                stats.put("billCount", rs.getInt("billCount"));
+                stats.put("totalProcessed", rs.getDouble("totalProcessed"));
+                statsList.add(stats);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statsList;
     }
 }
