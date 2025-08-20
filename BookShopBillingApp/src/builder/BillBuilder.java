@@ -1,16 +1,17 @@
 package builder;
 
-import model.Bill;
-import model.User;
-import model.BillItem;
 import java.util.Date;
+
+import model.Bill;
+import model.BillItem;
+import model.User;
 
 /**
  * Builder Pattern: Bill Builder
  * Constructs complex Bill objects step by step
  */
 public class BillBuilder {
-    private Bill bill;
+    private final Bill bill;
     
     /**
      * Initialize a new BillBuilder with a fresh Bill instance

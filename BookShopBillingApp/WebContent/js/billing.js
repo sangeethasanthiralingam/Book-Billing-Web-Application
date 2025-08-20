@@ -204,7 +204,7 @@ function searchCustomer(isRealTime = false) {
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    console.error('JSON parse error:', e);
+                    console.error('JSON pare error:', e);
                     throw new Error('Invalid JSON response: ' + text);
                 }
             });

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+
 import dao.BillDAO;
 import dao.UserDAO;
 import jakarta.servlet.ServletException;
@@ -68,7 +70,7 @@ public class CustomerController extends BaseController {
                 if (customer == null) {
                     request.setAttribute("error", "Customer not found");
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 handleException(request, response, e, "loading customer");
             }
         }
@@ -93,7 +95,7 @@ public class CustomerController extends BaseController {
                 } else {
                     request.setAttribute("error", "Customer not found");
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 handleException(request, response, e, "loading customer details");
             }
         }
@@ -124,7 +126,7 @@ public class CustomerController extends BaseController {
                     response.sendRedirect(request.getContextPath() + 
                         "/controller/customers?error=Customer not found");
                 }
-            } catch (Exception e) {
+            } catch (IOException | NumberFormatException e) {
                 response.sendRedirect(request.getContextPath() + 
                     "/controller/customers?error=Error deactivating customer: " + e.getMessage());
             }
@@ -267,7 +269,7 @@ public class CustomerController extends BaseController {
             request.setAttribute("purchaseStats", purchaseStats);
             addCommonAttributes(request);
 
-        } catch (Exception e) {
+        } catch (ServletException | IOException | NumberFormatException e) {
             handleException(request, response, e, "loading customer purchases");
         }
 
@@ -340,9 +342,8 @@ public class CustomerController extends BaseController {
             
             request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
             
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             handleException(request, response, e, "loading customer store");
-            return;
         }
     }
     
@@ -468,8 +469,7 @@ public class CustomerController extends BaseController {
                 sendJsonError(response, "Failed to place order");
             }
             
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | JSONException e) {
             sendJsonError(response, "Error placing order: " + e.getMessage());
         }
     }
@@ -510,7 +510,7 @@ public class CustomerController extends BaseController {
             request.setAttribute("billItems", billItems);
             addCommonAttributes(request);
             
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             handleException(request, response, e, "loading order confirmation");
         }
         
@@ -554,7 +554,7 @@ public class CustomerController extends BaseController {
             
             sendJsonResponse(response, bookJson.toString());
             
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException | JSONException e) {
             sendJsonError(response, "Error fetching book details: " + e.getMessage());
         }
     }
@@ -607,7 +607,7 @@ public class CustomerController extends BaseController {
             request.setAttribute("billCount", bills.size());
             addCommonAttributes(request);
 
-        } catch (Exception e) {
+        } catch (ServletException | IOException | NumberFormatException e) {
             handleException(request, response, e, "loading customer details");
         }
 
@@ -720,7 +720,7 @@ public class CustomerController extends BaseController {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (ServletException | IOException | NumberFormatException e) {
             handleException(request, response, e, "saving customer");
         }
     }
@@ -774,7 +774,7 @@ public class CustomerController extends BaseController {
 
             sendJsonResponse(response, json.toString());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, e.getMessage());
         }
@@ -841,7 +841,7 @@ public class CustomerController extends BaseController {
                 sendJsonError(response, "Failed to create customer");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, e.getMessage());
         }
@@ -908,28 +908,19 @@ public class CustomerController extends BaseController {
     
     private void sortCustomerStats(List<Map<String, Object>> customerStats, String sortBy, BillDAO billDAO) {
         switch (sortBy) {
-            case "name":
-                customerStats.sort((a, b) -> {
+            case "name" -> customerStats.sort((a, b) -> {
                     User userA = (User) a.get("customer");
                     User userB = (User) b.get("customer");
                     return userA.getFullName().compareToIgnoreCase(userB.getFullName());
                 });
-                break;
-            case "email":
-                customerStats.sort((a, b) -> {
+            case "email" -> customerStats.sort((a, b) -> {
                     User userA = (User) a.get("customer");
                     User userB = (User) b.get("customer");
                     return userA.getEmail().compareToIgnoreCase(userB.getEmail());
                 });
-                break;
-            case "bills":
-                customerStats.sort((a, b) -> Integer.compare((Integer) b.get("billCount"), (Integer) a.get("billCount")));
-                break;
-            case "spent":
-                customerStats.sort((a, b) -> Double.compare((Double) b.get("totalSpent"), (Double) a.get("totalSpent")));
-                break;
-            case "recent":
-                customerStats.sort((a, b) -> {
+            case "bills" -> customerStats.sort((a, b) -> Integer.compare((Integer) b.get("billCount"), (Integer) a.get("billCount")));
+            case "spent" -> customerStats.sort((a, b) -> Double.compare((Double) b.get("totalSpent"), (Double) a.get("totalSpent")));
+            case "recent" -> customerStats.sort((a, b) -> {
                     List<Bill> billsA = billDAO.getBillsByCustomer(((User) a.get("customer")).getId());
                     List<Bill> billsB = billDAO.getBillsByCustomer(((User) b.get("customer")).getId());
 
@@ -943,7 +934,6 @@ public class CustomerController extends BaseController {
                             .max(java.util.Date::compareTo).orElse(new java.util.Date(0));
                     return latestB.compareTo(latestA);
                 });
-                break;
         }
     }
     
@@ -956,7 +946,7 @@ public class CustomerController extends BaseController {
                 return m.group(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            
         }
         return null;
     }
@@ -984,18 +974,10 @@ public class CustomerController extends BaseController {
             if (priceRange != null && !priceRange.trim().isEmpty()) {
                 double price = book.getPrice();
                 switch (priceRange) {
-                    case "0-500":
-                        matches &= price <= 500;
-                        break;
-                    case "500-1000":
-                        matches &= price > 500 && price <= 1000;
-                        break;
-                    case "1000-2000":
-                        matches &= price > 1000 && price <= 2000;
-                        break;
-                    case "2000+":
-                        matches &= price > 2000;
-                        break;
+                    case "0-500" -> matches &= price <= 500;
+                    case "500-1000" -> matches &= price > 500 && price <= 1000;
+                    case "1000-2000" -> matches &= price > 1000 && price <= 2000;
+                    case "2000+" -> matches &= price > 2000;
                 }
             }
             

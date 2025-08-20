@@ -2,7 +2,6 @@ package command;
 
 import dao.BillDAO;
 import model.Bill;
-import model.User;
 import java.util.Date;
 
 /**

@@ -65,9 +65,10 @@ graph TB
     Customer --> UC14
     Customer --> UC15
     
-    UC3 ..> UC9 : <<includes>>
-    UC3 ..> UC4 : <<extends>>
-    UC4 ..> UC5 : <<includes>>
+    %% Use edge labels correctly with pipes
+    UC3 -.->|includes| UC9
+    UC3 -.->|extends| UC4
+    UC4 -.->|includes| UC5
 ```
 
 ### **Use Case Descriptions:**
@@ -251,7 +252,7 @@ classDiagram
     class Discount {
         <<abstract>>
         #double value
-        +abstract calculateDiscount(double) double
+        +calculateDiscount(double) double
     }
     
     class PercentageDiscount {
@@ -326,35 +327,42 @@ classDiagram
         +processOrder(OrderContext) void
         +cancelOrder(OrderContext) void
         +getStateName() String
+        +getStatus() String
     }
     
     class PendingState {
         +processOrder(OrderContext) void
-        +getStateName() String
+        +getStatus() String
     }
     
     class ProcessingState {
         +processOrder(OrderContext) void
-        +getStateName() String
+        +getStatus() String
     }
     
     class CompletedState {
         +getStateName() String
+        +getStatus() String
     }
     
     %% Decorator Pattern
     class BookDecorator {
-        <<interface>>
-        +getDecoratedPrice() double
-        +getDecoratedTitle() String
-        +applyDecoration() void
+        <<abstract>>
+        #Book book
+        +BookDecorator(Book)
+        +getPrice() double
+        +getDescription() String
     }
     
     class PremiumBookDecorator {
-        -Book book
-        -String premiumFeature
-        +getDecoratedPrice() double
-        +applyDecoration() void
+        +getPrice() double
+        +getDescription() String
+    }
+    
+    class DiscountBookDecorator {
+        -double discountRate
+        +getPrice() double
+        +getDescription() String
     }
     
     %% Template Pattern
@@ -362,28 +370,30 @@ classDiagram
         <<abstract>>
         +generateReport() String
         #collectData() void
-        #formatData() void
-        #generateOutput() String
+        #formatData() String
+        #addHeader() String
+        #addFooter() String
     }
     
     class SalesReportTemplate {
-        +generateReport() String
-        #collectData() void
+        +collectData() void
+        +formatData() String
+        +addHeader() String
+        +addFooter() String
     }
     
     %% Visitor Pattern
     class BookVisitor {
         <<interface>>
         +visit(Book) void
-        +visit(PremiumBookDecorator) void
-        +getReport() String
+        +getResult() Object
     }
     
     class SalesReportVisitor {
-        -double totalRevenue
+        -double totalSales
         -int totalBooks
         +visit(Book) void
-        +getSalesReport() String
+        +getResult() SalesReport
     }
     
     %% Store and Collection Classes
@@ -514,47 +524,48 @@ classDiagram
         +getResult() SalesReport
     }
     
-    %% Relationships
-    User ||--o{ Bill : creates
-    Bill ||--o{ BillItem : contains
-    Book ||--o{ BillItem : references
-    
-    FrontControllerServlet --> BillingController
-    BillingController --> BookDAO
-    BillingController --> UserDAO
-    BillingController --> BillDAO
-    
-    BookDAO --> DBConnection
-    UserDAO --> DBConnection
-    BillDAO --> DBConnection
-    
-    PaymentStrategy <|-- CashPayment
-    PaymentStrategy <|-- CardPayment
-    PaymentStrategy <|-- UpiPayment
-    
-    Discount <|-- PercentageDiscount
-    Discount <|-- FixedDiscount
-    DiscountFactory --> Discount
-    
-    BillBuilder --> Bill
-    
-    OrderCommand <|-- CreateOrderCommand
-    OrderInvoker --> OrderCommand
-    
-    OrderObserver <|-- InventoryObserver
-    OrderManager --> OrderObserver
-    
-    OrderState <|-- PendingState
-    OrderState <|-- ProcessingState
-    OrderContext --> OrderState
-    
-    BookDecorator <|-- PremiumBookDecorator
-    BookDecorator <|-- DiscountBookDecorator
-    BookDecorator --> Book
-    
-    ReportTemplate <|-- SalesReportTemplate
-    
-    BookVisitor <|-- SalesReportVisitor
+%% Relationships
+User --> Bill
+Bill --> BillItem
+Book --> BillItem
+
+FrontControllerServlet --> BillingController
+BillingController --> BookDAO
+BillingController --> UserDAO
+BillingController --> BillDAO
+
+BookDAO --> DBConnection
+UserDAO --> DBConnection
+BillDAO --> DBConnection
+
+PaymentStrategy <|-- CashPayment
+PaymentStrategy <|-- CardPayment
+PaymentStrategy <|-- UpiPayment
+
+Discount <|-- PercentageDiscount
+Discount <|-- FixedDiscount
+DiscountFactory --> Discount
+
+BillBuilder --> Bill
+
+OrderCommand <|-- CreateOrderCommand
+OrderInvoker --> OrderCommand
+
+OrderObserver <|-- InventoryObserver
+OrderManager --> OrderObserver
+
+OrderState <|-- PendingState
+OrderState <|-- ProcessingState
+OrderState <|-- CompletedState
+OrderContext --> OrderState
+
+BookDecorator <|-- PremiumBookDecorator
+BookDecorator <|-- DiscountBookDecorator
+BookDecorator --> Book
+
+ReportTemplate <|-- SalesReportTemplate
+
+BookVisitor <|-- SalesReportVisitor
 ```
 
 ### **Key Design Decisions Explained:**
@@ -736,7 +747,6 @@ sequenceDiagram
 4. **Error Handling**: All operations include proper exception handling (not shown for clarity)
 5. **Performance**: Pattern overhead is acceptable for educational and functional benefits
 
----
 
 ## 4. DESIGN DECISIONS SUMMARY
 
@@ -754,88 +764,90 @@ sequenceDiagram
 
 ### **Pattern Selection Rationale:**
 
-1. **Creational Patterns**: Manage object creation complexity and ensure proper initialization
-2. **Structural Patterns**: Organize code structure and provide flexible composition
-3. **Behavioral Patterns**: Handle complex business logic and inter-object communication
+1. **Creational Patterns**: Manage object creation complexity and ensure proper initialization  
+2. **Structural Patterns**: Organize code structure and provide flexible composition  
+3. **Behavioral Patterns**: Handle complex business logic and inter-object communication  
 
 ### **Quality Attributes Addressed:**
-- **Maintainability**: Clear separation of concerns, single responsibility
-- **Extensibility**: Pattern-based design allows easy feature addition
-- **Testability**: Modular design enables unit and integration testing
-- **Performance**: Singleton pattern optimizes resource usage
-- **Security**: Role-based access control and input validation
-- **Usability**: Intuitive user interface with real-time feedback
-
----
+- **Maintainability**: Clear separation of concerns, single responsibility  
+- **Extensibility**: Pattern-based design allows easy feature addition  
+- **Testability**: Modular design enables unit and integration testing  
+- **Performance**: Singleton pattern optimizes resource usage  
+- **Security**: Role-based access control and input validation  
+- **Usability**: Intuitive user interface with real-time feedback  
 
 ## 5. IMPLEMENTATION NOTES
 
 ### **Technology Mapping:**
-- **Use Cases** → JSP pages and Servlet controllers
-- **Classes** → Java classes with proper package structure
-- **Sequences** → HTTP request/response cycles with pattern integration
+- **Use Cases** → JSP pages and Servlet controllers  
+- **Classes** → Java classes with proper package structure  
+- **Sequences** → HTTP request/response cycles with pattern integration  
 
 ### **Database Design:**
-- **Users Table**: Authentication and role management
-- **Books Table**: Inventory management
-- **Bills Table**: Transaction records
-- **Bill_Items Table**: Line item details
+- **Users Table**: Authentication and role management  
+- **Books Table**: Inventory management  
+- **Bills Table**: Transaction records  
+- **Bill_Items Table**: Line item details  
 
 ### **Pattern Implementation Status:**
-✅ All 12 design patterns are fully implemented and integrated
-✅ Interactive demonstration interface available
-✅ Production-ready with comprehensive error handling
-✅ Complete documentation and setup guides
+✅ All 12 design patterns are fully implemented and integrated  
+✅ Interactive demonstration interface available  
+✅ Production-ready with comprehensive error handling  
+✅ Complete documentation and setup guides  
 
 **This UML analysis provides the foundation for a robust, pattern-driven billing system that serves both functional and educational purposes.**
+
+---
+
+```mermaid
+classDiagram
     %% Relationships
-    User ||--o{ Bill : customer
-    User ||--o{ Bill : cashier
-    User ||--o{ Collection : creates
-    Bill ||--o{ BillItem : contains
-    Book ||--o{ BillItem : references
-    Collection ||--o{ Book : contains
-    
-    FrontControllerServlet --> BookController : routes
-    FrontControllerServlet --> CustomerController : routes
-    FrontControllerServlet --> BillingController : routes
-    
-    BookController --> BookDAO : uses
-    CustomerController --> UserDAO : uses
-    BillingController --> BillDAO : uses
-    
-    BookDAO --> DBConnection : uses
-    UserDAO --> DBConnection : uses
-    BillDAO --> DBConnection : uses
-    
+    User --> Bill
+    User --> Collection
+    Bill --> BillItem
+    Book --> BillItem
+    Collection --> Book
+
+    FrontControllerServlet --> BookController
+    FrontControllerServlet --> CustomerController
+    FrontControllerServlet --> BillingController
+
+    BookController --> BookDAO
+    CustomerController --> UserDAO
+    BillingController --> BillDAO
+
+    BookDAO --> DBConnection
+    UserDAO --> DBConnection
+    BillDAO --> DBConnection
+
     PaymentStrategy <|-- CashPayment
     PaymentStrategy <|-- CardPayment
     PaymentStrategy <|-- UpiPayment
-    
+
     Discount <|-- PercentageDiscount
     Discount <|-- FixedDiscount
-    DiscountFactory --> Discount : creates
-    
+    DiscountFactory --> Discount
+
     OrderCommand <|-- CreateOrderCommand
-    OrderInvoker --> OrderCommand : executes
-    
+    OrderInvoker --> OrderCommand
+
     OrderObserver <|-- InventoryObserver
-    OrderManager --> OrderObserver : notifies
-    
+    OrderManager --> OrderObserver
+
     OrderState <|-- PendingState
     OrderState <|-- ProcessingState
     OrderState <|-- CompletedState
-    OrderContext --> OrderState : manages
-    
+    OrderContext --> OrderState
+
     BookDecorator <|-- PremiumBookDecorator
-    PremiumBookDecorator --> Book : decorates
-    
+    BookDecorator --> Book
+
     ReportTemplate <|-- SalesReportTemplate
     BookVisitor <|-- SalesReportVisitor
-    
-    BillingController --> OrderInvoker : uses
-    BillingController --> OrderManager : uses
-    BillingController --> BillBuilder : uses
+
+    BillingController --> OrderInvoker
+    BillingController --> OrderManager
+    BillingController --> BillBuilder
 ```
 
 ### **Design Pattern Integration:**

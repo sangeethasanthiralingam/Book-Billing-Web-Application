@@ -106,18 +106,6 @@
                             <h4>🧾 Billing System</h4>
                             <p>Create bills for customers, calculate totals, and generate invoices.</p>
                         </div>
-                        <div class="feature-card">
-                            <h4>📚 Book Management</h4>
-                            <p>View and manage book inventory, check stock, and update prices.</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>👥 Customer Management</h4>
-                            <p>View customer details, search for customers, and assist with purchases.</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>📊 Reports</h4>
-                            <p>View daily sales, bills generated, and customer statistics.</p>
-                        </div>
                     </div>
                 </div>
                 <div class="help-section">
@@ -128,15 +116,6 @@
                         <li>Select a customer and add books to the bill</li>
                         <li>System calculates totals and generates the bill</li>
                         <li>Print or save the invoice for the customer</li>
-                    </ul>
-                    <h3>2. Managing Books</h3>
-                    <ul>
-                        <li>Go to Books section to view inventory</li>
-                        <li>Check stock levels and update prices if needed</li>
-                    </ul>
-                    <h3>3. Viewing Reports</h3>
-                    <ul>
-                        <li>Go to Reports section to view daily sales and statistics</li>
                     </ul>
                 </div>
                 <div class="help-section">

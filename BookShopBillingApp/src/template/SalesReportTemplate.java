@@ -1,10 +1,10 @@
 package template;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dao.BillDAO;
 import model.Bill;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Template Method Pattern: Sales Report Template
@@ -24,15 +24,10 @@ public class SalesReportTemplate extends ReportTemplate {
         }
         
         // Validate based on report type
-        switch (reportType.toUpperCase()) {
-            case "DAILY_SALES":
-            case "WEEKLY_SALES":
-            case "MONTHLY_SALES":
-            case "YEARLY_SALES":
-                return true;
-            default:
-                return false;
-        }
+        return switch (reportType.toUpperCase()) {
+            case "DAILY_SALES", "WEEKLY_SALES", "MONTHLY_SALES", "YEARLY_SALES" -> true;
+            default -> false;
+        };
     }
     
     @Override
@@ -41,27 +36,21 @@ public class SalesReportTemplate extends ReportTemplate {
         
         try {
             switch (reportType.toUpperCase()) {
-                case "DAILY_SALES":
+                case "DAILY_SALES" -> {
                     data.add(billDAO.getTodayBillsCount());
                     data.add(billDAO.getTodaySalesTotal());
                     data.add(billDAO.getTodayCustomersCount());
                     data.add(billDAO.getRecentBills(10));
-                    break;
+                }
                     
-                case "WEEKLY_SALES":
-                    // In a real implementation, you'd have weekly methods
+                case "WEEKLY_SALES" -> // In a real implementation, you'd have weekly methods
                     data.add(billDAO.getAllBills());
-                    break;
                     
-                case "MONTHLY_SALES":
-                    // In a real implementation, you'd have monthly methods
+                case "MONTHLY_SALES" -> // In a real implementation, you'd have monthly methods
                     data.add(billDAO.getAllBills());
-                    break;
                     
-                case "YEARLY_SALES":
-                    // In a real implementation, you'd have yearly methods
+                case "YEARLY_SALES" -> // In a real implementation, you'd have yearly methods
                     data.add(billDAO.getAllBills());
-                    break;
             }
         } catch (Exception e) {
             System.err.println("Error collecting data for " + reportType + ": " + e.getMessage());
@@ -76,9 +65,9 @@ public class SalesReportTemplate extends ReportTemplate {
         
         try {
             for (Object item : data) {
-                if (item instanceof Number) {
+                if (item instanceof Number number) {
                     // Process numeric data
-                    processedData.add(formatCurrency((Number) item));
+                    processedData.add(formatCurrency(number));
                 } else if (item instanceof List) {
                     // Process list data
                     processedData.add(processBillList((List<?>) item));
@@ -98,7 +87,7 @@ public class SalesReportTemplate extends ReportTemplate {
         StringBuilder report = new StringBuilder();
         
         switch (reportType.toUpperCase()) {
-            case "DAILY_SALES":
+            case "DAILY_SALES" -> {
                 report.append("DAILY SALES SUMMARY\n");
                 report.append("===================\n\n");
                 
@@ -108,25 +97,25 @@ public class SalesReportTemplate extends ReportTemplate {
                     report.append("Unique Customers: ").append(data.get(2)).append("\n");
                     report.append("Recent Bills: ").append(data.get(3)).append("\n");
                 }
-                break;
+            }
                 
-            case "WEEKLY_SALES":
+            case "WEEKLY_SALES" -> {
                 report.append("WEEKLY SALES SUMMARY\n");
                 report.append("====================\n\n");
                 report.append("Weekly data processing...\n");
-                break;
+            }
                 
-            case "MONTHLY_SALES":
+            case "MONTHLY_SALES" -> {
                 report.append("MONTHLY SALES SUMMARY\n");
                 report.append("=====================\n\n");
                 report.append("Monthly data processing...\n");
-                break;
+            }
                 
-            case "YEARLY_SALES":
+            case "YEARLY_SALES" -> {
                 report.append("YEARLY SALES SUMMARY\n");
                 report.append("====================\n\n");
                 report.append("Yearly data processing...\n");
-                break;
+            }
         }
         
         return report.toString();

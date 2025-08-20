@@ -5,8 +5,8 @@ package service;
  * Handles credit/debit card payment processing
  */
 public class CardPayment implements PaymentStrategy {
-    private String cardNumber;
-    private String cardType; // VISA, MASTERCARD, etc.
+    private final String cardNumber;
+    private final String cardType; // VISA, MASTERCARD, etc.
     
     public CardPayment(String cardNumber, String cardType) {
         this.cardNumber = cardNumber;

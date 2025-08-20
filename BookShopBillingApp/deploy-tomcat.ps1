@@ -121,7 +121,7 @@ try {
     if ($StartTomcat) {
         Write-Host "`nAccess your application at:" -ForegroundColor Cyan
         Write-Host "http://localhost:8080/$AppName" -ForegroundColor White
-        Write-Host "http://localhost:8080/$AppName/login.jsp" -ForegroundColor White
+        Write-Host "http://localhost:8080/$AppName/jsp/login.jsp" -ForegroundColor White
     } else {
         Write-Host "`nTo start Tomcat manually:" -ForegroundColor Yellow
         Write-Host "cd `"$TomcatBin`" && startup.bat" -ForegroundColor White

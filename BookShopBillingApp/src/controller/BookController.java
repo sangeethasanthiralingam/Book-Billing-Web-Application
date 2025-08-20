@@ -1,12 +1,13 @@
 package controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.BookDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
-import dao.BookDAO;
 import model.Book;
 
 /**
@@ -175,7 +176,7 @@ public class BookController extends BaseController {
                 int bookId = Integer.parseInt(idParam);
                 BookDAO bookDAO = new BookDAO();
                 bookDAO.deleteBook(bookId);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 handleException(request, response, e, "deleting book");
             }
         }
@@ -200,7 +201,7 @@ public class BookController extends BaseController {
             int bookId = Integer.parseInt(idParam);
             Book book = bookDAO.getBookById(bookId);
             request.setAttribute("book", book);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             handleException(request, response, e, "viewing book");
         }
         
