@@ -1,5 +1,4 @@
-package factory;
-
+package  factory;
 /**
  * Factory Pattern: Discount Factory
  * Creates different types of discount objects based on type and parameters

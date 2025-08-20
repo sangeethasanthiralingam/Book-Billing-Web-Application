@@ -67,8 +67,14 @@
                             <td>
                                 <% if (rank == 1) { %>🥇<% } else if (rank == 2) { %>🥈<% } else if (rank == 3) { %>🥉<% } else { %>#<%= rank %><% } %>
                             </td>
-                            <td><strong><%= cashier.getFullName() %></strong></td>
-                            <td><%= cashier.getUsername() %></td>
+                            <td>
+                                <strong>
+                                    <%= (cashier != null && cashier.getFullName() != null) ? cashier.getFullName() : "Unknown Cashier" %>
+                                </strong>
+                            </td>
+                            <td>
+                                <%= (cashier != null && cashier.getUsername() != null) ? cashier.getUsername() : "-" %>
+                            </td>
                             <td><%= stats.get("billCount") %></td>
                             <td><strong>$<%= String.format("%.2f", stats.get("totalSales")) %></strong></td>
                             <td><%= stats.get("feedbackScore") %>/5</td>
@@ -113,4 +119,4 @@
         }
     </style>
 </body>
-</html> 
+</html>

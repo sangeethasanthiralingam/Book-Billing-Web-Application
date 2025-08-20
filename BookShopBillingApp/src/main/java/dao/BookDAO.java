@@ -1,11 +1,15 @@
 package dao;
 
-import model.Book;
-import util.DBConnection;
-import service.ConfigurationService;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Book;
+import service.ConfigurationService;
+import util.DBConnection;
 
 /**
  * DAO Pattern: Book Data Access Object
@@ -81,7 +85,6 @@ public class BookDAO {
                 return book;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -104,7 +107,6 @@ public class BookDAO {
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -128,7 +130,7 @@ public class BookDAO {
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            // Optionally log or handle the exception
         }
         return false;
     }
@@ -175,7 +177,6 @@ public class BookDAO {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException("Database error: " + e.getMessage());
         }
         return 0;
@@ -239,4 +240,4 @@ public class BookDAO {
         }
         return books;
     }
-} 
+}

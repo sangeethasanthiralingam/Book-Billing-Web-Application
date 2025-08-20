@@ -11,41 +11,82 @@ This application follows the **Model-View-Controller (MVC)** architecture patter
 ```
 BookShopBillingApp/
 ├── src/
-│   ├── controller/             # Controllers (MVC Pattern)
-│   │   ├── FrontControllerServlet.java  # Main router
-│   │   ├── BaseController.java          # Abstract base class
-│   │   ├── AuthController.java          # Authentication
-│   │   ├── BookController.java          # Book management
-│   │   ├── CustomerController.java      # Customer management
-│   │   ├── UserController.java          # User management
-│   │   ├── BillingController.java       # Billing operations
-│   │   ├── DashboardController.java     # Dashboard display
-│   │   ├── ReportController.java        # Reporting
-│   │   └── ConfigController.java        # System configuration
-│   ├── dao/                   # Data Access Objects
-│   │   ├── BookDAO.java
-│   │   ├── UserDAO.java
-│   │   └── BillDAO.java
-│   ├── model/                 # Java Beans / Models
-│   │   ├── Book.java
-│   │   ├── User.java
-│   │   ├── Bill.java
-│   │   └── BillItem.java
-│   ├── service/              # Business Logic & Strategy Pattern
-│   │   ├── PaymentService.java
-│   │   ├── PaymentStrategy.java
-│   │   ├── CashPayment.java
-│   │   ├── CardPayment.java
-│   │   └── UpiPayment.java
-│   ├── util/                   # Utility Classes
-│   │   └── DBConnection.java   # Singleton Pattern
-│   ├── factory/              # Factory Pattern
-│   │   ├── DiscountFactory.java
-│   │   ├── Discount.java
-│   │   ├── PercentageDiscount.java
-│   │   └── FixedDiscount.java
-│   └── builder/             # Builder Pattern
-│       └── BillBuilder.java
+│   └── main/
+│       ├── java/
+│       │   ├── controller/             # Controllers (MVC Pattern)
+│       │   │   ├── FrontControllerServlet.java
+│       │   │   ├── BaseController.java
+│       │   │   ├── AuthController.java
+│       │   │   ├── BookController.java
+│       │   │   ├── CustomerController.java
+│       │   │   ├── UserController.java
+│       │   │   ├── BillingController.java
+│       │   │   ├── DashboardController.java
+│       │   │   ├── ReportController.java
+│       │   │   └── ConfigController.java
+│       │   ├── dao/                   # Data Access Objects
+│       │   │   ├── BookDAO.java
+│       │   │   ├── UserDAO.java
+│       │   │   └── BillDAO.java
+│       │   ├── model/                 # Java Beans / Models
+│       │   │   ├── Book.java
+│       │   │   ├── User.java
+│       │   │   ├── Bill.java
+│       │   │   └── BillItem.java
+│       │   ├── service/               # Business Logic & Strategy Pattern
+│       │   │   ├── PaymentService.java
+│       │   │   ├── PaymentStrategy.java
+│       │   │   ├── CashPayment.java
+│       │   │   ├── CardPayment.java
+│       │   │   ├── UpiPayment.java
+│       │   │   ├── ConfigurationService.java
+│       │   │   └── BillCalculationService.java
+│       │   ├── util/                  # Utility Classes
+│       │   │   ├── DBConnection.java
+│       │   │   ├── Constants.java
+│       │   │   └── MailUtil.java
+│       │   ├── factory/               # Factory Pattern
+│       │   │   ├── DiscountFactory.java
+│       │   │   ├── Discount.java
+│       │   │   ├── PercentageDiscount.java
+│       │   │   └── FixedDiscount.java
+│       │   ├── builder/               # Builder Pattern
+│       │   │   └── BillBuilder.java
+│       │   ├── command/               # Command Pattern
+│       │   │   ├── OrderCommand.java
+│       │   │   ├── CreateOrderCommand.java
+│       │   │   ├── AdminApprovalCommand.java
+│       │   │   ├── CollectionRequestCommand.java
+│       │   │   └── OrderInvoker.java
+│       │   ├── observer/              # Observer Pattern
+│       │   │   ├── OrderObserver.java
+│       │   │   ├── OrderManager.java
+│       │   │   ├── InventoryObserver.java
+│       │   │   └── CustomerNotificationObserver.java
+│       │   ├── state/                 # State Pattern
+│       │   │   ├── OrderState.java
+│       │   │   ├── OrderContext.java
+│       │   │   ├── CollectionRequestState.java
+│       │   │   ├── PendingState.java
+│       │   │   ├── ProcessingState.java
+│       │   │   ├── CompletedState.java
+│       │   │   ├── CancelledState.java
+│       │   │   ├── AdminReviewState.java
+│       │   │   ├── ApprovedState.java
+│       │   │   └── RejectedState.java
+│       │   ├── decorator/             # Decorator Pattern
+│       │   │   ├── BookDecorator.java
+│       │   │   ├── PremiumBookDecorator.java
+│       │   │   └── DiscountBookDecorator.java
+│       │   ├── template/              # Template Pattern
+│       │   │   ├── ReportTemplate.java
+│       │   │   └── SalesReportTemplate.java
+│       │   ├── visitor/               # Visitor Pattern
+│       │   │   ├── BookVisitor.java
+│       │   │   └── SalesReportVisitor.java
+│       │   └── memento/               # Memento Pattern
+│       │       └── BillHistory.java
+│       └── resources/                 # Application resources (if any)
 ├── WebContent/
 │   ├── jsp/
 │   │   ├── login.jsp
@@ -56,6 +97,7 @@ BookShopBillingApp/
 │   │   └── reports.jsp
 │   └── WEB-INF/
 │       └── web.xml
+├── pom.xml
 └── README.md
 ```
 
