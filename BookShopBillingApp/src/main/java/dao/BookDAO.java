@@ -1,11 +1,15 @@
 package dao;
 
-import model.Book;
-import util.DBConnection;
-import service.ConfigurationService;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Book;
+import service.ConfigurationService;
+import util.DBConnection;
 
 /**
  * DAO Pattern: Book Data Access Object
@@ -238,5 +242,22 @@ public class BookDAO {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
         return books;
+    }
+        public boolean save(Book book) {
+        // Example implementation, adjust as needed for your DB schema
+        String sql = "INSERT INTO books (title, author, isbn, price, quantity, category) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getIsbn());
+            stmt.setDouble(4, book.getPrice());
+            stmt.setInt(5, book.getQuantity());
+            stmt.setString(6, book.getCategory());
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 } 
