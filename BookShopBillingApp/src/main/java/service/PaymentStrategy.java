@@ -11,7 +11,7 @@ public interface PaymentStrategy {
      * @return true if payment was successful, false otherwise
      */
     boolean processPayment(double amount);
-    
+    String getPaymentDetails();
     /**
      * Get the payment method name
      * @return the payment method identifier

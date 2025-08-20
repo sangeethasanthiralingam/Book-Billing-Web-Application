@@ -14,6 +14,10 @@ public class CardPayment implements PaymentStrategy {
     }
     
     @Override
+public String getPaymentDetails() {
+    return "Card Payment - Details processed securely";
+}
+    @Override
     public boolean processPayment(double amount) {
         // In a real application, this would integrate with payment gateways
         System.out.println("Processing " + cardType + " payment of $" + amount + " with card ending in " + 

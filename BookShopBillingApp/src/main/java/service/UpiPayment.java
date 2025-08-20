@@ -17,7 +17,10 @@ public class UpiPayment implements PaymentStrategy {
         System.out.println("Processing UPI payment of $" + amount + " to " + upiId);
         return true; // Simulate successful payment
     }
-    
+    @Override
+public String getPaymentDetails() {
+    return "UPI Payment - Digital transaction completed";
+}
     @Override
     public String getPaymentMethod() {
         return "UPI";

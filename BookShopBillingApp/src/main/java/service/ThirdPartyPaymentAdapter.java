@@ -17,4 +17,9 @@ public class ThirdPartyPaymentAdapter implements PaymentStrategy {
     public String getPaymentDescription() {
         return "Third Party Payment";
     }
-} 
+
+    @Override
+    public String getPaymentDetails() {
+        return "Third Party Payment - External service integration";
+    }
+}

@@ -22,4 +22,9 @@ public class CashPayment implements PaymentStrategy {
     public String getPaymentDescription() {
         return "Cash Payment";
     }
-} 
+    
+    @Override
+    public String getPaymentDetails() {
+        return "Cash Payment - No additional details required";
+    }
+}
