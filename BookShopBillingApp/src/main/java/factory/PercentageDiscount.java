@@ -1,7 +1,7 @@
 package factory;
 
 public class PercentageDiscount implements Discount {
-    private double percentage;
+    private final double percentage;
     
     public PercentageDiscount(double percentage) {
         this.percentage = percentage;
@@ -9,6 +9,9 @@ public class PercentageDiscount implements Discount {
     
     @Override
     public double calculateDiscount(double amount) {
+        if (percentage < 0 || percentage > 100) {
+            throw new IllegalArgumentException("Percentage must be between 0 and 100");
+        }
         return amount * (percentage / 100.0);
     }
     
@@ -20,4 +23,4 @@ public class PercentageDiscount implements Discount {
     public double getPercentage() {
         return percentage;
     }
-} 
+}

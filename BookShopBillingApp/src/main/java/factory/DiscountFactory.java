@@ -19,12 +19,13 @@ public class DiscountFactory {
         }
         
         switch (type.toUpperCase()) {
-            case "PERCENTAGE":
+            case "PERCENTAGE" -> {
                 return new PercentageDiscount(value);
-            case "FIXED":
+            }
+            case "FIXED" -> {
                 return new FixedDiscount(value);
-            default:
-                throw new IllegalArgumentException("Unknown discount type: " + type);
+            }
+            default -> throw new IllegalArgumentException("Unknown discount type: " + type);
         }
     }
     

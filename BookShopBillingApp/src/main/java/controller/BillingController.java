@@ -255,9 +255,8 @@ public class BillingController extends BaseController {
                 sendJsonError(response, "Failed to save bill");
             }
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println("[BillingController] Error generating bill: " + e.getMessage());
-            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error generating bill: " + e.getMessage());
         }
@@ -298,11 +297,11 @@ public class BillingController extends BaseController {
                 User customer = customers.get(i);
                 if (i > 0) json.append(",");
                 json.append("{");
-                json.append("\"id\":" + customer.getId() + ",");
-                json.append("\"fullName\":\"" + escapeJson(customer.getFullName()) + "\",");
-                json.append("\"phone\":\"" + escapeJson(customer.getPhone()) + "\",");
-                json.append("\"email\":\"" + escapeJson(customer.getEmail()) + "\",");
-                json.append("\"accountNumber\":\"" + escapeJson(customer.getAccountNumber()) + "\"");
+                json.append("\"id\":").append(customer.getId()).append(",");
+                json.append("\"fullName\":\"").append(escapeJson(customer.getFullName())).append("\",");
+                json.append("\"phone\":\"").append(escapeJson(customer.getPhone())).append("\",");
+                json.append("\"email\":\"").append(escapeJson(customer.getEmail())).append("\",");
+                json.append("\"accountNumber\":\"").append(escapeJson(customer.getAccountNumber())).append("\"");
                 json.append("}");
             }
             json.append("]");
@@ -311,7 +310,7 @@ public class BillingController extends BaseController {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json.toString());
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error searching customers: " + e.getMessage());
         }
@@ -343,12 +342,12 @@ public class BillingController extends BaseController {
                 Book book = books.get(i);
                 if (i > 0) json.append(",");
                 json.append("{");
-                json.append("\"id\":" + book.getId() + ",");
-                json.append("\"title\":\"" + escapeJson(book.getTitle()) + "\",");
-                json.append("\"author\":\"" + escapeJson(book.getAuthor()) + "\",");
-                json.append("\"isbn\":\"" + escapeJson(book.getIsbn()) + "\",");
-                json.append("\"price\":" + book.getPrice() + ",");
-                json.append("\"quantity\":" + book.getQuantity());
+                json.append("\"id\":").append(book.getId()).append(",");
+                json.append("\"title\":\"").append(escapeJson(book.getTitle())).append("\",");
+                json.append("\"author\":\"").append(escapeJson(book.getAuthor())).append("\",");
+                json.append("\"isbn\":\"").append(escapeJson(book.getIsbn())).append("\",");
+                json.append("\"price\":").append(book.getPrice()).append(",");
+                json.append("\"quantity\":").append(book.getQuantity());
                 json.append("}");
             }
             json.append("]");
@@ -357,7 +356,7 @@ public class BillingController extends BaseController {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json.toString());
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error searching books: " + e.getMessage());
         }
@@ -440,9 +439,8 @@ public class BillingController extends BaseController {
             } else {
                 System.out.println("[BillingController] No items array found in JSON");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("[BillingController] Error parsing items from JSON: " + e.getMessage());
-            e.printStackTrace();
         }
         return items;
     }

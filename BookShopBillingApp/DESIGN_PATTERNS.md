@@ -383,7 +383,7 @@ public class BillBuilder {
             throw new IllegalStateException("Bill number is required");
         }
         if (bill.getCustomer() == null) {
-            throw new IllegalStateException("Customer is required");
+            throw new IllegalArgumentException("Customer is required");
         }
         if (bill.getCashier() == null) {
             throw new IllegalStateException("Cashier is required");

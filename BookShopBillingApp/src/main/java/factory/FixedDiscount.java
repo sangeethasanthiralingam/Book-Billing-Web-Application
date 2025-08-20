@@ -1,7 +1,7 @@
 package factory;
 
 public class FixedDiscount implements Discount {
-    private double fixedAmount;
+    private final double fixedAmount;
     
     public FixedDiscount(double fixedAmount) {
         this.fixedAmount = fixedAmount;
@@ -9,6 +9,9 @@ public class FixedDiscount implements Discount {
     
     @Override
     public double calculateDiscount(double amount) {
+        if (fixedAmount < 0) {
+            throw new IllegalArgumentException("Fixed discount amount cannot be negative");
+        }
         return Math.min(fixedAmount, amount); // Discount cannot exceed the total amount
     }
     
@@ -20,4 +23,4 @@ public class FixedDiscount implements Discount {
     public double getFixedAmount() {
         return fixedAmount;
     }
-} 
+}
