@@ -243,21 +243,24 @@ public class BookDAO {
         }
         return books;
     }
-        public boolean save(Book book) {
-        // Example implementation, adjust as needed for your DB schema
-        String sql = "INSERT INTO books (title, author, isbn, price, quantity, category) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, book.getTitle());
-            stmt.setString(2, book.getAuthor());
-            stmt.setString(3, book.getIsbn());
-            stmt.setDouble(4, book.getPrice());
-            stmt.setInt(5, book.getQuantity());
-            stmt.setString(6, book.getCategory());
-            int rows = stmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+    public boolean save(Book book) {
+        if (book.getId() == 0) {
+            return addBook(book);
+        } else {
+            return updateBook(book);
         }
     }
-} 
+
+    public Book findById(int id) {
+        return getBookById(id);
+    }
+
+    public boolean update(Book book) {
+        return updateBook(book);
+    }
+
+    public boolean delete(int id) {
+        return deleteBook(id);
+    }
+}
