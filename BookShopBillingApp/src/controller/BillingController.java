@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import command.OrderCommand;
+import command.OrderInvoker;
 import dao.BillDAO;
 import dao.BookDAO;
 import dao.UserDAO;
+import decorator.DiscountBookDecorator;
+import decorator.PremiumBookDecorator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,14 +19,13 @@ import model.Bill;
 import model.BillItem;
 import model.Book;
 import model.User;
-
-// Design Pattern Imports
-import command.*;
-import observer.*;
-import state.*;
-import decorator.*;
-import template.*;
-import visitor.*;
+import observer.CustomerNotificationObserver;
+import observer.InventoryObserver;
+import observer.OrderManager;
+import observer.OrderObserver;
+import state.OrderContext;
+import template.SalesReportTemplate;
+import visitor.SalesReportVisitor;
 
 /**
  * Enhanced Controller for billing operations using multiple design patterns
@@ -122,7 +125,7 @@ public class BillingController extends BaseController {
             request.setAttribute("error", "Invalid Bill ID format");
             request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
             return;
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             handleException(request, response, e, "generating invoice");
             return;
         }
@@ -245,9 +248,8 @@ public class BillingController extends BaseController {
                 sendJsonError(response, "Failed to save bill");
             }
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println("[BillingController] Error generating bill: " + e.getMessage());
-            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             sendJsonError(response, "Error generating bill: " + e.getMessage());
         }

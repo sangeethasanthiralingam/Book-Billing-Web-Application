@@ -25,6 +25,7 @@ public class DBConnection {
     }
     
     // Thread-safe getInstance method with double-checked locking
+    @SuppressWarnings("DoubleCheckedLocking")
     public static DBConnection getInstance() {
         if (instance == null) {
             synchronized (DBConnection.class) {
@@ -47,7 +48,7 @@ public class DBConnection {
                     throw new RuntimeException("Database connection failed: " + e.getMessage(), e);
                 }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException | SQLException e) {
             System.out.println("Database connection error: " + e.getMessage());
             throw new RuntimeException("Database connection error: " + e.getMessage(), e);
         }
@@ -60,7 +61,6 @@ public class DBConnection {
                 connection.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 } 

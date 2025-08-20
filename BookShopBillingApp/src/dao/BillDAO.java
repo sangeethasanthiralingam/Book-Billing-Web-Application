@@ -1,11 +1,17 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import model.Bill;
 import model.BillItem;
 import util.DBConnection;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BillDAO {
     private DBConnection dbConnection;
@@ -456,7 +462,6 @@ public class BillDAO {
                 bills.add(bill);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return bills;
     }
@@ -486,7 +491,6 @@ public class BillDAO {
                 stats.put("uniqueDays", rs.getInt("unique_days"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         return stats;
     }

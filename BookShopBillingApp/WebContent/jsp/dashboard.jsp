@@ -58,27 +58,45 @@
             <% } %>
         </div>
         
+       <% String role = (String) session.getAttribute("userRole"); %>
+        <% if (role != null && !"CUSTOMER".equals(role)) { %>
         <div class="quick-actions">
             <h2 class="section-title"><span class="section-icon">⚡</span>Quick Actions</h2>
             <div class="action-buttons">
-                <a href="${pageContext.request.contextPath}/controller/billing" class="action-btn btn-primary" title="Create a new bill for a customer">
+                <!-- Common for CASHIER + ADMIN -->
+                <a href="${pageContext.request.contextPath}/controller/billing" 
+                class="action-btn btn-primary" 
+                title="Create a new bill for a customer">
                     <span class="action-icon">🛒</span> Create New Bill
                 </a>
-                <a href="${pageContext.request.contextPath}/controller/books" class="action-btn btn-secondary" title="View and manage all books in inventory">
-                    <span class="action-icon">📚</span> Manage Books
-                </a>
-                <a href="${pageContext.request.contextPath}/controller/reports" class="action-btn btn-secondary" title="View sales and billing reports">
-                    <span class="action-icon">📊</span> View Reports
-                </a>
-                <a href="${pageContext.request.contextPath}/controller/invoice" class="action-btn btn-danger" title="Generate and print invoices for customers">
+
+                <% if ("ADMIN".equals(role)) { %>
+                    <a href="${pageContext.request.contextPath}/controller/books" 
+                    class="action-btn btn-secondary" 
+                    title="View and manage all books in inventory">
+                        <span class="action-icon">📚</span> Manage Books
+                    </a>
+                    <a href="${pageContext.request.contextPath}/controller/reports" 
+                    class="action-btn btn-secondary" 
+                    title="View sales and billing reports">
+                        <span class="action-icon">📊</span> View Reports
+                    </a>
+                    <a href="${pageContext.request.contextPath}/jsp/design-patterns.jsp" 
+                    class="action-btn btn-success" 
+                    title="Demonstrate all design patterns in action">
+                        <span class="action-icon">🎯</span> Design Patterns Demo
+                    </a>
+                <% } %>
+
+                <!-- Common for CASHIER + ADMIN -->
+                <a href="${pageContext.request.contextPath}/controller/invoice" 
+                class="action-btn btn-danger" 
+                title="Generate and print invoices for customers">
                     <span class="action-icon">🧾</span> Generate Invoice
-                </a>
-                <a href="${pageContext.request.contextPath}/jsp/design-patterns.jsp" class="action-btn btn-success" title="Demonstrate all design patterns in action">
-                    <span class="action-icon">🎯</span> Design Patterns Demo
                 </a>
             </div>
         </div>
-        
+        <% } %>
         <% if (request.getAttribute("recentBills") != null && !((java.util.List)request.getAttribute("recentBills")).isEmpty()) { %>
         <div class="recent-transactions">
             <h2 class="section-title"><span class="section-icon">🧾</span>Recent Transactions</h2>

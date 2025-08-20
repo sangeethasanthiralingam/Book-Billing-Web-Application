@@ -1,11 +1,12 @@
 package controller;
 
+import java.io.IOException;
+
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-import dao.UserDAO;
 import model.User;
 
 /**
@@ -47,7 +48,7 @@ public class AuthController extends BaseController {
                 request.setAttribute("error", "Invalid username or password");
                 request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
             }
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             handleException(request, response, e, "login");
         }
     }
@@ -144,7 +145,7 @@ public class AuthController extends BaseController {
                 request.getRequestDispatcher("/jsp/register.jsp").forward(request, response);
             }
 
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             handleException(request, response, e, "registration");
         }
     }

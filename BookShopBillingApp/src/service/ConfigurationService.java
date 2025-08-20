@@ -1,15 +1,16 @@
 package service;
 
-import dao.SystemConfigDAO;
-import model.SystemConfig;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import dao.SystemConfigDAO;
+import model.SystemConfig;
 import util.Constants;
 
 public class ConfigurationService {
     private static ConfigurationService instance;
-    private SystemConfigDAO configDAO;
+    private final SystemConfigDAO configDAO;
     private Map<String, String> configCache;
     private long lastCacheUpdate;
     private static final long CACHE_DURATION = 300000; // 5 minutes
@@ -28,6 +29,7 @@ public class ConfigurationService {
         return instance;
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     private void initializeConfigs() {
         try {
             configDAO.initializeDefaultConfigs();
@@ -66,6 +68,7 @@ public class ConfigurationService {
         configCache.put("admin.email", "admin@pahanaedu.com");
     }
     
+    @SuppressWarnings("CallToPrintStackTrace")
     private void refreshCache() {
         try {
             configCache = configDAO.getConfigMap();

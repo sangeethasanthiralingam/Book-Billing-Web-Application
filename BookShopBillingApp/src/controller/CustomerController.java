@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+
 import dao.BillDAO;
 import dao.UserDAO;
 import jakarta.servlet.ServletException;
@@ -68,7 +70,7 @@ public class CustomerController extends BaseController {
                 if (customer == null) {
                     request.setAttribute("error", "Customer not found");
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 handleException(request, response, e, "loading customer");
             }
         }
@@ -93,7 +95,7 @@ public class CustomerController extends BaseController {
                 } else {
                     request.setAttribute("error", "Customer not found");
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 handleException(request, response, e, "loading customer details");
             }
         }
@@ -340,7 +342,7 @@ public class CustomerController extends BaseController {
             
             request.getRequestDispatcher("/jsp/store.jsp").forward(request, response);
             
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             handleException(request, response, e, "loading customer store");
             return;
         }
@@ -468,8 +470,7 @@ public class CustomerController extends BaseController {
                 sendJsonError(response, "Failed to place order");
             }
             
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | JSONException e) {
             sendJsonError(response, "Error placing order: " + e.getMessage());
         }
     }
